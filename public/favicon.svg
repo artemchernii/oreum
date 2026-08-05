@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Oreum">
+  <title>Oreum</title>
+  <style>
+    .s { stroke: #0B0B0C; }
+    @media (prefers-color-scheme: dark) { .s { stroke: #FAFAFA; } }
+  </style>
+  <path class="s" d="M2 22.5 Q6 16.5 9.5 20 Q13.5 12 17.5 17.5 Q22.5 4.5 30 21.5"
+        fill="none" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
