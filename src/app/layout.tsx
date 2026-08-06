@@ -1,22 +1,32 @@
 import type { Metadata } from "next";
-import { Logo } from "@/components/logo";
+import { Geist, Geist_Mono } from "next/font/google";
+import { AppShell } from "@/components/app-shell";
 import "./globals.css";
+
+const geistSans = Geist({
+  subsets: ["latin"],
+  variable: "--font-geist-sans",
+});
+
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-geist-mono",
+});
 
 export const metadata: Metadata = {
   title: "Oreum",
-  description: "Дешборд для відстеження акцій",
+  description: "What happened to your positions while you weren't looking.",
   icons: { icon: "/favicon.svg" },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="uk">
-      <body className="min-h-dvh bg-background text-foreground antialiased">
-        {/* Навмисно голий. Сайдбар і сітка — M1. */}
-        <header className="flex h-14 items-center px-4">
-          <Logo />
-        </header>
-        {children}
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} font-sans`}
+    >
+      <body className="min-h-dvh antialiased">
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

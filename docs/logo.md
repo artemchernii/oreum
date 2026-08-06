@@ -1,65 +1,67 @@
-# Логотип
+# Logo
 
-오름 — «підйом». Знак — це та сама лінія, що й у назві: підйом, який читається
-і як графік ціни.
+오름 means "ascent". The mark is the same line the name is: a rise that also
+reads as a price chart.
 
-## Де що лежить
+## Where things live
 
 ```text
-public/favicon.svg          іконка вкладки
-public/brand/oreum-logo.svg знак + вордмарк, для соцмереж і пресkit
-public/brand/oreum-mark.svg тільки знак, для аватарок
-src/components/logo.tsx     те, що реально рендериться в інтерфейсі
+public/favicon.svg          browser tab icon
+public/brand/oreum-logo.svg mark + wordmark, for social and press kit
+public/brand/oreum-mark.svg mark only, for avatars
+src/components/logo.tsx     what actually renders in the interface
 ```
 
-Файли в `public/brand/` — це вихідники для всього, що **поза** застосунком:
-аватар на GitHub, картинка для Twitter, презентація. Всередині інтерфейсу
-вони не використовуються.
+Files in `public/brand/` are sources for everything **outside** the app:
+the GitHub avatar, a Twitter card, a deck. They are not used inside the
+interface.
 
-## В інтерфейсі — тільки компонент
+## In the interface — the component only
 
 ```tsx
 import { Logo, LogoMark } from "@/components/logo";
 
-// хедер
+// header
 <Logo className="text-neutral-900 dark:text-neutral-50" />
 
-// згорнутий сайдбар
+// collapsed sidebar
 <LogoMark className="text-neutral-900 dark:text-neutral-50" />
 ```
 
-Колір береться від батьківського елемента через `currentColor`.
-Окремих версій для світлої й темної теми не існує і не має існувати.
+Colour is inherited from the parent through `currentColor`. Separate versions
+for light and dark do not exist and should not.
 
-**Не рендерити логотип через `next/image` чи `<img>`.** У зовнішньому файлі
-`currentColor` не резолвиться — знак стане чорним і зникне в темній темі.
-Саме тому компонент інлайнить SVG.
+**Do not render the logo through `next/image` or `<img>`.** In an external
+file `currentColor` does not resolve — the mark goes black and disappears in
+dark mode. That is why the component inlines the SVG.
 
-## Правило штриха
+## Stroke rule
 
-Знак — це іконка, а не картинка. Він має збігатися за вагою з рештою іконок.
+The mark is an icon, not a picture. Its weight has to match the other icons.
 
-- іконки (lucide): `strokeWidth={1.75}` при 24px
-- знак у хедері: 26–28px
-- дрібніше за 20px поза фавіконом не рендерити — штрих стає волосиною
+- icons (lucide): `strokeWidth={1.75}` at 24px
+- mark in the header: 26–28px
+- do not render below 20px outside the favicon — the stroke becomes a hair
 
-Задай товщину іконок один раз в обгортці, поки їх ще мало.
+Set icon stroke width once in a wrapper, while there are still few of them.
 
-## Чому логотип без кольору
+## Why the logo has no colour
 
-Зелений і червоний зарезервовані під рух ціни. Це єдина семантика кольору
-в продукті, і вона має зчитуватись миттєво. Кольоровий логотип конкурував би
-за увагу з даними й не означав би нічого.
+Green and red are reserved for price movement. That is the only colour
+semantic in the product and it has to read instantly. A coloured logo would
+compete with the data for attention and would mean nothing.
 
-## Фавікон — виняток
+## The favicon is the exception
 
-`public/favicon.svg` єдиний має захардкоджені кольори і медіа-запит
-`prefers-color-scheme`, бо `currentColor` у вкладці браузера не працює.
+`public/favicon.svg` is the only file with hardcoded colours and a
+`prefers-color-scheme` media query, because `currentColor` does not work in a
+browser tab.
 
-Штрих у ньому товщий за пропорцією до розміру — на 16px оригінальна вага
-перетворюється на волосину. Це оптична корекція, не помилка. Не вирівнювати.
+Its stroke is proportionally heavier than the mark's — at 16px the original
+weight turns into a hair. That is an optical correction, not a mistake. Do not
+normalise it.
 
-Підключення в `app/layout.tsx`:
+Wired up in `app/layout.tsx`:
 
 ```tsx
 export const metadata = {
@@ -68,9 +70,9 @@ export const metadata = {
 };
 ```
 
-## Борг
+## Debt
 
-- [ ] перевести текст вордмарка з `<text>` у `<path>` — зараз шрифт у
-  `oreum-logo.svg` залежить від системи глядача
-- [ ] `favicon.ico` 32×32 для старих браузерів
-- [ ] OG-зображення 1200×630
+- [ ] convert the wordmark text from `<text>` to `<path>` — the font in
+  `oreum-logo.svg` currently depends on the viewer's system
+- [ ] `favicon.ico` 32×32 for older browsers
+- [ ] OG image 1200×630
