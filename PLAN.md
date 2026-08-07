@@ -79,16 +79,16 @@ A personal feed is `event_impacts ⨝ watchlist`. Plain SQL, no LLM.
 
 **Done when:** two screens render on mock data and I'm not embarrassed by them.
 
-- [ ] `pnpm dlx shadcn@latest init` — **before** writing tokens by hand:
+- [x] `pnpm dlx shadcn@latest init` — **before** writing tokens by hand:
   shadcn has its own CSS variable convention and `@theme inline` in
   `globals.css` is already set up for it
-- [ ] tokens: monochrome, colour reserved for price movement only
-- [ ] shell: top bar, watchlist sidebar, main area
-- [ ] Feed screen and Ticker screen, static, mock data only
-- [ ] event card as a component — this is the primary UI object
-- [ ] types match the eventual DB shape so M4–M6 don't require a rewrite
-- [ ] mock headlines of 15+ words, or layout bugs stay hidden until production
-- [ ] **one working session, no more**
+- [x] tokens: monochrome, colour reserved for price movement only
+- [x] shell: top bar, watchlist sidebar, main area
+- [x] Feed screen and Ticker screen, static, mock data only
+- [x] event card as a component — this is the primary UI object
+- [x] types match the eventual DB shape so M4–M6 don't require a rewrite
+- [x] mock headlines of 15+ words, or layout bugs stay hidden until production
+- [x] **one working session, no more**
 
 ### M2 — watchlist
 
@@ -217,6 +217,12 @@ Screeners. Multi-timeframe. A separate Python engine.
 | 2026-08-06 | Second order ranks above direct | a user sees direct news about their own company anyway. The value is where they wouldn't have made the connection |
 | 2026-08-06 | CSV portfolio import deferred to M8 | watchlist membership is enough for ranking; position sizes only refine it. Three broker formats is a week of dull work, not a starting task |
 | 2026-08-06 | Store headline, links, and our own summary | full article text is a licensing question, not a technical one |
+| 2026-08-07 | Sparkline built in M1, static path only | M3's objection is the per-ticker price series, not the component. A hardcoded path costs no quota and settles the row layout now instead of forcing a redesign when real data lands. M3's line is narrowed to the data |
+| 2026-08-07 | Dark mode via `light-dark()`, keyed off both `.dark` and `prefers-color-scheme` | shadcn keys dark off `.dark`; M1 has no toggle, so a class-only setup would leave dark-mode users on a light UI. `light-dark()` declares every token once, so the two paths cannot drift. `.dark` / `.light` stay as escape hatches for a future toggle |
+| 2026-08-07 | Green and red confined to `price-change.tsx` | keeping the entire colour budget in one component makes "nothing else is green or red" checkable in the build output rather than in review. Verified: exactly four chromatic colours ship in the stylesheet |
+| 2026-08-07 | shadcn's `--destructive` and dark `--sidebar-primary` neutralised | both shipped chromatic (red, blue). An unused red token in the palette is an invitation to use it |
+| 2026-08-07 | Timeframe control is static buttons, not shadcn `Tabs` | Radix `Tabs` is a client component and the control has no behaviour in M1. Styled spans give the same appearance server-rendered |
+| 2026-08-07 | `Event` carries `summary` and `strength`; sparkline series kept off `Company` | summary and strength are in the data model and would otherwise need a migration. The price series belongs to the M3 cache table, not the companies row, so it lives in the mock as a separate map |
 | 2026-08-07 | Metrics and exposures are separate objects | metrics compare across companies, exposures don't. A fifth slot that changes meaning per ticker breaks the row. Each metric also carries a reference anchor — a P/E without one is a number, not information |
 | 2026-08-07 | Impact direction derives from edge type, not headline sentiment | the market trades expectations, so headline tone and price movement barely correlate. A wrong coloured badge costs trust, and trust is the whole product. Colour also stays reserved for price |
 | 2026-08-07 | An event carries an array of sources | deduplication merges the same story across outlets, so "TechCrunch +1 source" is the normal case, not an edge case |

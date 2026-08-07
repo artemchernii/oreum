@@ -1,23 +1,163 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-/* Мінімальні токени. Повна палітра бренду — в M1. */
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/*
+ * Dark mode fires on either signal: the .dark class (shadcn's convention,
+ * ready for a toggle later) or the system preference. M1 has no toggle, so
+ * without the media arm a dark-mode user would get a light UI.
+ */
+@custom-variant dark {
+  &:is(.dark *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    @slot;
   }
 }
 
 @theme inline {
+  /*
+   * next/font exposes --font-geist-*. Mapping them to distinct names avoids
+   * shadcn's generated `--font-sans: var(--font-sans)`, which is circular.
+   */
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-geist-sans);
+
+  /* The entire colour budget. Nothing else in the UI may be green or red. */
+  --color-price-up: var(--price-up);
+  --color-price-down: var(--price-down);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-html {
+/*
+ * Every token is declared once with light-dark(). It resolves against the
+ * used colour-scheme, so the class and the media query stay in sync by
+ * construction — a duplicated dark block would drift the first time one
+ * side is edited.
+ *
+ * Chroma is 0 everywhere except --price-up / --price-down. That is the
+ * monochrome rule expressed in the token layer rather than in review.
+ */
+:root {
   color-scheme: light dark;
+
+  --price-up: light-dark(oklch(0.52 0.13 150), oklch(0.76 0.16 152));
+  --price-down: light-dark(oklch(0.55 0.19 25), oklch(0.71 0.18 25));
+
+  --background: light-dark(oklch(1 0 0), oklch(0.145 0 0));
+  --foreground: light-dark(oklch(0.145 0 0), oklch(0.985 0 0));
+  --card: light-dark(oklch(1 0 0), oklch(0.205 0 0));
+  --card-foreground: light-dark(oklch(0.145 0 0), oklch(0.985 0 0));
+  --popover: light-dark(oklch(1 0 0), oklch(0.205 0 0));
+  --popover-foreground: light-dark(oklch(0.145 0 0), oklch(0.985 0 0));
+  --primary: light-dark(oklch(0.205 0 0), oklch(0.922 0 0));
+  --primary-foreground: light-dark(oklch(0.985 0 0), oklch(0.205 0 0));
+  --secondary: light-dark(oklch(0.97 0 0), oklch(0.269 0 0));
+  --secondary-foreground: light-dark(oklch(0.205 0 0), oklch(0.985 0 0));
+  --muted: light-dark(oklch(0.97 0 0), oklch(0.269 0 0));
+  --muted-foreground: light-dark(oklch(0.556 0 0), oklch(0.708 0 0));
+  --accent: light-dark(oklch(0.97 0 0), oklch(0.269 0 0));
+  --accent-foreground: light-dark(oklch(0.205 0 0), oklch(0.985 0 0));
+
+  /*
+   * shadcn ships --destructive red. Neutralised: "nothing else in the UI
+   * uses green or red" is absolute, and a red token left in the palette is
+   * an invitation to use it.
+   */
+  --destructive: light-dark(oklch(0.44 0 0), oklch(0.72 0 0));
+
+  --border: light-dark(oklch(0.922 0 0), oklch(1 0 0 / 10%));
+  --input: light-dark(oklch(0.922 0 0), oklch(1 0 0 / 15%));
+  --ring: light-dark(oklch(0.708 0 0), oklch(0.556 0 0));
+
+  --chart-1: light-dark(oklch(0.87 0 0), oklch(0.87 0 0));
+  --chart-2: light-dark(oklch(0.556 0 0), oklch(0.556 0 0));
+  --chart-3: light-dark(oklch(0.439 0 0), oklch(0.439 0 0));
+  --chart-4: light-dark(oklch(0.371 0 0), oklch(0.371 0 0));
+  --chart-5: light-dark(oklch(0.269 0 0), oklch(0.269 0 0));
+
+  --sidebar: light-dark(oklch(0.985 0 0), oklch(0.205 0 0));
+  --sidebar-foreground: light-dark(oklch(0.145 0 0), oklch(0.985 0 0));
+  /* shadcn's dark --sidebar-primary is blue. Neutralised for the same reason. */
+  --sidebar-primary: light-dark(oklch(0.205 0 0), oklch(0.922 0 0));
+  --sidebar-primary-foreground: light-dark(oklch(0.985 0 0), oklch(0.205 0 0));
+  --sidebar-accent: light-dark(oklch(0.97 0 0), oklch(0.269 0 0));
+  --sidebar-accent-foreground: light-dark(oklch(0.205 0 0), oklch(0.985 0 0));
+  --sidebar-border: light-dark(oklch(0.922 0 0), oklch(1 0 0 / 10%));
+  --sidebar-ring: light-dark(oklch(0.708 0 0), oklch(0.556 0 0));
+
+  --radius: 0.625rem;
+}
+
+/* Escape hatches for a future toggle. No JS in M1, so neither is set yet. */
+.dark {
+  color-scheme: dark;
+}
+
+.light {
+  color-scheme: light;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  html {
+    @apply font-sans;
+  }
+}
+
+/*
+ * Money and time line up in columns or they are unreadable. Applied as
+ * `num` wherever a figure is rendered.
+ */
+@utility num {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
 }
