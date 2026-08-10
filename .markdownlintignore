@@ -1,0 +1,4 @@
+# Inbound design handoff — authored outside this repo, kept verbatim as a
+# reference artifact. Restyling it would only make it harder to diff against
+# the next version the designer sends.
+design/

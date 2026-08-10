@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/modernist-97f694f4-82d5-4239-bac7-ec4bd335f4b7/styles.css">
+  <script src="_ds/modernist-97f694f4-82d5-4239-bac7-ec4bd335f4b7/_ds_bundle.js"></script>
+  <style>
+    body { margin: 0; }
+    a { color: var(--color-accent-700); }
+    a:hover { color: var(--color-accent); }
+  </style>
+</helmet>
+
+<div style="background: var(--color-neutral-300); padding: 48px 0; display: flex; flex-direction: column; align-items: flex-start; gap: 40px; overflow-x: auto; padding-left: 48px;">
+
+  <div style="width: 1440px; display: flex; flex-direction: column; gap: 10px;">
+    <h6 style="margin: 0; color: var(--color-text); opacity: 0.55;">Screen 01 — Feed (home)</h6>
+
+    <div data-screen-label="Feed" style="width: 1440px; background: var(--color-bg); box-shadow: var(--shadow-lg);">
+
+      <!-- Nav -->
+      <div class="nav">
+        <div style="width: 18px; height: 18px; background: var(--color-accent); flex: none;"></div>
+        <div class="nav-brand">OREUM</div>
+        <a href="#" aria-current="page" style="font-family: var(--font-heading); font-weight: 800; font-size: 15px; border-bottom: 2px solid var(--color-accent); padding-bottom: 14px; margin-bottom: -16px;">Feed</a>
+        <a href="#" style="font-size: 15px;">Ticker</a>
+
+        <div style="flex: 1; display: flex; justify-content: center;">
+          <div style="position: relative; width: 380px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); opacity: 0.5;"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input class="input" type="text" placeholder="Search ticker or command" style="padding-left: 32px;">
+          </div>
+        </div>
+
+        <span class="text-muted" style="font-size: 13px;">Open · 14:31 ET</span>
+        <div style="width: 32px; height: 32px; background: var(--color-neutral-800); color: var(--color-bg); display: flex; align-items: center; justify-content: center; font-size: 11px; font-family: var(--font-heading); font-weight: 800;">AC</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 260px 1fr;">
+
+        <!-- Watchlist -->
+        <div style="border-right: 2px solid var(--color-divider); padding: var(--space-4);">
+          <h6 style="opacity: 0.55; margin-bottom: var(--space-3);">Watchlist</h6>
+          <div style="display: flex; flex-direction: column;">
+
+            <div style="display: flex; align-items: center; gap: var(--space-2); padding: 10px 8px; background: var(--color-neutral-900); color: var(--color-bg);">
+              <span style="font-family: var(--font-heading); font-weight: 800; font-size: 14px; width: 52px;">AVGO</span>
+              <svg width="60" height="20" viewBox="0 0 60 20" style="opacity: 0.7;"><polyline points="0,15 10,13 20,14 30,10 40,11 50,4 60,6" fill="none" stroke="currentColor" stroke-width="1.5"></polyline></svg>
+              <span style="margin-left: auto; font-size: 13px; font-weight: 600;">↑ 0.6</span>
+            </div>
+
+            <sc-for list="{{ watchlist }}" as="row" hint-placeholder-count="4">
+              <div style="display: flex; align-items: center; gap: var(--space-2); padding: 10px 8px; border-bottom: 1px solid var(--color-divider);">
+                <span style="font-family: var(--font-heading); font-weight: 800; font-size: 14px; width: 52px;">{{ row.symbol }}</span>
+                <svg width="60" height="20" viewBox="0 0 60 20" style="opacity: 0.55;"><polyline points="{{ row.points }}" fill="none" stroke="currentColor" stroke-width="1.5"></polyline></svg>
+                <span style="margin-left: auto; font-size: 13px; font-weight: 600; color: {{ row.color }};">{{ row.change }}</span>
+              </div>
+            </sc-for>
+          </div>
+
+          <button class="btn btn-ghost btn-block" style="margin-top: var(--space-3);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Add ticker
+          </button>
+        </div>
+
+        <!-- Feed -->
+        <div style="padding: var(--space-4) var(--space-6);">
+
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-4);">
+            <div class="seg">
+              <label class="seg-opt"><input type="radio" name="filter" defaultChecked="{{ true }}"><span>All</span></label>
+              <label class="seg-opt"><input type="radio" name="filter"><span>Affecting you</span></label>
+              <label class="seg-opt"><input type="radio" name="filter"><span>Macro</span></label>
+            </div>
+            <span class="text-muted" style="font-size: 13px;">Since yesterday · 4</span>
+          </div>
+
+          <sc-for list="{{ feedItems }}" as="item" hint-placeholder-count="4">
+            <div style="padding: var(--space-4) 0; border-top: 2px solid var(--color-divider);">
+              <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2);">
+                <span class="tag {{ item.tagClass }}">{{ item.tag }}</span>
+                <span class="text-muted" style="font-size: 12px;">{{ item.source }} · {{ item.time }}</span>
+              </div>
+              <h4 style="margin-bottom: 6px;">{{ item.headline }}</h4>
+              <p style="margin: 0; font-size: 14px; color: color-mix(in srgb, var(--color-text) 70%, transparent);">
+                <span style="color: {{ item.dirColor }}; font-weight: 700;">{{ item.dirArrow }} {{ item.tickers }}</span> — {{ item.mechanism }}
+              </p>
+            </div>
+          </sc-for>
+
+          <div style="border-top: 1px solid var(--color-divider); padding-top: var(--space-3); margin-top: var(--space-2);">
+            <span class="text-muted" style="font-size: 13px;">14 items filtered out as unrelated to your watchlist</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="width: 1440px; display: flex; flex-direction: column; gap: 10px;">
+    <h6 style="margin: 0; color: var(--color-text); opacity: 0.55;">Screen 02 — Ticker</h6>
+
+    <div data-screen-label="Ticker" style="width: 1440px; background: var(--color-bg); box-shadow: var(--shadow-lg);">
+
+      <!-- Nav -->
+      <div class="nav">
+        <div style="width: 18px; height: 18px; background: var(--color-accent); flex: none;"></div>
+        <div class="nav-brand">OREUM</div>
+        <a href="#" style="font-size: 15px;">Feed</a>
+        <a href="#" aria-current="page" style="font-family: var(--font-heading); font-weight: 800; font-size: 15px; border-bottom: 2px solid var(--color-accent); padding-bottom: 14px; margin-bottom: -16px;">Ticker</a>
+
+        <div style="flex: 1; display: flex; justify-content: center;">
+          <div style="position: relative; width: 380px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); opacity: 0.5;"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input class="input" type="text" placeholder="Search ticker or command" style="padding-left: 32px;">
+          </div>
+        </div>
+
+        <span class="text-muted" style="font-size: 13px;">Open · 14:31 ET</span>
+        <div style="width: 32px; height: 32px; background: var(--color-neutral-800); color: var(--color-bg); display: flex; align-items: center; justify-content: center; font-size: 11px; font-family: var(--font-heading); font-weight: 800;">AC</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 260px 1fr;">
+
+        <!-- Watchlist -->
+        <div style="border-right: 2px solid var(--color-divider); padding: var(--space-4);">
+          <h6 style="opacity: 0.55; margin-bottom: var(--space-3);">Watchlist</h6>
+          <div style="display: flex; flex-direction: column;">
+            <div style="display: flex; align-items: center; gap: var(--space-2); padding: 10px 8px; background: var(--color-neutral-900); color: var(--color-bg);">
+              <span style="font-family: var(--font-heading); font-weight: 800; font-size: 14px; width: 52px;">AVGO</span>
+              <svg width="60" height="20" viewBox="0 0 60 20" style="opacity: 0.7;"><polyline points="0,15 10,13 20,14 30,10 40,11 50,4 60,6" fill="none" stroke="currentColor" stroke-width="1.5"></polyline></svg>
+              <span style="margin-left: auto; font-size: 13px; font-weight: 600;">↑ 0.6</span>
+            </div>
+            <sc-for list="{{ watchlist }}" as="row" hint-placeholder-count="4">
+              <div style="display: flex; align-items: center; gap: var(--space-2); padding: 10px 8px; border-bottom: 1px solid var(--color-divider);">
+                <span style="font-family: var(--font-heading); font-weight: 800; font-size: 14px; width: 52px;">{{ row.symbol }}</span>
+                <svg width="60" height="20" viewBox="0 0 60 20" style="opacity: 0.55;"><polyline points="{{ row.points }}" fill="none" stroke="currentColor" stroke-width="1.5"></polyline></svg>
+                <span style="margin-left: auto; font-size: 13px; font-weight: 600; color: {{ row.color }};">{{ row.change }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <button class="btn btn-ghost btn-block" style="margin-top: var(--space-3);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Add ticker
+          </button>
+        </div>
+
+        <!-- Ticker detail -->
+        <div style="padding: var(--space-4) var(--space-6);">
+
+          <div style="display: flex; align-items: baseline; gap: var(--space-3);">
+            <h1 style="margin: 0;">AVGO</h1>
+            <span style="font-family: var(--font-heading); font-weight: 800; font-size: 26px;">420.57</span>
+            <span style="font-family: var(--font-heading); font-weight: 800; font-size: 18px; color: var(--color-neutral-800);">+2.31 (+0.55%)</span>
+            <span class="text-muted" style="margin-left: auto; font-size: 15px;">Broadcom Inc</span>
+          </div>
+          <p class="text-muted" style="font-size: 13px; margin: 4px 0 var(--space-4);">Semiconductors · custom ASIC · networking</p>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-3);">
+            <div class="seg">
+              <label class="seg-opt"><input type="radio" name="range" defaultChecked="{{ true }}"><span>1D</span></label>
+              <label class="seg-opt"><input type="radio" name="range"><span>5D</span></label>
+              <label class="seg-opt"><input type="radio" name="range"><span>1M</span></label>
+              <label class="seg-opt"><input type="radio" name="range"><span>6M</span></label>
+              <label class="seg-opt"><input type="radio" name="range"><span>1Y</span></label>
+            </div>
+          </div>
+
+          <div style="border: 2px solid var(--color-divider); padding: var(--space-4); position: relative;">
+            <svg width="100%" height="180" viewBox="0 0 920 180" preserveAspectRatio="none">
+              <line x1="480" y1="0" x2="480" y2="180" stroke="var(--color-divider)" stroke-width="1"></line>
+              <line x1="700" y1="0" x2="700" y2="180" stroke="var(--color-divider)" stroke-width="1"></line>
+              <polyline points="0,150 80,140 160,155 240,120 320,130 400,95 480,105 560,80 640,90 700,55 780,65 860,50 920,45" fill="none" stroke="var(--color-neutral-900)" stroke-width="2"></polyline>
+            </svg>
+            <span style="position: absolute; top: 8px; left: calc(480/920*100% - 6px); font-size: 11px; color: var(--color-neutral-600);">1</span>
+            <span style="position: absolute; top: 8px; left: calc(700/920*100% - 6px); font-size: 11px; color: var(--color-neutral-600);">2</span>
+          </div>
+          <p class="text-muted" style="font-size: 12px; margin: var(--space-2) 0 var(--space-4);">Numbered marks show where the events below landed</p>
+
+          <div style="display: grid; grid-template-columns: repeat(5, 1fr); border-top: 2px solid var(--color-divider); border-bottom: 2px solid var(--color-divider);">
+            <sc-for list="{{ metrics }}" as="m" hint-placeholder-count="5">
+              <div style="padding: var(--space-3); border-left: 1px solid var(--color-divider);">
+                <div class="text-muted" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px;">{{ m.label }}</div>
+                <div style="font-family: var(--font-heading); font-weight: 800; font-size: 20px;">{{ m.value }}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; background: var(--color-surface); padding: var(--space-3) var(--space-4); margin: var(--space-4) 0;">
+            <span style="font-size: 14px;"><span class="text-muted">Last 30 days</span> &nbsp; <strong>6 tailwinds · 2 headwinds</strong></span>
+            <span class="text-muted" style="font-size: 12px;">every one links to a source</span>
+          </div>
+
+          <h6 style="opacity: 0.55; margin-bottom: var(--space-3);">Why it's moving</h6>
+          <div style="display: flex; flex-direction: column; margin-bottom: var(--space-4);">
+            <sc-for list="{{ whyMoving }}" as="w" hint-placeholder-count="3">
+              <div style="display: flex; gap: var(--space-3); padding: var(--space-3) 0; border-top: 1px solid var(--color-divider);">
+                <span class="text-muted" style="font-family: var(--font-heading); font-weight: 800; width: 20px;">{{ w.n }}</span>
+                <div style="border-left: 2px solid var(--color-divider); padding-left: var(--space-3); flex: 1;">
+                  <div style="font-size: 15px; font-weight: 600;"><span style="color: {{ w.dirColor }};">{{ w.dirArrow }}</span> {{ w.headline }}</div>
+                  <div class="text-muted" style="font-size: 12px; margin-top: 2px;">{{ w.meta }}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+
+          <h6 style="opacity: 0.55; margin-bottom: var(--space-3);">Connections</h6>
+          <div style="display: flex; gap: var(--space-2); flex-wrap: wrap; margin-bottom: var(--space-4);">
+            <span class="tag tag-outline">Customers → MSFT · GOOGL · META</span>
+            <span class="tag tag-outline">Foundry → TSM</span>
+            <span class="tag tag-outline">Competes with → NVDA · MRVL</span>
+          </div>
+
+          <div style="border-top: 1px solid var(--color-divider); padding-top: var(--space-3);">
+            <span class="text-muted" style="font-size: 13px;">7 items filtered out as unrelated to Broadcom</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const down = 'var(--color-accent-700)';
+    const up = 'var(--color-neutral-900)';
+    return {
+      watchlist: [
+        { symbol: 'NVDA', points: '0,16,10,15,20,10,30,11,40,7,50,3,60,2', change: '↑ 1.4', color: up },
+        { symbol: 'MSFT', points: '0,8,10,9,20,7,30,10,40,9,50,12,60,13', change: '↓ 0.8', color: down },
+        { symbol: 'GOOGL', points: '0,7,10,9,20,8,30,11,40,10,50,13,60,14', change: '↓ 1.2', color: down },
+        { symbol: 'TSM', points: '0,17,10,14,20,15,30,10,40,9,50,5,60,3', change: '↑ 2.0', color: up },
+      ],
+      feedItems: [
+        { tag: 'Second-order', tagClass: 'tag-neutral', source: 'Reuters', time: '2h', headline: 'Microsoft raises FY27 capex guidance', dirArrow: '↑', dirColor: up, tickers: 'AVGO, NVDA', mechanism: 'Microsoft is building more data centres, and both sell chips into them' },
+        { tag: 'Second-order', tagClass: 'tag-neutral', source: 'TechCrunch +1 source', time: 'yesterday', headline: 'Anthropic is staffing an in-house AI chip design team', dirArrow: '↑', dirColor: up, tickers: 'AVGO', mechanism: 'more labs designing custom silicon means more custom ASIC work' },
+        { tag: 'Direct', tagClass: 'tag-outline', source: 'Bloomberg', time: '5h', headline: 'New export limits on advanced chips to China', dirArrow: '↓', dirColor: down, tickers: 'NVDA', mechanism: '21% of revenue comes from China' },
+        { tag: 'Macro', tagClass: 'tag-accent', source: 'FRED', time: 'yesterday', headline: 'CPI prints at 3.4%, above consensus', dirArrow: '', dirColor: up, tickers: 'All 8 positions', mechanism: 'hits roughly equally — no differentiation here' },
+      ],
+      metrics: [
+        { label: 'P/E', value: '34.2' },
+        { label: 'Revenue', value: '+22%' },
+        { label: 'FCF', value: '+14%' },
+        { label: 'Debt/EBITDA', value: '2.1' },
+        { label: 'China rev', value: '18%' },
+      ],
+      whyMoving: [
+        { n: '1', dirArrow: '↑', dirColor: up, headline: 'Microsoft raises FY27 capex guidance', meta: 'Reuters · 2h · reaches AVGO through Microsoft as a customer' },
+        { n: '2', dirArrow: '↑', dirColor: up, headline: 'Anthropic is staffing an in-house chip design team', meta: 'TechCrunch +1 source · yesterday · reaches AVGO through the custom ASIC market' },
+        { n: '3', dirArrow: '', dirColor: up, headline: 'Broadcom extends its network security line', meta: 'GlobeNewswire · today · company press release, direct' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>
