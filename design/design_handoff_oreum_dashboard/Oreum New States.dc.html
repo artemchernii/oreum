@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/modernist-97f694f4-82d5-4239-bac7-ec4bd335f4b7/styles.css">
+  <script src="_ds/modernist-97f694f4-82d5-4239-bac7-ec4bd335f4b7/_ds_bundle.js"></script>
+  <style>
+    body { margin: 0; }
+    a { color: #ffffff; text-decoration: underline; text-underline-offset: 2px; }
+    a:hover { opacity: 0.8; }
+    input[type="checkbox"] { accent-color: #ffffff; width: 16px; height: 16px; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    .skeleton { background: var(--color-neutral-300); animation: pulse 1.6s ease-in-out infinite; border-radius: var(--radius-sm); }
+  </style>
+</helmet>
+
+<div style="background: #0b0a0c; padding: 48px 0; display: flex; flex-direction: column; align-items: flex-start; gap: 40px; overflow-x: auto; padding-left: 48px; --color-bg: #131215; --color-surface: #201f22; --color-text: #ffffff; --color-divider: color-mix(in srgb, #ffffff 20%, transparent); --color-accent: #ffffff; --color-accent-100: color-mix(in srgb, #ffffff 16%, #131215); --color-accent-600: #e6e4e4; --color-accent-700: #ffffff; --color-accent-800: #ffffff; --color-accent-2: #ffffff; --color-accent-2-100: color-mix(in srgb, #ffffff 16%, #131215); --color-accent-2-800: #ffffff; --color-neutral-100: #201f22; --color-neutral-200: #29282b; --color-neutral-300: #343337; --color-neutral-400: #47454a; --color-neutral-500: #625f66; --color-neutral-600: #918e94; --color-neutral-700: #b5b2b7; --color-neutral-800: #dcdadd; --color-neutral-900: #ffffff; --radius-sm: 8px; --radius-md: 12px; --radius-lg: 18px; --shadow-lg: 0 20px 40px rgba(0,0,0,0.55);">
+
+  <div style="width: 1440px; display: flex; flex-direction: column; gap: 10px;">
+    <h6 style="margin: 0; color: #ffffff; opacity: 0.7;">New — Onboarding (first watchlist)</h6>
+    <div data-screen-label="Onboarding" style="width: 1440px; min-height: 900px; background: var(--color-bg); color: var(--color-text); box-shadow: var(--shadow-lg); border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--color-divider); display: flex; flex-direction: column;">
+      <div class="nav">
+        <img src="uploads/oreum-mark-white-512.png" alt="Oreum" style="width: 18px; height: 18px; flex: none; object-fit: contain;">
+        <div class="nav-brand">oreum</div>
+        <span class="text-muted" style="margin-left: auto; font-size: 13px;">Step 2 of 2</span>
+        <a href="#" style="font-size: 13px;">Skip for now</a>
+      </div>
+      <div style="flex: 1; display: flex; flex-direction: column; align-items: center; padding: 56px 0 64px;">
+        <div style="width: 760px;">
+          <h1 style="margin: 0 0 8px;">Build your watchlist</h1>
+          <p class="text-muted" style="font-size: 15px; margin: 0 0 32px;">Pick the companies you want news filtered against. Everything else gets left out of your feed.</p>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 32px;">
+            <sc-for list="{{ onboardingTickers }}" as="t" hint-placeholder-count="12">
+              <label style="display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); background: {{ t.bg }}; border: 1px solid var(--color-divider); border-radius: var(--radius-md); cursor: pointer;">
+                <input type="checkbox" checked="{{ t.selected }}" onChange="{{ t.toggle }}">
+                <span style="flex: 1;">
+                  <span style="display: block; font-family: var(--font-heading); font-weight: 800; font-size: 15px;">{{ t.symbol }}</span>
+                  <span class="text-muted" style="font-size: 12px;">{{ t.name }}</span>
+                </span>
+              </label>
+            </sc-for>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span class="text-muted" style="font-size: 13px;">{{ selectedCount }} selected</span>
+            <button class="btn btn-primary" style="width: 260px; border-radius: var(--radius-md); font-weight: 700;">Continue with {{ selectedCount }} tickers</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="width: 1440px; display: flex; flex-direction: column; gap: 10px;">
+    <h6 style="margin: 0; color: #ffffff; opacity: 0.7;">New — Empty watchlist state</h6>
+    <div data-screen-label="Empty watchlist" style="width: 1440px; background: var(--color-bg); color: var(--color-text); box-shadow: var(--shadow-lg); border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--color-divider);">
+      <div class="nav">
+        <img src="uploads/oreum-mark-white-512.png" alt="Oreum" style="width: 18px; height: 18px; flex: none; object-fit: contain;">
+        <div class="nav-brand">oreum</div>
+        <a href="#" aria-current="page" style="font-family: var(--font-heading); font-weight: 800; font-size: 15px; border-bottom: 2px solid var(--color-accent); padding-bottom: 14px; margin-bottom: -16px;">Feed</a>
+        <a href="#" style="font-size: 15px;">Ticker</a>
+        <div style="flex: 1;"></div>
+        <span class="text-muted" style="font-size: 13px;">Open · 14:31 ET</span>
+        <div style="width: 32px; height: 32px; background: var(--color-neutral-800); color: var(--color-bg); display: flex; align-items: center; justify-content: center; font-size: 11px; font-family: var(--font-heading); font-weight: 800; border-radius: 50%;">AC</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 260px 1fr;">
+        <div style="border-right: 2px solid var(--color-divider); padding: var(--space-4);">
+          <h6 style="opacity: 0.55; margin-bottom: var(--space-3);">Watchlist</h6>
+          <p class="text-muted" style="font-size: 13px; margin-bottom: var(--space-3);">No tickers yet.</p>
+          <button class="btn btn-primary btn-block" style="border-radius: var(--radius-md); font-weight: 700;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Add ticker
+          </button>
+        </div>
+        <div style="padding: 96px var(--space-6); display: flex; flex-direction: column; align-items: center; text-align: center;">
+          <div style="width: 48px; height: 48px; border: 2px solid var(--color-divider); border-radius: var(--radius-md); margin-bottom: var(--space-4);"></div>
+          <h3 style="margin: 0 0 8px;">Nothing to show yet</h3>
+          <p class="text-muted" style="font-size: 14px; max-width: 420px; margin: 0 0 24px;">Oreum only shows news that touches your watchlist. Add a company to start filtering.</p>
+          <button class="btn btn-primary" style="width: 220px; border-radius: var(--radius-md); font-weight: 700;">Add your first ticker</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="width: 1440px; display: flex; flex-direction: column; gap: 10px;">
+    <h6 style="margin: 0; color: #ffffff; opacity: 0.7;">New — Alert settings</h6>
+    <div data-screen-label="Alert settings" style="width: 1440px; background: var(--color-bg); color: var(--color-text); box-shadow: var(--shadow-lg); border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--color-divider);">
+      <div class="nav">
+        <img src="uploads/oreum-mark-white-512.png" alt="Oreum" style="width: 18px; height: 18px; flex: none; object-fit: contain;">
+        <div class="nav-brand">oreum</div>
+        <a href="#" style="font-size: 15px;">Feed</a>
+        <a href="#" style="font-size: 15px;">Ticker</a>
+        <div style="flex: 1;"></div>
+        <span class="text-muted" style="font-size: 13px;">Open · 14:31 ET</span>
+        <div style="width: 32px; height: 32px; background: var(--color-neutral-800); color: var(--color-bg); display: flex; align-items: center; justify-content: center; font-size: 11px; font-family: var(--font-heading); font-weight: 800; border-radius: 50%;">AC</div>
+      </div>
+      <div style="padding: var(--space-6) 0; display: flex; justify-content: center;">
+        <div style="width: 820px;">
+          <h1 style="margin: 0 0 4px;">Alerts</h1>
+          <p class="text-muted" style="font-size: 14px; margin: 0 0 var(--space-4);">Get notified the moment something reaches a ticker you're watching.</p>
+
+          <div class="field" style="margin-bottom: var(--space-4);">
+            <label style="font-size: 13px; color: var(--color-text); display: block; margin-bottom: 6px;">Send alerts via</label>
+            <div class="seg">
+              <label class="seg-opt"><input type="radio" name="channel" defaultChecked="{{ true }}" style="position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none;"><span>Email</span></label>
+              <label class="seg-opt"><input type="radio" name="channel" style="position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none;"><span>Push</span></label>
+              <label class="seg-opt"><input type="radio" name="channel" style="position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none;"><span>Both</span></label>
+            </div>
+          </div>
+
+          <div style="border-top: 2px solid var(--color-divider);">
+            <sc-for list="{{ alerts }}" as="a" hint-placeholder-count="5">
+              <div style="display: flex; align-items: center; gap: var(--space-4); padding: var(--space-3) 0; border-bottom: 1px solid var(--color-divider);">
+                <input type="checkbox" checked="{{ a.enabled }}" onChange="{{ a.toggle }}">
+                <span style="font-family: var(--font-heading); font-weight: 800; font-size: 14px; width: 60px;">{{ a.symbol }}</span>
+                <span style="flex: 1; font-size: 14px;">{{ a.rule }}</span>
+                <span class="tag tag-outline">{{ a.channel }}</span>
+              </div>
+            </sc-for>
+          </div>
+
+          <button class="btn btn-ghost" style="margin-top: var(--space-4); border-radius: var(--radius-md);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Add alert rule
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="width: 1440px; display: flex; flex-direction: column; gap: 10px;">
+    <h6 style="margin: 0; color: #ffffff; opacity: 0.7;">New — Daily digest</h6>
+    <div data-screen-label="Daily digest" style="width: 1440px; background: var(--color-bg); color: var(--color-text); box-shadow: var(--shadow-lg); border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--color-divider);">
+      <div class="nav">
+        <img src="uploads/oreum-mark-white-512.png" alt="Oreum" style="width: 18px; height: 18px; flex: none; object-fit: contain;">
+        <div class="nav-brand">oreum</div>
+        <a href="#" style="font-size: 15px;">Feed</a>
+        <a href="#" style="font-size: 15px;">Ticker</a>
+        <div style="flex: 1;"></div>
+        <span class="text-muted" style="font-size: 13px;">Open · 14:31 ET</span>
+        <div style="width: 32px; height: 32px; background: var(--color-neutral-800); color: var(--color-bg); display: flex; align-items: center; justify-content: center; font-size: 11px; font-family: var(--font-heading); font-weight: 800; border-radius: 50%;">AC</div>
+      </div>
+      <div style="padding: var(--space-6) 0; display: flex; justify-content: center;">
+        <div style="width: 820px;">
+          <div style="background: var(--color-surface); border: 1px solid var(--color-divider); border-radius: var(--radius-lg); padding: var(--space-5); margin-bottom: var(--space-5);">
+            <div class="text-muted" style="font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 6px;">Your daily digest — Aug 10</div>
+            <h2 style="margin: 0;">6 stories touched your watchlist today</h2>
+          </div>
+
+          <div class="card" style="border: 1px solid var(--color-divider); margin-bottom: var(--space-5);">
+            <div class="card-kicker">AI summary</div>
+            <p class="card-body" style="margin: 0;">Your watchlist skewed positive today. Broadcom and TSMC led on custom-silicon demand and record foundry margins; the only drag was NVDA on new China export limits. CPI came in hot but hit every position about equally, so it shouldn't change your read on any single name.</p>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); border-top: 2px solid var(--color-divider); border-bottom: 2px solid var(--color-divider); margin-bottom: var(--space-5);">
+            <div style="padding: var(--space-3);"><div class="text-muted" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;">Biggest mover</div><div style="font-family: var(--font-heading); font-weight: 800; font-size: 18px; color: #22c55e;">TSM +2.0%</div></div>
+            <div style="padding: var(--space-3); border-left: 1px solid var(--color-divider);"><div class="text-muted" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;">Direct hits</div><div style="font-family: var(--font-heading); font-weight: 800; font-size: 18px;">2 stories</div></div>
+            <div style="padding: var(--space-3); border-left: 1px solid var(--color-divider);"><div class="text-muted" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;">Macro</div><div style="font-family: var(--font-heading); font-weight: 800; font-size: 18px;">1 release</div></div>
+          </div>
+
+          <sc-for list="{{ digestItems }}" as="d" hint-placeholder-count="4">
+            <div style="padding: var(--space-3) 0; border-top: 1px solid var(--color-divider);">
+              <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: 4px;">
+                <span class="tag {{ d.tagClass }}">{{ d.tag }}</span>
+                <span class="text-muted" style="font-size: 12px;">{{ d.time }}</span>
+              </div>
+              <div style="font-size: 15px; font-weight: 600; margin-bottom: 2px;"><span style="color: {{ d.dirColor }};">{{ d.dirArrow }}</span> {{ d.headline }}</div>
+              <div class="text-muted" style="font-size: 13px;">{{ d.mechanism }}</div>
+            </div>
+          </sc-for>
+
+          <button class="btn btn-secondary btn-block" style="margin-top: var(--space-5); border-radius: var(--radius-md);">Open full feed</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="width: 1440px; display: flex; flex-direction: column; gap: 10px;">
+    <h6 style="margin: 0; color: #ffffff; opacity: 0.7;">New — Loading state</h6>
+    <div data-screen-label="Loading" style="width: 1440px; background: var(--color-bg); color: var(--color-text); box-shadow: var(--shadow-lg); border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--color-divider);">
+      <div class="nav">
+        <img src="uploads/oreum-mark-white-512.png" alt="Oreum" style="width: 18px; height: 18px; flex: none; object-fit: contain;">
+        <div class="nav-brand">oreum</div>
+        <a href="#" aria-current="page" style="font-family: var(--font-heading); font-weight: 800; font-size: 15px; border-bottom: 2px solid var(--color-accent); padding-bottom: 14px; margin-bottom: -16px;">Feed</a>
+        <a href="#" style="font-size: 15px;">Ticker</a>
+        <div style="flex: 1;"></div>
+        <div style="width: 32px; height: 32px; background: var(--color-neutral-800); color: var(--color-bg); display: flex; align-items: center; justify-content: center; font-size: 11px; font-family: var(--font-heading); font-weight: 800; border-radius: 50%;">AC</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 260px 1fr;">
+        <div style="border-right: 2px solid var(--color-divider); padding: var(--space-4);">
+          <h6 style="opacity: 0.55; margin-bottom: var(--space-3);">Watchlist</h6>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div class="skeleton" style="height: 34px;"></div>
+            <div class="skeleton" style="height: 34px;"></div>
+            <div class="skeleton" style="height: 34px;"></div>
+            <div class="skeleton" style="height: 34px;"></div>
+          </div>
+        </div>
+        <div style="padding: var(--space-4) var(--space-6);">
+          <div class="skeleton" style="height: 32px; width: 320px; margin-bottom: var(--space-4);"></div>
+          <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+            <div style="padding: var(--space-4) 0; border-top: 2px solid var(--color-divider);">
+              <div class="skeleton" style="height: 14px; width: 140px; margin-bottom: 10px;"></div>
+              <div class="skeleton" style="height: 20px; width: 70%; margin-bottom: 8px;"></div>
+              <div class="skeleton" style="height: 14px; width: 90%;"></div>
+            </div>
+            <div style="padding: var(--space-4) 0; border-top: 2px solid var(--color-divider);">
+              <div class="skeleton" style="height: 14px; width: 140px; margin-bottom: 10px;"></div>
+              <div class="skeleton" style="height: 20px; width: 60%; margin-bottom: 8px;"></div>
+              <div class="skeleton" style="height: 14px; width: 80%;"></div>
+            </div>
+            <div style="padding: var(--space-4) 0; border-top: 2px solid var(--color-divider);">
+              <div class="skeleton" style="height: 14px; width: 140px; margin-bottom: 10px;"></div>
+              <div class="skeleton" style="height: 20px; width: 75%; margin-bottom: 8px;"></div>
+              <div class="skeleton" style="height: 14px; width: 85%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="width: 1440px; display: flex; flex-direction: column; gap: 10px;">
+    <h6 style="margin: 0; color: #ffffff; opacity: 0.7;">New — Error / offline state</h6>
+    <div data-screen-label="Error" style="width: 1440px; background: var(--color-bg); color: var(--color-text); box-shadow: var(--shadow-lg); border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--color-divider);">
+      <div class="nav">
+        <img src="uploads/oreum-mark-white-512.png" alt="Oreum" style="width: 18px; height: 18px; flex: none; object-fit: contain;">
+        <div class="nav-brand">oreum</div>
+        <a href="#" aria-current="page" style="font-family: var(--font-heading); font-weight: 800; font-size: 15px; border-bottom: 2px solid var(--color-accent); padding-bottom: 14px; margin-bottom: -16px;">Feed</a>
+        <a href="#" style="font-size: 15px;">Ticker</a>
+        <div style="flex: 1;"></div>
+        <div style="width: 32px; height: 32px; background: var(--color-neutral-800); color: var(--color-bg); display: flex; align-items: center; justify-content: center; font-size: 11px; font-family: var(--font-heading); font-weight: 800; border-radius: 50%;">AC</div>
+      </div>
+      <div style="min-height: 640px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+        <div style="width: 48px; height: 48px; border: 2px solid #f04438; color: #f04438; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-family: var(--font-heading); font-weight: 800; font-size: 22px; margin-bottom: var(--space-4);">!</div>
+        <h3 style="margin: 0 0 8px;">Can't reach the market data feed</h3>
+        <p class="text-muted" style="font-size: 14px; max-width: 420px; margin: 0 0 6px;">Prices and news are paused. Your watchlist and settings are safe.</p>
+        <p class="text-muted" style="font-size: 12px; margin: 0 0 24px;">Last updated 12 minutes ago</p>
+        <button class="btn btn-primary" style="width: 180px; border-radius: var(--radius-md); font-weight: 700;">Retry</button>
+      </div>
+    </div>
+  </div>
+
+  <div style="width: 1440px; display: flex; flex-direction: column; gap: 10px;">
+    <h6 style="margin: 0; color: #ffffff; opacity: 0.7;">New — Search results dropdown</h6>
+    <div data-screen-label="Search" style="width: 1440px; background: var(--color-bg); color: var(--color-text); box-shadow: var(--shadow-lg); border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--color-divider); position: relative;">
+      <div class="nav">
+        <img src="uploads/oreum-mark-white-512.png" alt="Oreum" style="width: 18px; height: 18px; flex: none; object-fit: contain;">
+        <div class="nav-brand">oreum</div>
+        <a href="#" aria-current="page" style="font-family: var(--font-heading); font-weight: 800; font-size: 15px; border-bottom: 2px solid var(--color-accent); padding-bottom: 14px; margin-bottom: -16px;">Feed</a>
+        <a href="#" style="font-size: 15px;">Ticker</a>
+        <div style="flex: 1; display: flex; justify-content: center;">
+          <div style="position: relative; width: 380px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); opacity: 0.5;"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input class="input" type="text" value="am" style="padding-left: 32px;">
+            <div style="position: absolute; top: calc(100% + 6px); left: 0; width: 100%; padding: var(--space-2); text-align: left; background: var(--color-surface); border: 1px solid var(--color-divider); border-radius: var(--radius-md); box-shadow: var(--shadow-lg);">
+              <div class="text-muted" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; padding: 4px var(--space-2);">Tickers</div>
+              <div style="display: flex; align-items: center; gap: var(--space-2); padding: 8px var(--space-2); border-radius: var(--radius-sm);"><span style="font-family: var(--font-heading); font-weight: 800; font-size: 14px; width: 56px;">AMZN</span><span style="flex: 1; font-size: 13px;">Amazon.com</span><span style="font-size: 13px; font-weight: 600; color: #f04438;">↓ 0.3</span></div>
+              <div style="display: flex; align-items: center; gap: var(--space-2); padding: 8px var(--space-2); background: var(--color-neutral-200); border-radius: var(--radius-sm);"><span style="font-family: var(--font-heading); font-weight: 800; font-size: 14px; width: 56px;">AMD</span><span style="flex: 1; font-size: 13px;">Advanced Micro Devices</span><span style="font-size: 13px; font-weight: 600; color: #22c55e;">↑ 1.1</span></div>
+              <div class="text-muted" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; padding: 10px var(--space-2) 4px; border-top: 1px solid var(--color-divider); margin-top: 4px;">Commands</div>
+              <div style="padding: 8px var(--space-2); font-size: 13px; border-radius: var(--radius-sm);">Add to watchlist…</div>
+              <div style="padding: 8px var(--space-2); font-size: 13px; border-radius: var(--radius-sm);">Go to alert settings</div>
+            </div>
+          </div>
+        </div>
+        <div style="width: 32px; height: 32px; background: var(--color-neutral-800); color: var(--color-bg); display: flex; align-items: center; justify-content: center; font-size: 11px; font-family: var(--font-heading); font-weight: 800; border-radius: 50%;">AC</div>
+      </div>
+      <div style="min-height: 500px;"></div>
+    </div>
+  </div>
+
+  <div style="width: 1440px; display: flex; flex-direction: column; gap: 10px;">
+    <h6 style="margin: 0; color: #ffffff; opacity: 0.7;">New — Account &amp; profile settings</h6>
+    <div data-screen-label="Account settings" style="width: 1440px; background: var(--color-bg); color: var(--color-text); box-shadow: var(--shadow-lg); border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--color-divider);">
+      <div class="nav">
+        <img src="uploads/oreum-mark-white-512.png" alt="Oreum" style="width: 18px; height: 18px; flex: none; object-fit: contain;">
+        <div class="nav-brand">oreum</div>
+        <a href="#" style="font-size: 15px;">Feed</a>
+        <a href="#" style="font-size: 15px;">Ticker</a>
+        <div style="flex: 1;"></div>
+        <div style="width: 32px; height: 32px; background: var(--color-neutral-800); color: var(--color-bg); display: flex; align-items: center; justify-content: center; font-size: 11px; font-family: var(--font-heading); font-weight: 800; border-radius: 50%;">AC</div>
+      </div>
+      <div style="padding: var(--space-6) 0; display: flex; justify-content: center;">
+        <div style="width: 620px;">
+          <h1 style="margin: 0 0 var(--space-4);">Account</h1>
+          <div style="display: flex; align-items: center; gap: var(--space-4); margin-bottom: var(--space-5);">
+            <div style="width: 56px; height: 56px; background: var(--color-neutral-800); color: var(--color-bg); display: flex; align-items: center; justify-content: center; font-size: 16px; font-family: var(--font-heading); font-weight: 800; border-radius: 50%;">AC</div>
+            <button class="btn btn-ghost" style="border-radius: var(--radius-md);">Change photo</button>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-4);">
+            <div class="field"><label style="font-size: 13px; display: block; margin-bottom: 6px;">Name</label><input class="input" value="Amara Chen"></div>
+            <div class="field"><label style="font-size: 13px; display: block; margin-bottom: 6px;">Email</label><input class="input" value="amara@fundhouse.com"></div>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; background: var(--color-surface); border: 1px solid var(--color-divider); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4); margin-bottom: var(--space-5);">
+            <span style="font-size: 14px;"><strong>Pro plan</strong> <span class="text-muted">— 25 tickers, unlimited alerts</span></span>
+            <button class="btn btn-secondary" style="border-radius: var(--radius-md);">Manage plan</button>
+          </div>
+          <div style="border-top: 2px solid var(--color-divider); padding-top: var(--space-4); display: flex; justify-content: space-between; align-items: center;">
+            <button class="btn btn-secondary" style="border-radius: var(--radius-md);">Sign out</button>
+            <button class="btn btn-ghost" style="color: #f04438;">Delete account</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="width: 1440px; display: flex; flex-direction: column; gap: 10px;">
+    <h6 style="margin: 0; color: #ffffff; opacity: 0.7;">New — Portfolio weighting</h6>
+    <div data-screen-label="Portfolio" style="width: 1440px; background: var(--color-bg); color: var(--color-text); box-shadow: var(--shadow-lg); border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--color-divider);">
+      <div class="nav">
+        <img src="uploads/oreum-mark-white-512.png" alt="Oreum" style="width: 18px; height: 18px; flex: none; object-fit: contain;">
+        <div class="nav-brand">oreum</div>
+        <a href="#" style="font-size: 15px;">Feed</a>
+        <a href="#" style="font-size: 15px;">Ticker</a>
+        <a href="#" aria-current="page" style="font-family: var(--font-heading); font-weight: 800; font-size: 15px; border-bottom: 2px solid var(--color-accent); padding-bottom: 14px; margin-bottom: -16px;">Portfolio</a>
+        <div style="flex: 1;"></div>
+        <div style="width: 32px; height: 32px; background: var(--color-neutral-800); color: var(--color-bg); display: flex; align-items: center; justify-content: center; font-size: 11px; font-family: var(--font-heading); font-weight: 800; border-radius: 50%;">AC</div>
+      </div>
+      <div style="padding: var(--space-6) var(--space-8);">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: var(--space-4);">
+          <h1 style="margin: 0;">Portfolio</h1>
+          <span class="text-muted" style="font-size: 14px;">Weighting sizes how much each name influences your feed priority</span>
+        </div>
+        <div style="border-top: 2px solid var(--color-divider);">
+          <sc-for list="{{ portfolio }}" as="p" hint-placeholder-count="5">
+            <div style="display: grid; grid-template-columns: 80px 1fr 90px 120px; align-items: center; gap: var(--space-4); padding: var(--space-3) 0; border-bottom: 1px solid var(--color-divider);">
+              <span style="font-family: var(--font-heading); font-weight: 800; font-size: 14px;">{{ p.symbol }}</span>
+              <div style="height: 10px; background: var(--color-neutral-300); border-radius: var(--radius-sm); position: relative; overflow: hidden;">
+                <div style="height: 100%; background: #ffffff; width: {{ p.weightPct }};"></div>
+              </div>
+              <span style="font-size: 13px; text-align: right;">{{ p.weight }}</span>
+              <span style="font-size: 13px; text-align: right; font-weight: 600; color: {{ p.color }};">{{ p.change }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="width: 1440px; display: flex; flex-direction: column; gap: 10px;">
+    <h6 style="margin: 0; color: #ffffff; opacity: 0.7;">New — Share watchlist dialog</h6>
+    <div data-screen-label="Share dialog" style="width: 1440px; background: var(--color-bg); color: var(--color-text); box-shadow: var(--shadow-lg); border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--color-divider); position: relative;">
+      <div class="nav">
+        <img src="uploads/oreum-mark-white-512.png" alt="Oreum" style="width: 18px; height: 18px; flex: none; object-fit: contain;">
+        <div class="nav-brand">oreum</div>
+        <a href="#" aria-current="page" style="font-family: var(--font-heading); font-weight: 800; font-size: 15px; border-bottom: 2px solid var(--color-accent); padding-bottom: 14px; margin-bottom: -16px;">Feed</a>
+        <a href="#" style="font-size: 15px;">Ticker</a>
+        <div style="flex: 1;"></div>
+        <div style="width: 32px; height: 32px; background: var(--color-neutral-800); color: var(--color-bg); display: flex; align-items: center; justify-content: center; font-size: 11px; font-family: var(--font-heading); font-weight: 800; border-radius: 50%;">AC</div>
+      </div>
+      <div style="min-height: 560px; background: rgba(0,0,0,0.55); display: flex; align-items: center; justify-content: center;">
+        <div style="width: 440px; background: var(--color-surface); border: 1px solid var(--color-divider); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3);">
+          <div style="font-size: 16px; font-weight: 700;">Share your watchlist</div>
+          <div class="text-muted" style="font-size: 13px;">Anyone with this link sees your tickers and their moves — not your alerts or account details.</div>
+          <div style="display: flex; gap: var(--space-2);">
+            <input class="input" value="oreum.app/w/amara-chen-7f2" readOnly="{{ true }}" style="flex: 1;">
+            <button class="btn btn-secondary" style="border-radius: var(--radius-md);">Copy</button>
+          </div>
+          <label class="radio"><input type="radio" name="share-vis" defaultChecked="{{ true }}"><span class="dot"></span>Anyone with the link (read-only)</label>
+          <div style="display: flex; justify-content: flex-end; gap: var(--space-2);">
+            <button class="btn btn-secondary" style="border-radius: var(--radius-md);">Cancel</button>
+            <button class="btn btn-primary" style="border-radius: var(--radius-md); font-weight: 700;">Done</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    selected: new Set(['AAPL','MSFT','NVDA','AVGO','TSM']),
+    alertsOn: { AVGO: true, NVDA: true, TSM: false, MACRO: true, MSFT: false },
+  };
+
+  toggleTicker(symbol) {
+    this.setState(s => {
+      const next = new Set(s.selected);
+      next.has(symbol) ? next.delete(symbol) : next.add(symbol);
+      return { selected: next };
+    });
+  }
+
+  toggleAlert(key) {
+    this.setState(s => ({ alertsOn: { ...s.alertsOn, [key]: !s.alertsOn[key] } }));
+  }
+
+  renderVals() {
+    const up = '#22c55e';
+    const down = '#f04438';
+    const roster = [
+      ['AAPL', 'Apple'], ['MSFT', 'Microsoft'], ['GOOGL', 'Alphabet'], ['AMZN', 'Amazon'],
+      ['NVDA', 'Nvidia'], ['META', 'Meta'], ['AVGO', 'Broadcom'], ['TSM', 'TSMC'],
+      ['ASML', 'ASML'], ['ORCL', 'Oracle'], ['CRM', 'Salesforce'], ['AMD', 'AMD'],
+    ];
+    const selected = this.state.selected;
+    const onboardingTickers = roster.map(([symbol, name]) => ({
+      symbol, name,
+      selected: selected.has(symbol),
+      bg: selected.has(symbol) ? 'var(--color-neutral-200)' : 'var(--color-bg)',
+      toggle: () => this.toggleTicker(symbol),
+    }));
+
+    const alertsOn = this.state.alertsOn;
+    const alerts = [
+      { key: 'AVGO', symbol: 'AVGO', rule: 'Alert on any intraday move over ±3%', channel: 'Email + Push' },
+      { key: 'NVDA', symbol: 'NVDA', rule: 'Alert on direct-hit headlines only', channel: 'Push' },
+      { key: 'TSM', symbol: 'TSM', rule: 'Remind me the day before earnings', channel: 'Email' },
+      { key: 'MACRO', symbol: 'MACRO', rule: 'CPI, Fed decisions and jobs reports', channel: 'Email' },
+      { key: 'MSFT', symbol: 'MSFT', rule: 'New SEC filing (8-K, 10-Q, 10-K)', channel: 'Push' },
+    ].map(a => ({ ...a, enabled: alertsOn[a.key], toggle: () => this.toggleAlert(a.key) }));
+
+    const portfolio = [
+      { symbol: 'AVGO', weight: '28%', weightPct: '28%', change: '↑ 0.6', color: up },
+      { symbol: 'NVDA', weight: '24%', weightPct: '24%', change: '↑ 1.4', color: up },
+      { symbol: 'TSM', weight: '19%', weightPct: '19%', change: '↑ 2.0', color: up },
+      { symbol: 'MSFT', weight: '16%', weightPct: '16%', change: '↓ 0.8', color: down },
+      { symbol: 'GOOGL', weight: '13%', weightPct: '13%', change: '↓ 1.2', color: down },
+    ];
+
+    return {
+      onboardingTickers,
+      selectedCount: selected.size,
+      alerts,
+      portfolio,
+      digestItems: [
+        { tag: 'Direct', tagClass: 'tag-outline', time: '6h', dirArrow: '↑', dirColor: up, headline: 'TSMC posts record foundry margins', mechanism: 'direct hit — company earnings release' },
+        { tag: 'Second-order', tagClass: 'tag-neutral', time: '4h', dirArrow: '↑', dirColor: up, headline: 'Microsoft raises FY27 capex guidance', mechanism: 'reaches AVGO and NVDA through data-centre buildout' },
+        { tag: 'Direct', tagClass: 'tag-outline', time: '9h', dirArrow: '↓', dirColor: down, headline: 'New export limits on advanced chips to China', mechanism: 'direct hit on NVDA — 21% of revenue from China' },
+        { tag: 'Macro', tagClass: 'tag-accent', time: 'yesterday', dirArrow: '', dirColor: up, headline: 'CPI prints at 3.4%, above consensus', mechanism: 'hits your full watchlist roughly equally' },
+      ],
+    };
+  }
+}
+
+</script>
+</body>
+</html>

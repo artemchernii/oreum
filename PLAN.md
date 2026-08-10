@@ -170,11 +170,44 @@ This is the core of the product. Everything before it is infrastructure.
 
 ---
 
+## Design bundle — screen to milestone
+
+`design/design_handoff_oreum_dashboard/` holds fourteen screens. The bundle is
+labelled "M2" but spans most of the roadmap. What each screen actually belongs
+to:
+
+| Screen | Milestone |
+| --- | --- |
+| Login / register | M2 — **needs redesign**, the mock is password + Google, the plan is magic link |
+| Onboarding (first watchlist) | M2 |
+| Empty watchlist | M2 |
+| Search results dropdown | M2 — pick from the universe, not free text |
+| Not found (404) | M2 |
+| Loading / skeleton | M3 |
+| Error / offline | M3 |
+| Feed, on real data | M5 / M6 |
+| Ticker detail, on real data | M5, plus M6 for connections and the 30-day tally |
+| Chart with event markers | M9 |
+| Daily digest | M7 — **without** the unsourced AI summary card |
+| Portfolio weighting | M8 |
+| Account settings | Later |
+| Alert settings | Later |
+| Share watchlist | Later |
+
+The last three have no milestone. They are plausible features that the design
+reached for; by the scope rule they wait.
+
+---
+
 ## Later (don't touch)
 
 Price forecasting (never). Scenario simulator. Chat. Public pages for SEO.
 Billing and paid tiers. Mobile app. Widening the universe beyond big tech.
 Screeners. Multi-timeframe. A separate Python engine.
+
+From the design bundle: account settings, alert rules and delivery channels,
+share-a-watchlist links, and a command palette (the mock's search field reads
+"Search ticker or command").
 
 ---
 
@@ -229,3 +262,8 @@ Screeners. Multi-timeframe. A separate Python engine.
 | 2026-08-07 | The filtered-out counter is permanent UI | it's the only place the product shows its work, and it forces measuring what the filter actually drops |
 | 2026-08-07 | Exposures reviewed quarterly from 10-K / 10-Q segment data | stale exposures make the engine confidently wrong, which is worse than having none. Store the review date with the value |
 | 2026-08-07 | English everywhere in the repo, including docs and UI copy | the universe is US big tech and the sources are English; a Ukrainian-only subscription market is too small. It follows that distribution has to be in English too |
+| 2026-08-09 | Design bundle is the north star, `PLAN.md` is the authority | the design decides how it looks, the plan decides what it says and when it exists. Without stating this, every conflict gets re-argued. Reconciled tokens live in `docs/design-system.md` |
+| 2026-08-09 | Neutrals are violet-tinted at hue 302°, not chroma-0 | matches the bundle and reads as intentional where a pure grey reads as unstyled. The monochrome build check now tests "no green or red" rather than "no chroma" |
+| 2026-08-09 | Light mode derived from the dark baseline, same hue, mirrored lightness | the bundle is dark-only, but both modes are required. Derived light is accessible and provisional — it has not had a visual pass |
+| 2026-08-09 | The bundle's `#f04438` lightened for the down colour | it measured 4.36:1 on `#201f22`, under AA, and cards are exactly where change values live. Hue and chroma unchanged so the identity survives |
+| 2026-08-09 | Archivo for text, Geist Mono for every figure | the bundle sets Archivo for numerics, but it has no monospaced cut and the sidebar's aligned percentage column depends on tabular figures. Splitting the families applies the precedence rule directly |

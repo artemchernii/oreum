@@ -60,14 +60,26 @@ These are not style preferences. Breaking one breaks the product.
 
 ## Design
 
-- Monochrome brand layer. The colour budget belongs to one thing: price
-  movement, green up and red down. Nothing else in the UI uses green or red.
-- Impact direction renders as a monochrome arrow, never a coloured badge.
-- Numbers use a monospaced face with tabular alignment: prices, percentages,
-  ratios, timestamps.
+`design/` is the visual north star. `docs/design-system.md` is the reconciled
+token layer that code implements. Read the second one before styling anything.
+
+- **The design decides how it looks, the plan decides what it says and when it
+  exists.** Where the bundle breaks an invariant below, the invariant wins and
+  the deviation gets a row in `docs/design-system.md`. Do not silently follow
+  the mock past a product rule.
+- Dark is the designed baseline; light is derived and provisional. Both work,
+  always. No hardcoded hex outside the token layer.
+- Neutrals sit at hue 302° with chroma 0.004–0.013. Faintly violet, never pure
+  grey — but never enough to read as a colour.
+- The colour budget belongs to one thing: price movement, green up and red
+  down. Nothing else in the UI uses green or red, and they live in exactly one
+  component.
+- Impact direction renders as a monochrome arrow, never a coloured badge. The
+  mock colours these; it is wrong for the reason under Product invariants.
+- Numbers use Geist Mono with tabular alignment: prices, percentages, ratios,
+  timestamps, tickers. Body and headings use Archivo.
 - shadcn is the design system. Compose with it; do not reinvent its
   primitives.
-- Light and dark mode both work, always. No hardcoded hex outside tokens.
 
 ## Pitfalls
 

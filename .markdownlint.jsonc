@@ -1,8 +1,8 @@
 {
-  // CLAUDE.md мусить починатися з рядка-імпорту `@AGENTS.md`, а не з заголовка.
+  // CLAUDE.md has to start with the `@AGENTS.md` import line, not a heading.
   "MD041": false,
 
-  // Таблиця «Журнал рішень» і згенерований Next.js блок в AGENTS.md
-  // не влазять у 80 символів, і переносити їх немає сенсу.
+  // The decision log table and the Next.js-generated block in AGENTS.md
+  // don't fit in 80 columns, and wrapping them helps nobody.
   "MD013": false
 }
