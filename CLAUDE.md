@@ -101,6 +101,13 @@ token layer that code implements. Read the second one before styling anything.
 ## Workflow
 
 - Plan first, then code. Use plan mode for non-trivial tasks.
+- **Verify, don't assert.** A green build proves the code compiled, not that it
+  does what you claim. Check the built output, curl the endpoint, compute the
+  number — then say what you checked and what came back. Say plainly what you
+  could not verify. This repo has caught a 401 from a wrong health probe, a
+  `.gitignore` silently swallowing `.env.example`, a favicon conflict, a
+  contrast failure at 4.36:1, and a green build serving 404s. All by checking.
+- `/ship` has the branch-to-merge loop. Follow it rather than improvising.
 - Small commits, imperative mood.
 - A branch per change, PR into `master`. Never commit directly to `master`.
 - An architectural decision becomes a row in the decision log in `PLAN.md`.
