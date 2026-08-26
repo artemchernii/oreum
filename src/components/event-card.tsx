@@ -9,13 +9,19 @@ const kindLabel: Record<Event["kind"], string> = {
 };
 
 /**
- * Second order gets the strongest border because it is the product's actual
- * value — direct news about a held company gets seen anyway. Macro is muted:
- * it hits everything and differentiates nothing.
+ * Second order reads strongest because it is the product's actual value —
+ * direct news about a held company gets seen anyway. Macro is muted: it hits
+ * everything and differentiates nothing.
+ *
+ * Emphasis is a uniform border, not a thick left stripe. A 4px border follows
+ * the corner radius, so it renders as a pinched wedge rather than a rule, and
+ * meeting a 1px translucent edge at a mitred corner has no clean solution.
+ * The design bundle carries kind on a chip instead; that arrives with the
+ * restyle.
  */
 const kindStyles: Record<Event["kind"], string> = {
   direct: "border-border",
-  second_order: "border-foreground/40 border-l-4 border-l-foreground",
+  second_order: "border-foreground/40",
   macro: "border-dashed border-border bg-muted/30",
 };
 
@@ -98,6 +104,19 @@ function SourceList({ event }: { event: Event }) {
   );
 }
 
+/**
+ * Fixed locale and UTC on purpose: market data is stored in UTC, and letting
+ * the server's locale decide would make the rendered string differ between
+ * the prerender and the client.
+ */
+const timestampFormat = new Intl.DateTimeFormat("en-GB", {
+  day: "numeric",
+  month: "short",
+  hour: "2-digit",
+  minute: "2-digit",
+  timeZone: "UTC",
+});
+
 function formatTimestamp(iso: string): string {
-  return new Date(iso).toISOString().slice(5, 16).replace("T", " ");
+  return `${timestampFormat.format(new Date(iso))} UTC`;
 }
