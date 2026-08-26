@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint",
+    "lint:md": "markdownlint-cli2 \"*.md\" \"docs/*.md\"",
+    "check": "pnpm typecheck && pnpm lint && pnpm lint:md"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",
@@ -27,6 +30,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.0",
+    "markdownlint-cli2": "^0.23.2",
     "tailwindcss": "^4.3.3",
     "typescript": "^5"
   },

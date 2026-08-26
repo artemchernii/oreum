@@ -35,14 +35,14 @@ Run all four. They are fast, and a green build is not evidence that any of the
 others pass.
 
 ```bash
-pnpm exec tsc --noEmit        # no typecheck script exists — this is the invocation
-pnpm lint
-pnpm build
-pnpm dlx markdownlint-cli2 "*.md" "docs/*.md"
+pnpm check    # typecheck + eslint + markdownlint — what CI runs
+pnpm build    # not in CI; Vercel builds every PR
 ```
 
-Those markdown globs are deliberate: `design/` is an inbound handoff and is
-excluded via `.markdownlintignore`.
+`pnpm check` is the same command CI runs, so a green local run means a green
+PR. Run `pnpm build` too when the change touches code — it catches things
+typecheck alone does not, and adding a route requires it before `tsc` will
+accept the generated route types.
 
 **Then verify the actual claim.** The commands above prove the code compiles,
 not that it does what you say. Check the built output — grep the emitted HTML
