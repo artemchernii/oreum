@@ -22,10 +22,14 @@ Supabase (Postgres, auth), Vercel, Lightweight Charts.
 
 - `pnpm dev` — dev server
 - `pnpm build` — production build
-- `pnpm lint` — eslint (flat config, `eslint.config.mjs`)
-- `pnpm exec tsc --noEmit` — typecheck (there is no separate npm script)
+- `pnpm check` — typecheck + eslint + markdownlint, the same thing CI runs
+- `pnpm typecheck` / `pnpm lint` / `pnpm lint:md` — the pieces, run individually
 
 Always `pnpm`, never `npm` or `yarn`.
+
+CI runs `pnpm check` on every PR. It does not run `pnpm build` — Vercel already
+builds every PR, and `next build` runs TypeScript. What Vercel does not run is
+eslint, removed from `next build` in Next 16.
 
 ## Rules
 
