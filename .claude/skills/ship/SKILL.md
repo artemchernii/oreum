@@ -41,8 +41,12 @@ pnpm build    # not in CI; Vercel builds every PR
 
 `pnpm check` is the same command CI runs, so a green local run means a green
 PR. Run `pnpm build` too when the change touches code — it catches things
-typecheck alone does not, and adding a route requires it before `tsc` will
-accept the generated route types.
+typecheck alone does not.
+
+`typecheck` runs `next typegen` first. `LayoutProps` and `PageProps` are
+generated into `.next/types/`, so without it `tsc` passes on a machine that has
+built before and fails on a fresh checkout. CI caught exactly that on its first
+run.
 
 **Then verify the actual claim.** The commands above prove the code compiles,
 not that it does what you say. Check the built output — grep the emitted HTML

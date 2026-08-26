@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "lint": "eslint",
     "lint:md": "markdownlint-cli2 \"*.md\" \"docs/*.md\"",
     "check": "pnpm typecheck && pnpm lint && pnpm lint:md"
