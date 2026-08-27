@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import type { Provider } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/auth";
 
@@ -93,4 +94,42 @@ export async function sendMagicLink(formData: FormData) {
   }
 
   redirect(`/login?sent=${encodeURIComponent(email)}`);
+}
+
+/**
+ * OAuth sign-in. Unlike a magic link, this flow starts and ends in the same
+ * browser, so PKCE works exactly as designed — the verifier written here is
+ * still there when /auth/callback exchanges the code.
+ */
+export async function signInWithProvider(formData: FormData) {
+  const provider = String(formData.get("provider") ?? "") as Provider;
+  const rawNext = String(formData.get("next") ?? "/");
+  const next =
+    rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/";
+
+  if (provider !== "github" && provider !== "google") {
+    redirect("/login?error=Unsupported+sign-in+method");
+  }
+
+  const headerList = await headers();
+  const host = headerList.get("host") ?? "localhost:3000";
+  const protocol = headerList.get("x-forwarded-proto") ?? "http";
+  const origin = `${protocol}://${host}`;
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider,
+    options: {
+      redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}`,
+    },
+  });
+
+  if (error || !data.url) {
+    redirect(
+      `/login?error=${encodeURIComponent(error?.message ?? "Could not start sign-in")}`,
+    );
+  }
+
+  // Supabase returns the provider URL rather than redirecting itself.
+  redirect(data.url);
 }

@@ -3,6 +3,7 @@ import { LogoMark } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FormError, humanizeAuthError } from "@/components/form-error";
+import { ProviderButtons } from "@/components/provider-buttons";
 import { sendMagicLink } from "@/app/actions";
 
 export const metadata: Metadata = { title: "Sign in · Oreum" };
@@ -63,6 +64,14 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
               />
               <Button type="submit">Send me a link</Button>
             </form>
+
+            <div className="flex items-center gap-3 py-4">
+              <span className="h-px flex-1 bg-border" />
+              <span className="text-xs text-muted-foreground">or</span>
+              <span className="h-px flex-1 bg-border" />
+            </div>
+
+            <ProviderButtons next={next} />
           </>
         )}
 

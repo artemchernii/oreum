@@ -68,3 +68,45 @@ Supabase's built-in email sender is throttled to a handful per hour on the free
 tier and sends from a shared domain. A link that never arrives during testing
 is usually that, not a bug. The fix is custom SMTP under **Project Settings →
 Authentication → SMTP Settings**, not a different auth provider.
+
+## OAuth providers
+
+GitHub and Google sit alongside the magic link. Both use `/auth/callback` and
+the `?code=` PKCE exchange, which works here because an OAuth flow starts and
+ends in the same browser — unlike an email link, which is opened by whatever
+the mail client decides to launch.
+
+Brand marks render in `currentColor`. Google's logo is blue, red, yellow and
+green; using it as drawn would put red and green on screen for something
+unrelated to price movement.
+
+### GitHub — about five minutes
+
+1. <https://github.com/settings/developers> → **New OAuth App**
+2. **Homepage URL**: `https://oreumapp.vercel.app`
+3. **Authorization callback URL**:
+   `https://<project-ref>.supabase.co/auth/v1/callback`
+   — Supabase's URL, not the app's. Supabase forwards to `/auth/callback`.
+4. Copy the Client ID, generate a Client Secret
+5. Supabase → **Authentication → Providers → GitHub** → enable, paste both
+
+One OAuth app covers local and production: the callback points at Supabase,
+and Supabase decides where to send the user afterwards from the redirect
+allow-list.
+
+### Google — longer, and it shows a warning screen
+
+1. <https://console.cloud.google.com> → create a project
+2. **APIs & Services → OAuth consent screen** → External. App name, support
+   email, developer email. This is the fiddly part.
+3. **Credentials → Create credentials → OAuth client ID → Web application**
+4. **Authorized redirect URI**:
+   `https://<project-ref>.supabase.co/auth/v1/callback`
+5. Supabase → **Authentication → Providers → Google** → enable, paste both
+
+While the app is unverified, Google shows an "unverified app" interstitial and
+caps you at 100 test users. Fine for a handful of people; publishing requires
+Google's review.
+
+**Do GitHub first.** It is genuinely quick, and it removes the email
+round-trip immediately.
