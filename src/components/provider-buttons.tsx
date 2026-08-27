@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { enabledProviders } from "@/lib/auth-providers";
 import { signInWithProvider } from "@/app/actions";
 
 /**
@@ -18,24 +19,41 @@ const marks: Record<string, { label: string; path: string }> = {
 };
 
 export function ProviderButtons({ next }: { next: string }) {
+  const providers = enabledProviders();
+
+  // Nothing configured yet — render no divider and no buttons rather than a
+  // button that dead-ends on Supabase's error page.
+  if (providers.length === 0) return null;
+
   return (
-    <div className="flex flex-col gap-2">
-      {Object.entries(marks).map(([provider, { label, path }]) => (
-        <form key={provider} action={signInWithProvider}>
-          <input type="hidden" name="provider" value={provider} />
-          <input type="hidden" name="next" value={next} />
-          <Button type="submit" variant="outline" className="w-full gap-2">
-            <svg
-              viewBox="0 0 24 24"
-              className="size-4 fill-current"
-              aria-hidden="true"
-            >
-              <path d={path} />
-            </svg>
-            Continue with {label}
-          </Button>
-        </form>
-      ))}
-    </div>
+    <>
+      <div className="flex items-center gap-3 py-4">
+        <span className="h-px flex-1 bg-border" />
+        <span className="text-xs text-muted-foreground">or</span>
+        <span className="h-px flex-1 bg-border" />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        {providers.map((provider) => {
+          const { label, path } = marks[provider];
+          return (
+            <form key={provider} action={signInWithProvider}>
+              <input type="hidden" name="provider" value={provider} />
+              <input type="hidden" name="next" value={next} />
+              <Button type="submit" variant="outline" className="w-full gap-2">
+                <svg
+                  viewBox="0 0 24 24"
+                  className="size-4 fill-current"
+                  aria-hidden="true"
+                >
+                  <path d={path} />
+                </svg>
+                Continue with {label}
+              </Button>
+            </form>
+          );
+        })}
+      </div>
+    </>
   );
 }

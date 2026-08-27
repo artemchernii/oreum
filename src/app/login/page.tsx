@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { LogoMark } from "@/components/logo";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FormError, humanizeAuthError } from "@/components/form-error";
 import { ProviderButtons } from "@/components/provider-buttons";
+import { SubmitButton } from "@/components/submit-button";
+import { AwaitingSignIn } from "@/components/awaiting-sign-in";
 import { sendMagicLink } from "@/app/actions";
 
 export const metadata: Metadata = { title: "Sign in · Oreum" };
@@ -29,22 +30,22 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
         </h1>
 
         {sent ? (
-          <p className="pt-2 text-center text-sm text-muted-foreground">
-            A sign-in link is on its way to{" "}
-            <span className="font-medium text-foreground">{sent}</span>. It
-            expires in an hour.
-          </p>
+          <>
+            <p className="pt-2 text-center text-sm text-muted-foreground">
+              A sign-in link is on its way to{" "}
+              <span className="font-medium text-foreground">{sent}</span>. It
+              expires in an hour.
+            </p>
+            {/* The link opens wherever the mail client decides. This tab
+                notices when that happens and follows along. */}
+            <AwaitingSignIn next={next} />
+          </>
         ) : (
           <>
             <p className="pb-5 pt-1 text-center text-sm text-muted-foreground">
               Sign in to see what&rsquo;s moving your watchlist.
             </p>
 
-            {/*
-              A plain server action. No client component, so the form works
-              before hydration and the PKCE verifier is written by the same
-              server-side cookie store that /auth/callback reads it from.
-            */}
             <form action={sendMagicLink} className="flex flex-col gap-3">
               <input type="hidden" name="next" value={next} />
               <label htmlFor="email" className="text-sm font-medium">
@@ -58,14 +59,10 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
                 autoComplete="email"
                 placeholder="you@firm.com"
               />
-              <Button type="submit">Send me a link</Button>
+              <SubmitButton pendingLabel="Sending…">
+                Send me a link
+              </SubmitButton>
             </form>
-
-            <div className="flex items-center gap-3 py-4">
-              <span className="h-px flex-1 bg-border" />
-              <span className="text-xs text-muted-foreground">or</span>
-              <span className="h-px flex-1 bg-border" />
-            </div>
 
             <ProviderButtons next={next} />
           </>

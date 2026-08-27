@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import type { Provider } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
+import { isProviderEnabled } from "@/lib/auth-providers";
 import { requireUser } from "@/lib/auth";
 
 /**
@@ -117,8 +118,12 @@ export async function signInWithProvider(formData: FormData) {
   const next =
     rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/";
 
-  if (provider !== "github" && provider !== "google") {
-    redirect("/login?error=Unsupported+sign-in+method");
+  // Defence in depth: the button is not rendered unless the provider is
+  // configured, but a hand-crafted POST should not reach Supabase either.
+  if (!isProviderEnabled(provider)) {
+    redirect(
+      `/login?error=${encodeURIComponent("That sign-in method isn't available yet.")}`,
+    );
   }
 
   const headerList = await headers();
