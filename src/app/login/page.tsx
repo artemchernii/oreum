@@ -57,10 +57,6 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
                 required
                 autoComplete="email"
                 placeholder="you@firm.com"
-                // type=email alone accepts "a@b"; this requires a dot in the
-                // domain, which is what people actually mistype.
-                pattern="[^@\\s]+@[^@\\s]+\\.[^@\\s]+"
-                title="Enter a full email address, for example you@firm.com"
               />
               <Button type="submit">Send me a link</Button>
             </form>

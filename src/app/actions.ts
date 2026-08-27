@@ -73,6 +73,16 @@ export async function sendMagicLink(formData: FormData) {
 
   if (!email) redirect("/login?error=Enter+an+email+address");
 
+  // `type="email"` in the browser accepts "a@b". Checking for a dot in the
+  // domain here rather than with a `pattern` attribute: a regex inside a JSX
+  // string is an escaping trap, and validation the user cannot bypass belongs
+  // on the server regardless.
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    redirect(
+      `/login?error=${encodeURIComponent("That email address doesn't look complete — check the domain.")}`,
+    );
+  }
+
   const headerList = await headers();
   const host = headerList.get("host") ?? "localhost:3000";
   const protocol = headerList.get("x-forwarded-proto") ?? "http";
