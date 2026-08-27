@@ -31,6 +31,6 @@ export const config = {
      * Without the asset exclusions this runs on CSS, JS and images too, and
      * the redirect would stop them loading on the login page itself.
      */
-    "/((?!_next/static|_next/image|auth/|api/health|favicon.svg|brand/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
+    "/((?!_next/static|_next/image|auth/|api/health|api/session|favicon.svg|brand/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
   ],
 };

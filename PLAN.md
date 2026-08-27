@@ -100,11 +100,13 @@ A personal feed is `event_impacts ⨝ watchlist`. Plain SQL, no LLM.
 - [x] Supabase auth (magic link) — verified end to end on the live URL
 - [x] `watchlist` table + RLS policies — anonymous reads return `[]`, forged
   inserts rejected `42501`
-- [ ] GitHub and Google sign-in — **code shipped**, waiting on OAuth apps in
-  the GitHub and Google dashboards. See `docs/auth.md`
-- [ ] custom SMTP — required before sharing. The built-in sender allows roughly
-  two emails an hour *across the whole project*, and it gates template editing,
-  which is what would let sign-in stop depending on which browser opens the link
+- [x] GitHub and Google sign-in — both live. Supabase linked the identities by
+  verified email, so signing in either way reaches the same account and the
+  same watchlist
+- [ ] custom SMTP — **no longer blocks sharing**, since nobody has to use email
+  to sign in. It stays open as a fallback and is itself blocked on owning a
+  domain: providers only send to arbitrary addresses from a verified sender
+  domain, and `oreum.markets` isn't bought yet
 - [ ] ~~turn Deployment Protection back on~~ — **reversed 2026-08-27.** Vercel
   Authentication gates the whole site behind Vercel accounts, which locks out
   the people this is being shared with. RLS is what protects the data, and it
@@ -294,3 +296,6 @@ share-a-watchlist links, and a command palette (the mock's search field reads
 | 2026-08-27 | Ideas that aren't milestones live in `docs/ideas.md` | guest mode, a command palette and the onboarding stepper each have a real case and no milestone. A holding pen keeps them recorded without becoming scope |
 | 2026-08-27 | M2 verified on production, not locally | local sign-in needs `http://localhost:3000/**` on Supabase's redirect allow-list; without it Supabase silently falls back to Site URL and the link lands on production with an unconsumed `?code=`. Deploying was faster than fixing the allow-list, and it tested the thing people will actually use |
 | 2026-08-27 | Email validation lives in the server action, not a `pattern` attribute | a regex written in a JSX attribute is not the same regex it would be in JavaScript — JSX does not process backslash escapes, so `\.` reached the browser as a literal backslash and rejected every valid address. Server-side it is an ordinary regex literal, and the user cannot bypass it |
+| 2026-08-27 | OAuth buttons render only for providers listed in `AUTH_PROVIDERS` | `signInWithOAuth` returns an authorize URL happily for a disabled provider — the failure only appears once the browser follows it, as raw Supabase JSON with no way back to the app. There is no way to ask Supabase which providers are enabled with a publishable key, so it is declared server-side |
+| 2026-08-27 | The "check your inbox" screen polls `/api/session` | the magic link opens in whatever the mail client launches, leaving the requesting tab stranded. Polling rather than BroadcastChannel: the sign-in may have happened in a window that is already closed, and a broadcast has no listener then. The probe returns a boolean and nothing else |
+| 2026-08-27 | Custom SMTP deferred behind the domain purchase | it was treated as a ten-minute task, which is only true with a verified sender domain. Without one, providers restrict sending to your own address — useless for sharing. With GitHub and Google live, nobody needs email to sign in, so this stops being urgent |
