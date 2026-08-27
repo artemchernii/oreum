@@ -94,18 +94,22 @@ A personal feed is `event_impacts ⨝ watchlist`. Plain SQL, no LLM.
 
 **Done when:** I can add a ticker and it survives a reload.
 
-- [ ] `pnpm add @supabase/supabase-js @supabase/ssr`
-- [ ] `pnpm dlx shadcn@latest add @supabase/supabase-client-nextjs` — auth
+- [x] `pnpm add @supabase/supabase-js @supabase/ssr`
+- [x] `pnpm dlx shadcn@latest add @supabase/supabase-client-nextjs` — auth
   components from the Supabase registry (requires M1)
-- [ ] Supabase auth (magic link)
-- [ ] `watchlist` table + RLS policies
-- [ ] GitHub and Google sign-in — a magic link is a poor first impression for
-  someone you handed a link to, and Supabase's free sender allows two an hour
+- [x] Supabase auth (magic link) — verified end to end on the live URL
+- [x] `watchlist` table + RLS policies — anonymous reads return `[]`, forged
+  inserts rejected `42501`
+- [ ] GitHub and Google sign-in — **code shipped**, waiting on OAuth apps in
+  the GitHub and Google dashboards. See `docs/auth.md`
+- [ ] custom SMTP — required before sharing. The built-in sender allows roughly
+  two emails an hour *across the whole project*, and it gates template editing,
+  which is what would let sign-in stop depending on which browser opens the link
 - [ ] ~~turn Deployment Protection back on~~ — **reversed 2026-08-27.** Vercel
   Authentication gates the whole site behind Vercel accounts, which locks out
   the people this is being shared with. RLS is what protects the data, and it
   is verified: anonymous reads return `[]`, forged inserts are rejected `42501`
-- [ ] add / remove a ticker (pick from the universe, not free text)
+- [x] add / remove a ticker (pick from the universe, not free text)
 
 Optional: `npx skills add supabase/agent-skills`.
 
@@ -288,3 +292,5 @@ share-a-watchlist links, and a command palette (the mock's search field reads
 | 2026-08-27 | GitHub and Google sign-in alongside magic link | sharing with a few people makes an inbox round-trip a bad first impression, and the free-tier sender allows two emails an hour. OAuth starts and ends in the same browser, so PKCE works there — `/auth/callback` was kept for exactly this |
 | 2026-08-27 | Provider brand marks render in `currentColor` | Google's logo is blue, red, yellow and green. Dropping it in as-is would put red and green on screen for something unrelated to price movement |
 | 2026-08-27 | Ideas that aren't milestones live in `docs/ideas.md` | guest mode, a command palette and the onboarding stepper each have a real case and no milestone. A holding pen keeps them recorded without becoming scope |
+| 2026-08-27 | M2 verified on production, not locally | local sign-in needs `http://localhost:3000/**` on Supabase's redirect allow-list; without it Supabase silently falls back to Site URL and the link lands on production with an unconsumed `?code=`. Deploying was faster than fixing the allow-list, and it tested the thing people will actually use |
+| 2026-08-27 | Email validation lives in the server action, not a `pattern` attribute | a regex written in a JSX attribute is not the same regex it would be in JavaScript — JSX does not process backslash escapes, so `\.` reached the browser as a literal backslash and rejected every valid address. Server-side it is an ordinary regex literal, and the user cannot bypass it |
