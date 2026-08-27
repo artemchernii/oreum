@@ -20,10 +20,17 @@ export default async function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * Everything except static assets and the health check. Without the
-     * exclusions this runs on CSS, JS and images too, and the redirect would
-     * stop them loading on the login page itself.
+     * Everything except static assets, the health check, and /auth.
+     *
+     * /auth is excluded rather than merely allowed through: the callback is
+     * the request that exchanges a code for a session, and running another
+     * Supabase client over the same cookies first is how the PKCE verifier
+     * goes missing. Nothing there needs a session refreshed — it is creating
+     * one.
+     *
+     * Without the asset exclusions this runs on CSS, JS and images too, and
+     * the redirect would stop them loading on the login page itself.
      */
-    "/((?!_next/static|_next/image|api/health|favicon.svg|brand/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
+    "/((?!_next/static|_next/image|auth/|api/health|favicon.svg|brand/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
   ],
 };

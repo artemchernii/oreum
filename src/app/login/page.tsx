@@ -1,20 +1,18 @@
 import type { Metadata } from "next";
-import { LoginForm } from "@/components/login-form";
 import { LogoMark } from "@/components/logo";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { sendMagicLink } from "@/app/actions";
 
 export const metadata: Metadata = { title: "Sign in · Oreum" };
 
-export default async function LoginPage({
-  searchParams,
-}: PageProps<"/login">) {
+export default async function LoginPage({ searchParams }: PageProps<"/login">) {
   const params = await searchParams;
 
-  // Read on the server and passed down as a prop. Using useSearchParams in the
-  // form instead would opt the whole subtree out of prerendering, so the
-  // server would ship an empty Suspense fallback and the form would only
-  // appear once JS loaded.
   const rawNext = typeof params.next === "string" ? params.next : "/";
-  const next = rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/";
+  const next =
+    rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/";
+  const sent = typeof params.sent === "string" ? params.sent : undefined;
   const error = typeof params.error === "string" ? params.error : undefined;
 
   return (
@@ -25,13 +23,49 @@ export default async function LoginPage({
         </div>
 
         <h1 className="text-center text-lg font-semibold tracking-tight">
-          Welcome back
+          {sent ? "Check your inbox" : "Welcome back"}
         </h1>
-        <p className="pb-5 pt-1 text-center text-sm text-muted-foreground">
-          Sign in to see what&rsquo;s moving your watchlist.
-        </p>
 
-        <LoginForm next={next} initialError={error} />
+        {sent ? (
+          <p className="pt-2 text-center text-sm text-muted-foreground">
+            A sign-in link is on its way to{" "}
+            <span className="font-medium text-foreground">{sent}</span>. It
+            expires in an hour.
+          </p>
+        ) : (
+          <>
+            <p className="pb-5 pt-1 text-center text-sm text-muted-foreground">
+              Sign in to see what&rsquo;s moving your watchlist.
+            </p>
+
+            {/*
+              A plain server action. No client component, so the form works
+              before hydration and the PKCE verifier is written by the same
+              server-side cookie store that /auth/callback reads it from.
+            */}
+            <form action={sendMagicLink} className="flex flex-col gap-3">
+              <input type="hidden" name="next" value={next} />
+              <label htmlFor="email" className="text-sm font-medium">
+                Email
+              </label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                required
+                autoComplete="email"
+                placeholder="you@firm.com"
+              />
+              <Button type="submit">Send me a link</Button>
+            </form>
+          </>
+        )}
+
+        {error && (
+          <p role="alert" className="pt-3 text-center text-sm text-muted-foreground">
+            {error}
+          </p>
+        )}
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/auth";
@@ -53,4 +54,40 @@ export async function signOut() {
   const supabase = await createClient();
   await supabase.auth.signOut();
   redirect("/login");
+}
+
+/**
+ * Sends the magic link.
+ *
+ * This runs on the server on purpose. PKCE stores a code verifier when the
+ * link is requested and reads it back in /auth/callback — doing the first half
+ * in the browser and the second on the server means two different cookie
+ * stores, which surfaces as "PKCE code verifier not found in storage". Sending
+ * from a server action keeps both halves in the same httpOnly store.
+ */
+export async function sendMagicLink(formData: FormData) {
+  const email = String(formData.get("email") ?? "").trim();
+  const rawNext = String(formData.get("next") ?? "/");
+  const next = rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/";
+
+  if (!email) redirect("/login?error=Enter+an+email+address");
+
+  const headerList = await headers();
+  const host = headerList.get("host") ?? "localhost:3000";
+  const protocol = headerList.get("x-forwarded-proto") ?? "http";
+  const origin = `${protocol}://${host}`;
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.signInWithOtp({
+    email,
+    options: {
+      emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}`,
+    },
+  });
+
+  if (error) {
+    redirect(`/login?error=${encodeURIComponent(error.message)}`);
+  }
+
+  redirect(`/login?sent=${encodeURIComponent(email)}`);
 }
