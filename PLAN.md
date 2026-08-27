@@ -99,8 +99,12 @@ A personal feed is `event_impacts ⨝ watchlist`. Plain SQL, no LLM.
   components from the Supabase registry (requires M1)
 - [ ] Supabase auth (magic link)
 - [ ] `watchlist` table + RLS policies
-- [ ] **turn Deployment Protection back on** — disabled since 2026-08-06 to
-  diagnose a 404. Real data appears here, so it goes back before that happens
+- [ ] GitHub and Google sign-in — a magic link is a poor first impression for
+  someone you handed a link to, and Supabase's free sender allows two an hour
+- [ ] ~~turn Deployment Protection back on~~ — **reversed 2026-08-27.** Vercel
+  Authentication gates the whole site behind Vercel accounts, which locks out
+  the people this is being shared with. RLS is what protects the data, and it
+  is verified: anonymous reads return `[]`, forged inserts are rejected `42501`
 - [ ] add / remove a ticker (pick from the universe, not free text)
 
 Optional: `npx skills add supabase/agent-skills`.
@@ -272,3 +276,15 @@ share-a-watchlist links, and a command palette (the mock's search field reads
 | 2026-08-26 | `master` protected, admins included | "never commit directly to `master`" was advisory and followed voluntarily. Protection makes it structural regardless of tool or machine. Escape hatch is Settings → Branches, not a flag |
 | 2026-08-26 | `markdownlint-cli2` pinned as a devDependency | `pnpm dlx` resolves the latest release each run, so a new rule upstream would break CI with no change on our side |
 | 2026-08-26 | `typecheck` runs `next typegen` before `tsc` | `LayoutProps` and `PageProps` are generated into `.next/types/`. Without typegen, `tsc --noEmit` passes on a machine that has built before and fails on a fresh checkout — CI caught this on its first run, which is the argument for having CI |
+| 2026-08-27 | `proxy.ts` lives at `src/proxy.ts`, not the repo root | Next 16 renamed `middleware` to `proxy` and requires the file level with `app`. At the root it is silently ignored — no error, no build output — and auth still appears to work because the data access layer redirects anyway. The build printing `ƒ Proxy (Middleware)` is the only signal it is wired up |
+| 2026-08-27 | Proxy refreshes cookies; authorisation lives in `src/lib/auth.ts` | Next advises against logic in Proxy and against network calls there. `getClaims()` verifies the JWT locally, so Proxy stays a cookie operation. `requireUser()` revalidates with `getUser()` next to the queries, which is what makes the answer trustworthy |
+| 2026-08-27 | `next` is passed to the login form as a prop, not read with `useSearchParams` | `useSearchParams` opts the subtree out of prerendering, so the server shipped an empty Suspense fallback and the form only appeared after hydration |
+| 2026-08-27 | The universe is enforced by a foreign key, not by the form | `watchlist.symbol` references `companies.symbol`, so "pick from the universe, not free text" holds even if the UI is bypassed |
+| 2026-08-27 | Symbols with no mock price render an em dash | 25 companies are seeded, 6 have mock quotes. A plausible invented number would hide exactly the gap M3 exists to fill |
+| 2026-08-27 | Magic link is sent from a server action, not the browser | PKCE writes a code verifier when the link is requested and reads it back in the callback. Requesting from a client component put the verifier in browser storage while the callback looked in server cookies — "PKCE code verifier not found in storage". Sending server-side keeps both halves in one httpOnly store, and removes the last client component from M2 |
+| 2026-08-27 | `/auth` is excluded from the proxy matcher entirely | the callback is the request that creates a session; running a second Supabase client over the same cookies first is how the verifier goes missing. Allowing it past the redirect was not enough — the proxy had to not run at all |
+| 2026-08-27 | Magic links land on `/auth/confirm` via `token_hash`, not `?code=` PKCE | a magic link is opened from a mail client, usually in a new tab or a different profile than the one that requested it. PKCE needs a verifier written at request time and read at click time; any mismatch fails with "PKCE code verifier not found in storage", which it did twice. `verifyOtp` needs no verifier — the token is the whole credential. Requires the email template to send `{{ .TokenHash }}`; see `docs/auth.md` |
+| 2026-08-27 | Deployment Protection stays **off** | reverses the 2026-08-06 debt. It was logged on the assumption that real rows meant "protect the site"; the product now has intended users — a handful of friends — and Vercel Authentication would require each of them to hold a Vercel account on the team. Data is protected by RLS, which is verified, not by hiding the URL |
+| 2026-08-27 | GitHub and Google sign-in alongside magic link | sharing with a few people makes an inbox round-trip a bad first impression, and the free-tier sender allows two emails an hour. OAuth starts and ends in the same browser, so PKCE works there — `/auth/callback` was kept for exactly this |
+| 2026-08-27 | Provider brand marks render in `currentColor` | Google's logo is blue, red, yellow and green. Dropping it in as-is would put red and green on screen for something unrelated to price movement |
+| 2026-08-27 | Ideas that aren't milestones live in `docs/ideas.md` | guest mode, a command palette and the onboarding stepper each have a real case and no milestone. A holding pen keeps them recorded without becoming scope |
