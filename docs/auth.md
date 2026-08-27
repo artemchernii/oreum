@@ -22,24 +22,43 @@ rendering, and it is what `src/app/auth/confirm/route.ts` implements.
 `/auth/callback` is kept for the `?code=` flow, which OAuth would use if a
 social provider is ever added. It is not on the magic-link path.
 
-## Required dashboard configuration
+## Which link shape arrives
 
-Both of these are manual and neither is in the repo.
+`/auth/callback` accepts both, because the choice is not entirely ours.
 
-### 1. Email template
+| Link | When | Constraint |
+| --- | --- | --- |
+| `?code=` | the default template, and all OAuth | PKCE — the link must open in the browser that started the flow |
+| `?token_hash=` | a custom template using `{{ .TokenHash }}` | none; the token is the whole credential |
 
-**Authentication → Emails → Magic Link.** Replace the link with:
+**Editing the template requires custom SMTP.** Supabase locks subject and body
+behind it — the dashboard shows "Set up custom SMTP to edit templates". So the
+default `?code=` shape is what arrives until SMTP is configured.
+
+That is workable for one developer testing in a single browser. It is not
+workable once the app is shared: a mail client picks which browser opens a
+link, and PKCE fails whenever that is not the browser that requested it.
+
+### Custom SMTP — required before sharing
+
+Two reasons, not one:
+
+1. The built-in sender allows roughly **two emails an hour across the whole
+   project**. Three friends signing in would exhaust that immediately.
+2. It unlocks template editing, which lets us move to `token_hash` and stop
+   depending on which browser opens the link.
+
+**Project Settings → Authentication → SMTP Settings.** Resend's free tier is
+3,000 a month. Once it is on, set the Magic Link body to:
 
 ```html
-<a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email">
-  Sign in
-</a>
+<a href="{{ .RedirectTo }}&token_hash={{ .TokenHash }}&type=email">Sign in</a>
 ```
 
-Do the same for **Confirm signup** if new accounts should land signed in. The
-default `{{ .ConfirmationURL }}` will not work with the confirm route.
+`{{ .RedirectTo }}` is the `emailRedirectTo` the app sent, so one template
+serves localhost and production. It already carries `?next=`, hence `&`.
 
-### 2. URL configuration
+### URL configuration
 
 **Authentication → URL Configuration.**
 
