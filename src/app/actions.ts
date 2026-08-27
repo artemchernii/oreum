@@ -81,7 +81,10 @@ export async function sendMagicLink(formData: FormData) {
   const { error } = await supabase.auth.signInWithOtp({
     email,
     options: {
-      emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}`,
+      // The email template controls the actual link; this is the origin the
+      // template's {{ .RedirectTo }} resolves to, and must be on Supabase's
+      // redirect allow-list.
+      emailRedirectTo: `${origin}/auth/confirm?next=${encodeURIComponent(next)}`,
     },
   });
 
