@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { LogoMark } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { FormError, humanizeAuthError } from "@/components/form-error";
 import { sendMagicLink } from "@/app/actions";
 
 export const metadata: Metadata = { title: "Sign in · Oreum" };
@@ -55,17 +56,17 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
                 required
                 autoComplete="email"
                 placeholder="you@firm.com"
+                // type=email alone accepts "a@b"; this requires a dot in the
+                // domain, which is what people actually mistype.
+                pattern="[^@\\s]+@[^@\\s]+\\.[^@\\s]+"
+                title="Enter a full email address, for example you@firm.com"
               />
               <Button type="submit">Send me a link</Button>
             </form>
           </>
         )}
 
-        {error && (
-          <p role="alert" className="pt-3 text-center text-sm text-muted-foreground">
-            {error}
-          </p>
-        )}
+        {error && <FormError>{humanizeAuthError(error)}</FormError>}
       </div>
     </div>
   );
