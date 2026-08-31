@@ -120,8 +120,12 @@ Optional: `npx skills add supabase/agent-skills`.
 
 **Done when:** I see current prices and don't hit a rate limit.
 
-- [ ] server layer (route handlers only, key never in the client)
-- [ ] cache table in Supabase
+"Current" is bounded by the provider: Basic never serves the current day, so
+the freshest possible is the previous trading day, labelled with its date.
+
+- [x] server layer (route handlers only, key never in the client)
+- [x] cache table in Supabase — `daily_bars` plus `market_days`, both RLS
+  read-only, filled by `/api/cron/prices`. See `docs/prices.md`
 - [ ] loading and error states in the UI
 - [ ] sidebar sparklines — they need a price series per ticker per page load,
   which is exactly what eats a free tier. They belong here, not in M1
@@ -226,17 +230,14 @@ share-a-watchlist links, and a command palette (the mock's search field reads
 
 - Domain: `oreum.app` is taken. Likely `oreum.markets` — confirm and buy.
   The Vercel project is still named `oreum.app`; rename it with the domain.
-- News feed: which provider, what it costs, and what the licence permits
-  regarding headlines and links.
+- News feed: provider and cost are settled — Massive Basic includes
+  `/v2/reference/news` at $0, verified returning current articles. What the
+  licence permits regarding headlines and links is still open.
 - Deduplication: embeddings or something simpler on the headline — decide
   against real data, not in the abstract.
 - Does the universe include companies I don't hold? Yes — TSMC matters because
   half the list depends on it. But the inclusion criterion needs to be written
   down.
-- Massive (ex-Polygon): which tier covers a single user? Basic looks sufficient —
-  confirm against the live API before it becomes a decision.
-- Cron: Supabase `pg_cron` or Vercel Cron? With Deployment Protection on, an
-  external `pg_cron` hits the SSO redirect and needs a bypass token.
 - Is a client-side cache layer needed, or do Server Components cover it?
 
 ---
@@ -301,3 +302,11 @@ share-a-watchlist links, and a command palette (the mock's search field reads
 | 2026-08-27 | OAuth buttons render only for providers listed in `AUTH_PROVIDERS` | `signInWithOAuth` returns an authorize URL happily for a disabled provider — the failure only appears once the browser follows it, as raw Supabase JSON with no way back to the app. There is no way to ask Supabase which providers are enabled with a publishable key, so it is declared server-side |
 | 2026-08-27 | The "check your inbox" screen polls `/api/session` | the magic link opens in whatever the mail client launches, leaving the requesting tab stranded. Polling rather than BroadcastChannel: the sign-in may have happened in a window that is already closed, and a broadcast has no listener then. The probe returns a boolean and nothing else |
 | 2026-08-27 | Custom SMTP deferred behind the domain purchase | it was treated as a ten-minute task, which is only true with a verified sender domain. Without one, providers restrict sending to your own address — useless for sharing. With GitHub and Google live, nobody needs email to sign in, so this stops being urgent |
+| 2026-09-01 | Massive Stocks Basic, $0 | grouped daily returns all ~12,500 US tickers for one date in one call, so the 25-symbol universe costs one request per trading day and the five-per-minute limit never binds. Verified live: 25/25 symbols present. The cost is that Basic never serves the current day — refused at 19:00 ET, three hours after the close — so prices are always the previous session. Acceptable because the product's unit is the daily delta and the *events* are current; only the price lags. Upgrade to Starter at $29 when the lag actually irritates in daily use, or at M9 for intraday and 5Y |
+| 2026-09-01 | `volume` is `numeric`, not `bigint` | Massive returns fractional volume on most rows — 11,367 of 12,518 on 2026-08-28, e.g. AAPL at 38649398.679189. `bigint` truncates silently, which is the worst failure mode: no error, wrong number. Same conclusion as prices-are-money, reached from the opposite direction |
+| 2026-09-01 | Ingestion fills gaps rather than fetching today | the publish time for Basic is undocumented and demonstrably late, so a job pinned to a deadline is guessing. Asking the table which dates are missing is correct whether data lands late, a run is skipped, or the deployment slept for a week — and it satisfies "never assume the series is contiguous" by construction rather than by hope |
+| 2026-09-01 | `market_days` records whether each date traded | an empty `daily_bars` cannot distinguish "not fetched yet" from "the market was shut". Without it every holiday is re-requested on every run and a two-year backfill never terminates — roughly eighteen holidays stay outstanding forever. Derived from responses rather than a shipped holiday calendar, so half-days and unscheduled closures are right without maintenance |
+| 2026-09-01 | Backfill is the ingestion route with a wider window, not a script | Node 24 strips TypeScript natively but does not resolve the `@/` alias, so a script meant either a new devDependency or relative-import contortions in `src/lib`. Parameterising the route instead means one code path that cannot drift from a second implementation, and the upsert makes repeated runs harmless |
+| 2026-09-01 | Vercel Cron, not Supabase `pg_cron` | the route already holds the provider key in its environment; `pg_cron` would need that key stored in the database plus `pg_net` to make the call. Closes the open question, which had assumed Deployment Protection was still on |
+| 2026-09-01 | `/api/cron` excluded from the proxy matcher | `updateSession` redirects anything without a session to `/login`, and a cron request carries no cookies. Left in the matcher the job is bounced before the handler runs — a cron that looks correctly configured in the dashboard and silently does nothing. Same family as the green build serving 404s |
+| 2026-09-01 | Massive's news `sentiment` field is ingested and deliberately ignored | `/v2/reference/news` returns `insights[].sentiment` and `sentiment_reasoning` per ticker, pre-computed and convenient. Impact direction comes from the edge type, never from headline sentiment — the market trades expectations, so tone and price movement barely correlate. Recorded now, before M4, because a field this easy to reach for becomes the impact engine by accident |
