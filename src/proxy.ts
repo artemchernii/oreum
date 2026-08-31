@@ -20,7 +20,7 @@ export default async function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * Everything except static assets, the health check, and /auth.
+     * Everything except static assets, machine endpoints, and /auth.
      *
      * /auth is excluded rather than merely allowed through: the callback is
      * the request that exchanges a code for a session, and running another
@@ -28,9 +28,15 @@ export const config = {
      * goes missing. Nothing there needs a session refreshed — it is creating
      * one.
      *
+     * /api/cron is excluded because `updateSession` redirects anything
+     * without a session to /login. A cron request carries no cookies, so
+     * leaving it in the matcher gives a job that looks correctly configured
+     * and silently never runs — it is bounced before the handler is reached.
+     * It authenticates with a bearer token instead, which the handler checks.
+     *
      * Without the asset exclusions this runs on CSS, JS and images too, and
      * the redirect would stop them loading on the login page itself.
      */
-    "/((?!_next/static|_next/image|auth/|api/health|api/session|favicon.svg|brand/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
+    "/((?!_next/static|_next/image|auth/|api/health|api/session|api/cron|favicon.svg|brand/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
   ],
 };
