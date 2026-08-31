@@ -25,7 +25,8 @@ The product **never predicts price**.
 - **Next.js (App Router)** + **Supabase** — Postgres, auth, cron.
 - **Vercel** — hosting.
 - **Lightweight Charts** — charts.
-- **Data:** Polygon.io (prices, news). FRED for macro. Alpha Vantage as backup.
+- **Data:** Massive (prices, news), formerly Polygon.io. FRED for macro.
+  Alpha Vantage as backup.
 
 A separate Python engine is **not in the MVP**.
 
@@ -232,7 +233,8 @@ share-a-watchlist links, and a command palette (the mock's search field reads
 - Does the universe include companies I don't hold? Yes — TSMC matters because
   half the list depends on it. But the inclusion criterion needs to be written
   down.
-- Polygon: which tier covers a single user?
+- Massive (ex-Polygon): which tier covers a single user? Basic looks sufficient —
+  confirm against the live API before it becomes a decision.
 - Cron: Supabase `pg_cron` or Vercel Cron? With Deployment Protection on, an
   external `pg_cron` hits the SSO redirect and needs a bypass token.
 - Is a client-side cache layer needed, or do Server Components cover it?
@@ -246,7 +248,7 @@ share-a-watchlist links, and a command palette (the mock's search field reads
 | 2026-08 | Name Oreum, domain oreum.app | 오름 means "ascent"; cleaner than Moa on trademarks |
 | 2026-08 | Next.js + Supabase | current default, least friction at the start |
 | 2026-08-05 | Tailwind v4 instead of CSS Modules | shadcn requires Tailwind; otherwise styles would be rewritten in M1 |
-| 2026-08-05 | `NEXT_PUBLIC_` for the Supabase URL and publishable key | the key is designed for the browser and rests on RLS; magic-link auth in M2 runs client-side. The "no `NEXT_PUBLIC_`" rule still holds for paid keys such as Polygon |
+| 2026-08-05 | `NEXT_PUBLIC_` for the Supabase URL and publishable key | the key is designed for the browser and rests on RLS; magic-link auth in M2 runs client-side. The "no `NEXT_PUBLIC_`" rule still holds for paid keys such as Massive |
 | 2026-08-05 | New publishable / secret keys instead of legacy anon / service_role | new keys revoke individually; rotating the legacy JWT secret kills every key and logs everyone out at once |
 | 2026-08-05 | `@supabase/supabase-js` not installed in M0 | nothing consumes it in M0 — tables and auth are M2 |
 | 2026-08-06 | `oreum.app` is out, domain likely `oreum.markets` | `.app` was taken. The name stands; only the zone changes |

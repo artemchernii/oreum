@@ -85,7 +85,7 @@ In use today:
 Decided but not yet installed:
 
 - **Lightweight Charts** for candles and event markers (M9)
-- **Polygon.io** for prices and news, **FRED** for macro (M3–M4)
+- **Massive** (formerly Polygon.io) for prices and news, **FRED** for macro (M3–M4)
 
 ## Running it
 
