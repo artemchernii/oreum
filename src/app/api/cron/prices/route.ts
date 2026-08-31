@@ -1,6 +1,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import {
   MassiveEntitlementError,
+  MassiveError,
   recentTradingDateCandidates,
 } from "@/lib/massive";
 import { ingestDate, loadUniverse, missingDates } from "@/lib/ingest-prices";
@@ -87,11 +88,20 @@ export async function GET(request: Request) {
 
     const written: Record<string, number> = {};
     const skipped: Record<string, string> = {};
+    let rateLimited = false;
 
     for (const date of pending) {
       try {
         written[date] = await ingestDate(admin, date, universe);
       } catch (error) {
+        // Basic allows five requests a minute. A backfill loop that runs hot
+        // will find that ceiling, and the right answer is to stop this run and
+        // report it, not to fail: everything already written stays written,
+        // and the next run picks up exactly where this one left off.
+        if (error instanceof MassiveError && error.status === 429) {
+          rateLimited = true;
+          break;
+        }
         // A 403 here is ordinary rather than exceptional. "Not published" is
         // the newest edge — yesterday, asked for before Massive has published
         // it — and resolves itself on the next run. "Too old" is the far edge
@@ -119,6 +129,7 @@ export async function GET(request: Request) {
       outstanding: outstanding.length,
       remaining: Math.max(0, outstanding.length - Object.keys(written).length),
       exhausted,
+      rateLimited,
       written,
       skipped,
     });
