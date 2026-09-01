@@ -1,4 +1,5 @@
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/lib/database.types";
 
 /**
  * A Supabase client holding the secret key, which **bypasses RLS entirely**.
@@ -29,7 +30,7 @@ export function createAdminClient() {
     );
   }
 
-  return createSupabaseClient(url, key, {
+  return createSupabaseClient<Database>(url, key, {
     // There is no user and no session to keep. Left on, the client writes
     // token state it will never read again.
     auth: { persistSession: false, autoRefreshToken: false },

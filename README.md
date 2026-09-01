@@ -95,11 +95,22 @@ cp .env.example .env.local   # fill in your Supabase project URL and key
 pnpm dev
 ```
 
-`pnpm build` for a production build, `pnpm lint`, and `pnpm exec tsc --noEmit`
-to typecheck. Always pnpm.
+`pnpm check` runs typecheck, eslint and markdownlint — the same thing CI runs.
+`pnpm build` for a production build. Always pnpm.
 
-The app renders without Supabase credentials — M1 is entirely mock data. The
-only thing that needs them is `/api/health`.
+Supabase credentials are required: every route but `/login` is behind auth, and
+prices are read from the database. `MASSIVE_API_KEY` and `CRON_SECRET` are only
+needed to run ingestion — see `docs/prices.md`.
+
+### Database types
+
+`src/lib/database.types.ts` gives the Supabase client compile-time knowledge of
+the schema; without it a misspelled table or column compiles clean. Regenerate
+it after every migration:
+
+```bash
+pnpm db:types   # needs the Supabase CLI, once: supabase login && supabase link
+```
 
 ## Docs
 
