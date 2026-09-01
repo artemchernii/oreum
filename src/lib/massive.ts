@@ -10,6 +10,8 @@
  * browser, so nothing here may be imported from a client component.
  */
 
+import { z } from "zod";
+
 const BASE_URL = "https://api.massive.com";
 
 /** One symbol's trading day, already narrowed to our universe. */
@@ -25,25 +27,46 @@ export type DailyBar = {
   trades: number | null;
 };
 
-/** The provider's row shape. Single-letter keys are theirs, not ours. */
-type GroupedRow = {
-  T: string;
-  o: number;
-  h: number;
-  l: number;
-  c: number;
-  v?: number;
-  vw?: number;
-  n?: number;
-  t: number;
-};
+/**
+ * The provider's row shape. Single-letter keys are theirs, not ours.
+ *
+ * A schema rather than a type assertion, because `as GroupedResponse` over
+ * third-party JSON is a promise the compiler cannot keep: if Massive changes a
+ * field, TypeScript believes the assertion and the wrong number reaches
+ * `daily_bars` with nothing raising a hand. Prices are money — the failure has
+ * to be loud.
+ *
+ * `v`, `vw` and `n` are optional because the provider omits them on thin
+ * sessions. `v` is deliberately not an integer: volume comes back fractional
+ * on most rows.
+ */
+const groupedRowSchema = z.object({
+  T: z.string(),
+  o: z.number(),
+  h: z.number(),
+  l: z.number(),
+  c: z.number(),
+  v: z.number().optional(),
+  vw: z.number().optional(),
+  n: z.number().optional(),
+  t: z.number(),
+});
 
-type GroupedResponse = {
-  status?: string;
-  resultsCount?: number;
-  results?: GroupedRow[];
-  message?: string;
-};
+/**
+ * The envelope is validated loosely on purpose. `results` stays `unknown[]`
+ * here so a malformed row belonging to some unrelated penny stock cannot fail
+ * a batch — we take 25 rows out of ~12,500 and only those get parsed strictly.
+ * Validating all of them would be both slower and more fragile.
+ */
+const groupedResponseSchema = z.object({
+  status: z.string().optional(),
+  resultsCount: z.number().optional(),
+  results: z.array(z.unknown()).optional(),
+  message: z.string().optional(),
+});
+
+/** The error body, which is the only place the entitlement reason appears. */
+const errorBodySchema = z.object({ message: z.string().optional() });
 
 /**
  * A request the plan does not cover. Massive answers 403 at *both* edges of
@@ -64,6 +87,21 @@ export class MassiveEntitlementError extends Error {
   /** True when the date is simply not published yet, rather than too old. */
   get isNotYetPublished(): boolean {
     return this.message.toLowerCase().includes("before end of day");
+  }
+}
+
+/**
+ * The provider answered 200 with a body we do not recognise. Separate from
+ * `MassiveError` because it means our assumptions drifted from theirs, not
+ * that the request failed — and it should never be swallowed the way a 403 is.
+ */
+export class MassiveSchemaError extends Error {
+  readonly date: string;
+
+  constructor(date: string, message: string) {
+    super(message);
+    this.name = "MassiveSchemaError";
+    this.date = date;
   }
 }
 
@@ -113,8 +151,8 @@ export async function fetchDailyBars(
     // the two entitlement edges. Failing to parse it is not worth throwing over.
     let message = `Massive answered ${res.status}`;
     try {
-      const body = (await res.json()) as GroupedResponse;
-      if (body.message) message = body.message;
+      const body = errorBodySchema.safeParse(await res.json());
+      if (body.success && body.data.message) message = body.data.message;
     } catch {
       // Keep the status-only message.
     }
@@ -123,22 +161,54 @@ export async function fetchDailyBars(
     throw new MassiveError(res.status, message);
   }
 
-  const body = (await res.json()) as GroupedResponse;
+  const parsed = groupedResponseSchema.safeParse(await res.json());
+  if (!parsed.success) {
+    throw new MassiveSchemaError(
+      date,
+      `grouped response did not match: ${parsed.error.issues[0]?.message ?? "unknown"}`,
+    );
+  }
 
-  return (body.results ?? [])
-    .filter((row) => universe.has(row.T))
-    .map((row) => ({
-      symbol: row.T,
+  const bars: DailyBar[] = [];
+
+  for (const candidate of parsed.data.results ?? []) {
+    // Narrow enough to read the ticker, then discard everything outside the
+    // universe before paying for full validation.
+    if (
+      typeof candidate !== "object" ||
+      candidate === null ||
+      !("T" in candidate) ||
+      typeof candidate.T !== "string" ||
+      !universe.has(candidate.T)
+    ) {
+      continue;
+    }
+
+    const row = groupedRowSchema.safeParse(candidate);
+    if (!row.success) {
+      // A symbol we care about arriving malformed is not something to skip
+      // quietly — that would write a gap and call it a success.
+      throw new MassiveSchemaError(
+        date,
+        `row for ${candidate.T} did not match: ${row.error.issues[0]?.message ?? "unknown"}`,
+      );
+    }
+
+    bars.push({
+      symbol: row.data.T,
       tradeDate: date,
-      open: row.o,
-      high: row.h,
-      low: row.l,
-      close: row.c,
-      vwap: row.vw ?? null,
-      volume: row.v ?? null,
+      open: row.data.o,
+      high: row.data.h,
+      low: row.data.l,
+      close: row.data.c,
+      vwap: row.data.vw ?? null,
+      volume: row.data.v ?? null,
       // Transaction counts are whole; the fractional field is volume.
-      trades: row.n ?? null,
-    }));
+      trades: row.data.n ?? null,
+    });
+  }
+
+  return bars;
 }
 
 /**

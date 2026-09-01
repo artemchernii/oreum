@@ -109,6 +109,24 @@ Re-running is always harmless — every write is an upsert, so an interrupted
 backfill resumes rather than duplicating, and a split that restates history
 overwrites cleanly.
 
+## Payload validation
+
+Responses are parsed with a zod schema, not asserted with `as`. A type
+assertion over third-party JSON is a promise the compiler cannot keep: if
+Massive changes a field, TypeScript believes the assertion and a wrong number
+reaches `daily_bars` with nothing raising a hand.
+
+The envelope is validated loosely and rows are validated strictly, but **only
+for symbols in the universe**. We keep 25 rows out of ~12,500, so validating
+the rest would be slower and more fragile — a malformed row belonging to some
+unrelated penny stock must not fail the batch. A malformed row for a symbol we
+*do* keep throws `MassiveSchemaError`, because skipping it quietly would write
+a gap and report success.
+
+`MassiveSchemaError` is deliberately not caught by the ingestion route the way
+403 and 429 are. Those are expected conditions; a schema mismatch means our
+assumptions drifted from the provider's, and it should be loud.
+
 ## Tables
 
 `daily_bars` — one row per symbol per trading day. Prices are `numeric`
