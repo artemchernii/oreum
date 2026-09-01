@@ -193,16 +193,3 @@ export const companies: Company[] = [
     ],
   },
 ];
-
-/**
- * Static price series for the sidebar sparkline. Deliberately not on Company:
- * the eventual series lives in the M3 cache table, not the companies row.
- */
-export const sparklines: Record<string, number[]> = {
-  AVGO: [1612, 1598, 1634, 1671, 1655, 1689, 1702, 1688, 1714, 1698, 1726, 1742],
-  NVDA: [232, 228, 234, 229, 221, 226, 219, 224, 217, 222, 221, 218],
-  MSFT: [487, 492, 489, 498, 503, 497, 506, 511, 504, 509, 508, 513],
-  GOOGL: [268, 271, 267, 274, 279, 276, 281, 278, 283, 280, 282, 285],
-  TSM: [298, 304, 311, 307, 316, 322, 318, 327, 331, 329, 336, 342],
-  META: [751, 744, 758, 749, 762, 755, 747, 741, 752, 745, 742, 739],
-};
