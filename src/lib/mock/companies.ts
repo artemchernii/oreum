@@ -9,8 +9,6 @@ export const companies: Company[] = [
     symbol: "AVGO",
     name: "Broadcom Inc.",
     sectorLine: "Semiconductors · Custom silicon, networking, infrastructure software",
-    price: 1742.18,
-    changePercent: 2.41,
     metrics: [
       { label: "P/E", value: "38.2", anchorLabel: "5y avg", anchorValue: "31.4" },
       { label: "Gross margin", value: "76.4%", anchorLabel: "prior year", anchorValue: "74.1%" },
@@ -46,8 +44,6 @@ export const companies: Company[] = [
     symbol: "NVDA",
     name: "NVIDIA Corporation",
     sectorLine: "Semiconductors · Accelerated computing, data centre GPUs",
-    price: 218.44,
-    changePercent: -1.18,
     metrics: [
       { label: "P/E", value: "48.6", anchorLabel: "5y avg", anchorValue: "62.1" },
       { label: "Gross margin", value: "74.9%", anchorLabel: "prior year", anchorValue: "75.8%" },
@@ -76,8 +72,6 @@ export const companies: Company[] = [
     symbol: "MSFT",
     name: "Microsoft Corporation",
     sectorLine: "Software · Cloud infrastructure, productivity, licensing",
-    price: 512.77,
-    changePercent: 0.64,
     metrics: [
       { label: "P/E", value: "34.1", anchorLabel: "5y avg", anchorValue: "30.8" },
       { label: "Operating margin", value: "45.2%", anchorLabel: "prior year", anchorValue: "44.6%" },
@@ -106,8 +100,6 @@ export const companies: Company[] = [
     symbol: "GOOGL",
     name: "Alphabet Inc.",
     sectorLine: "Internet · Search advertising, cloud, custom TPU silicon",
-    price: 284.92,
-    changePercent: 1.07,
     metrics: [
       { label: "P/E", value: "26.4", anchorLabel: "5y avg", anchorValue: "24.9" },
       { label: "Operating margin", value: "34.8%", anchorLabel: "prior year", anchorValue: "32.1%" },
@@ -136,8 +128,6 @@ export const companies: Company[] = [
     symbol: "TSM",
     name: "Taiwan Semiconductor Manufacturing Co.",
     sectorLine: "Semiconductors · Contract manufacturing, advanced packaging",
-    price: 342.15,
-    changePercent: 3.02,
     metrics: [
       { label: "P/E", value: "29.8", anchorLabel: "5y avg", anchorValue: "22.3" },
       { label: "Gross margin", value: "58.9%", anchorLabel: "prior year", anchorValue: "54.2%" },
@@ -166,8 +156,6 @@ export const companies: Company[] = [
     symbol: "META",
     name: "Meta Platforms, Inc.",
     sectorLine: "Internet · Social advertising, AI infrastructure",
-    price: 738.51,
-    changePercent: -0.42,
     metrics: [
       { label: "P/E", value: "27.9", anchorLabel: "5y avg", anchorValue: "23.7" },
       { label: "Operating margin", value: "41.3%", anchorLabel: "prior year", anchorValue: "38.9%" },

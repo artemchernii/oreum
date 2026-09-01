@@ -22,14 +22,21 @@ Supabase (Postgres, auth), Vercel, Lightweight Charts.
 
 - `pnpm dev` — dev server
 - `pnpm build` — production build
-- `pnpm check` — typecheck + eslint + markdownlint, the same thing CI runs
-- `pnpm typecheck` / `pnpm lint` / `pnpm lint:md` — the pieces, run individually
+- `pnpm check` — typecheck + eslint + markdownlint + tests, what CI runs
+- `pnpm typecheck` / `pnpm lint` / `pnpm lint:md` / `pnpm test` — the pieces
+- `pnpm db:types` — regenerate `src/lib/database.types.ts` from the schema
 
 Always `pnpm`, never `npm` or `yarn`.
 
 CI runs `pnpm check` on every PR. It does not run `pnpm build` — Vercel already
 builds every PR, and `next build` runs TypeScript. What Vercel does not run is
 eslint, removed from `next build` in Next 16.
+
+Tests are deliberately few and cover pure logic only — date arithmetic, the
+change-percent math, the message parsing that ends a backfill. Nearly every bug
+this project has actually hit was integration or config, and no unit test would
+have caught one. Write a test when the logic could be *quietly* wrong; verify
+against the real thing otherwise.
 
 ## Rules
 
@@ -101,6 +108,18 @@ token layer that code implements. Read the second one before styling anything.
 - Exposure data goes stale. A stale exposure makes the impact engine
   confidently wrong, which is worse than having no exposures at all. Always
   store the review date alongside the value.
+- Machine endpoints must be excluded from the proxy matcher in `src/proxy.ts`.
+  `updateSession` redirects anything without a session to `/login`, and a cron
+  or webhook request carries no cookies — left in the matcher, the job looks
+  correctly configured and silently never runs.
+- Provider numbers are not integers just because they count things. Massive
+  returns fractional volume on most rows, so `bigint` truncates silently. Check
+  a real payload before choosing a column type.
+- `.env.local` does not end in a newline. A naive `>>` append glues the new
+  variable onto the last one and corrupts it — this destroyed an API key once.
+  Append with a leading `\n`, then verify each variable is on its own line.
+- Regenerate `database.types.ts` after every migration. A stale one is worse
+  than none: it type-checks against a schema that no longer exists.
 
 ## Workflow
 
@@ -112,6 +131,11 @@ token layer that code implements. Read the second one before styling anything.
   `.gitignore` silently swallowing `.env.example`, a favicon conflict, a
   contrast failure at 4.36:1, and a green build serving 404s. All by checking.
 - `/ship` has the branch-to-merge loop. Follow it rather than improvising.
+- `/migrate` has the SQL-editor loop for a new migration.
+- Do not stack a PR on another PR's branch. When the base merges and is
+  deleted, GitHub does not always retarget in time, and the stacked PR merges
+  into a dead branch — reported as "merged" while the change reaches nothing.
+  This has happened once. Branch from `master` and wait.
 - Small commits, imperative mood.
 - A branch per change, PR into `master`. Never commit directly to `master`.
 - An architectural decision becomes a row in the decision log in `PLAN.md`.
