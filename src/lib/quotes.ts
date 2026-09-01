@@ -71,25 +71,45 @@ export async function getQuotes(
   }
 
   for (const [symbol, rows] of bars) {
-    const latest = rows[0];
-    if (!latest) continue;
-    const previous = rows[1];
-
-    quotes.set(symbol, {
-      symbol,
-      price: latest.close,
-      changePercent: previous
-        ? ((latest.close - previous.close) / previous.close) * 100
-        : null,
-      asOf: latest.date,
-      series: rows
-        .slice(0, SERIES_LENGTH)
-        .map((bar) => bar.close)
-        .reverse(),
-    });
+    const quote = buildQuote(symbol, rows);
+    if (quote) quotes.set(symbol, quote);
   }
 
   return quotes;
+}
+
+/** A bar as it comes out of the grouping step, newest first. */
+export type ClosingBar = { date: string; close: number };
+
+/**
+ * Turn one symbol's bars into a quote. Split out from `getQuotes` so the
+ * arithmetic can be tested without a database — it is the part most likely to
+ * be quietly wrong, and "quietly wrong" is the failure mode that matters when
+ * the output is a price.
+ *
+ * `rows` must be newest first, which is the order the query returns.
+ */
+export function buildQuote(
+  symbol: string,
+  rows: readonly ClosingBar[],
+): Quote | null {
+  const latest = rows[0];
+  if (!latest) return null;
+
+  const previous = rows[1];
+
+  return {
+    symbol,
+    price: latest.close,
+    changePercent: previous
+      ? ((latest.close - previous.close) / previous.close) * 100
+      : null,
+    asOf: latest.date,
+    series: rows
+      .slice(0, SERIES_LENGTH)
+      .map((bar) => bar.close)
+      .reverse(),
+  };
 }
 
 /**
