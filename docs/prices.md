@@ -75,6 +75,29 @@ every date attempted came back "too old" — the history boundary, and the signa
 that a backfill is finished. Without it a loop would spin forever at that edge,
 because `remaining` stops falling there.
 
+## Is it working?
+
+`GET /api/health` reports the cache's freshness alongside the Supabase
+connection check:
+
+```json
+{ "ok": true, "prices": { "latestTradeDate": "2026-08-31", "ageDays": 1, "stale": false } }
+```
+
+The cron is otherwise unobservable — it runs once a day and logs failures where
+nobody reads them, so a silently broken job would surface weeks later as a flat
+sparkline. That is the failure the gap-filling design exists to prevent,
+arriving by a different route.
+
+`stale` is `ageDays > 4`, not `> 1`. A healthy cache is routinely three days
+behind, because Friday's close is the newest data available all weekend and the
+current session is never served at all. An alarm that fires every Saturday is
+not an alarm. An empty cache counts as stale rather than fresh.
+
+`ok` stays about reachability. Staleness is reported, not treated as an outage:
+the app works fine on slightly old closes, and conflating the two would make a
+real connection failure harder to spot.
+
 ## Backfill
 
 There is no separate script. Backfill is this same endpoint with a wider
