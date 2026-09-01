@@ -126,9 +126,11 @@ the freshest possible is the previous trading day, labelled with its date.
 - [x] server layer (route handlers only, key never in the client)
 - [x] cache table in Supabase — `daily_bars` plus `market_days`, both RLS
   read-only, filled by `/api/cron/prices`. See `docs/prices.md`
-- [ ] loading and error states in the UI
-- [ ] sidebar sparklines — they need a price series per ticker per page load,
-  which is exactly what eats a free tier. They belong here, not in M1
+- [x] loading and error states in the UI — Suspense skeleton for the sidebar,
+  route-level skeleton for the feed, error boundary with a retry
+- [x] sidebar sparklines — they need a price series per ticker per page load,
+  which is exactly what eats a free tier. They belong here, not in M1.
+  Fetched once per render for the whole watchlist, not once per row
 
 ### M4 — universe and events
 
@@ -310,3 +312,9 @@ share-a-watchlist links, and a command palette (the mock's search field reads
 | 2026-09-01 | Vercel Cron, not Supabase `pg_cron` | the route already holds the provider key in its environment; `pg_cron` would need that key stored in the database plus `pg_net` to make the call. Closes the open question, which had assumed Deployment Protection was still on |
 | 2026-09-01 | `/api/cron` excluded from the proxy matcher | `updateSession` redirects anything without a session to `/login`, and a cron request carries no cookies. Left in the matcher the job is bounced before the handler runs — a cron that looks correctly configured in the dashboard and silently does nothing. Same family as the green build serving 404s |
 | 2026-09-01 | Massive's news `sentiment` field is ingested and deliberately ignored | `/v2/reference/news` returns `insights[].sentiment` and `sentiment_reasoning` per ticker, pre-computed and convenient. Impact direction comes from the edge type, never from headline sentiment — the market trades expectations, so tone and price movement barely correlate. Recorded now, before M4, because a field this easy to reach for becomes the impact engine by accident |
+| 2026-09-01 | Quotes are fetched once in `WatchlistSidebar`, not inside each row | a row-level lookup is one query per ticker, which is precisely the per-render fan-out the cache exists to prevent. The row takes a `quote` prop instead |
+| 2026-09-01 | Every price is labelled with its trade date | Basic never serves the current session, so an unlabelled figure silently claims to be live. Labelling it is the same honesty as the em dash: show the gap rather than imply it away |
+| 2026-09-01 | `changePercent` is null, not 0, when only one bar exists | 0.00% reads as "unchanged", which is a different claim from "unknown". It renders as an em dash, consistent with a missing price |
+| 2026-09-01 | The bars query orders descending before limiting | PostgREST caps rows server-side. Ascending order means a truncated result drops the *newest* sessions — the ones the price is read from — so the failure would be a silently stale price rather than a short sparkline |
+| 2026-09-01 | Change is computed against the previous bar held, never a calendar date | a series is never contiguous: holidays, a missed cron run, a symbol added late. Comparing against "yesterday" would silently span a gap and report a multi-day move as a daily one |
+| 2026-09-01 | The error screen omits the bundle's "Last updated 12 minutes ago" | an error boundary has no access to when the cache was last written, and inventing a duration to fill the slot is exactly what the em dash exists to prevent elsewhere |

@@ -1,14 +1,19 @@
 import Link from "next/link";
 import { X } from "lucide-react";
 import type { UniverseCompany } from "@/lib/watchlist";
-import { quoteFor } from "@/lib/mock";
+import type { Quote } from "@/lib/quotes";
 import { Price, PriceChange } from "@/components/price-change";
 import { Sparkline } from "@/components/sparkline";
 import { removeTicker } from "@/app/actions";
 
-export function WatchlistRow({ company }: { company: UniverseCompany }) {
-  const quote = quoteFor(company.symbol);
-
+export function WatchlistRow({
+  company,
+  quote,
+}: {
+  company: UniverseCompany;
+  // Passed in rather than fetched here — see WatchlistSidebar for why.
+  quote: Quote | null;
+}) {
   return (
     <div className="group flex items-center gap-3 rounded-md px-2 py-2 hover:bg-accent">
       <Link href={`/ticker/${company.symbol}`} className="flex min-w-0 flex-1">
@@ -33,14 +38,23 @@ export function WatchlistRow({ company }: { company: UniverseCompany }) {
           */}
           <div className="w-18 shrink-0 text-right">
             <Price value={quote.price} className="block text-sm" />
-            <PriceChange
-              percent={quote.changePercent}
-              className="block text-xs"
-            />
+            {quote.changePercent === null ? (
+              // One bar only, so there is nothing to compare against. A
+              // 0.00% here would read as "unchanged", which is a different
+              // claim from "unknown".
+              <span className="num block text-xs text-muted-foreground">
+                &mdash;
+              </span>
+            ) : (
+              <PriceChange
+                percent={quote.changePercent}
+                className="block text-xs"
+              />
+            )}
           </div>
         </>
       ) : (
-        // No invented number. Real prices arrive in M3.
+        // No invented number: this symbol has no cached bars yet.
         <div className="w-18 shrink-0 text-right text-sm text-muted-foreground">
           <span aria-label="No price data yet">&mdash;</span>
         </div>

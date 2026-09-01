@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
-import { companyBySymbol, eventById, impactsFor, quoteFor } from "@/lib/mock";
+import { companyBySymbol, eventById, impactsFor } from "@/lib/mock";
 import { getCompany } from "@/lib/watchlist";
+import { getQuotes } from "@/lib/quotes";
 import { edgesFor } from "@/lib/mock/edges";
 import { TickerHeader } from "@/components/ticker-header";
 import { ChartPlaceholder } from "@/components/chart-placeholder";
@@ -19,7 +20,8 @@ export default async function TickerPage({
   const company = await getCompany(symbol);
   if (!company) notFound();
 
-  const quote = quoteFor(company.symbol);
+  const quotes = await getQuotes([company.symbol]);
+  const quote = quotes.get(company.symbol);
   const details = companyBySymbol(company.symbol);
 
   const drivers: Driver[] = impactsFor(company.symbol)
@@ -37,6 +39,7 @@ export default async function TickerPage({
         sectorLine={company.sectorLine}
         price={quote?.price}
         changePercent={quote?.changePercent}
+        asOf={quote?.asOf}
       />
 
       <ChartPlaceholder markers={Math.min(drivers.length, 4)} />
