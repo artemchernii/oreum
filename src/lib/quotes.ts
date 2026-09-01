@@ -66,9 +66,7 @@ export async function getQuotes(
   const bars = new Map<string, { date: string; close: number }[]>();
   for (const row of data ?? []) {
     const list = bars.get(row.symbol) ?? [];
-    // `numeric` arrives as a string from PostgREST when it exceeds what a
-    // double holds exactly. Coerce rather than trust the JSON type.
-    list.push({ date: row.trade_date, close: Number(row.close) });
+    list.push({ date: row.trade_date, close: row.close });
     bars.set(row.symbol, list);
   }
 

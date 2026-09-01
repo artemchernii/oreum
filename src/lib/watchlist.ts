@@ -27,11 +27,7 @@ export async function getWatchlist(): Promise<UniverseCompany[]> {
 
   return (data ?? [])
     .map((row) => {
-      const company = row.companies as unknown as {
-        symbol: string;
-        name: string;
-        sector_line: string;
-      } | null;
+      const company = row.companies;
       return company
         ? {
             symbol: company.symbol,
