@@ -95,8 +95,16 @@ cp .env.example .env.local   # fill in your Supabase project URL and key
 pnpm dev
 ```
 
-`pnpm check` runs typecheck, eslint and markdownlint — the same thing CI runs.
-`pnpm build` for a production build. Always pnpm.
+`pnpm check` runs typecheck, eslint, markdownlint and the unit tests — the
+same thing CI runs. `pnpm test` for tests alone. `pnpm build` for a production
+build. Always pnpm.
+
+Tests are deliberately few. Almost every bug this project has actually hit was
+integration or config — the proxy matcher swallowing the cron, the PKCE
+verifier, the framework preset serving 404s — and none would have been caught
+by a unit test. So the suite covers pure logic with real bug surface: date
+arithmetic, the change-percent math, and the message parsing that decides when
+a backfill stops. Everything else is verified against the real thing instead.
 
 Supabase credentials are required: every route but `/login` is behind auth, and
 prices are read from the database. `MASSIVE_API_KEY` and `CRON_SECRET` are only

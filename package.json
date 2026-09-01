@@ -10,7 +10,8 @@
     "lint": "eslint",
     "lint:md": "markdownlint-cli2 \"*.md\" \"docs/*.md\"",
     "db:types": "supabase gen types typescript --linked > src/lib/database.types.ts",
-    "check": "pnpm typecheck && pnpm lint && pnpm lint:md"
+    "test": "vitest run",
+    "check": "pnpm typecheck && pnpm lint && pnpm lint:md && pnpm test"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.5",
@@ -36,7 +37,8 @@
     "eslint-config-next": "16.3.0",
     "markdownlint-cli2": "^0.23.2",
     "tailwindcss": "^4.3.3",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.11"
   },
   "packageManager": "pnpm@10.12.4"
 }
