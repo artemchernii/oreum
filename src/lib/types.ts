@@ -48,12 +48,16 @@ export type Edge = {
   kind: EdgeKind;
 };
 
+/**
+ * The hand-curated half of a company: what it is, and the figures that need a
+ * human to gather them. Prices are deliberately absent — those live in
+ * `daily_bars` and are read through `getQuotes()`. Keeping an invented price
+ * on this type is how a mock number ends up on screen months later.
+ */
 export type Company = {
   symbol: string;
   name: string;
   sectorLine: string;
-  price: number;
-  changePercent: number;
   metrics: Metric[];
   exposures: Exposure[];
 };

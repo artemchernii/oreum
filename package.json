@@ -8,7 +8,7 @@
     "start": "next start",
     "typecheck": "next typegen && tsc --noEmit",
     "lint": "eslint",
-    "lint:md": "markdownlint-cli2 \"*.md\" \"docs/*.md\"",
+    "lint:md": "markdownlint-cli2 \"*.md\" \"docs/*.md\" \".claude/skills/**/*.md\"",
     "db:types": "supabase gen types typescript --linked > src/lib/database.types.ts",
     "test": "vitest run",
     "check": "pnpm typecheck && pnpm lint && pnpm lint:md && pnpm test"
