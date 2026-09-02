@@ -1,5 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { fetchDailyBars, type DailyBar } from "@/lib/massive";
+import { ingestionSymbols } from "@/lib/universe";
 
 /**
  * The shared half of price ingestion: the cron route and the backfill script
@@ -17,13 +18,18 @@ type AdminClient = ReturnType<typeof createAdminClient>;
  * `companies` is already the authority — the watchlist foreign-keys to it and
  * so does `daily_bars`. A second hardcoded list here would be a third place to
  * forget when the universe changes.
+ *
+ * Deliberately unfiltered by `kind`: benchmark rows are ingested alongside
+ * companies. They arrive free in the same grouped-daily response, and
+ * relative performance needs their bars. The product surfaces filter to
+ * companies; ingestion must not.
  */
 export async function loadUniverse(
   admin: AdminClient,
 ): Promise<ReadonlySet<string>> {
   const { data, error } = await admin.from("companies").select("symbol");
   if (error) throw error;
-  return new Set((data ?? []).map((row) => row.symbol));
+  return ingestionSymbols(data ?? []);
 }
 
 /**

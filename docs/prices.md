@@ -37,9 +37,9 @@ cache:
 
 The endpoint that makes the free tier workable is
 `/v2/aggs/grouped/locale/us/market/stocks/{date}` — every US ticker for one
-date in a single response, about 12,500 rows and 1.3 MB. The whole 25-symbol
-universe therefore costs **one request per trading day**, not 25, and the
-five-per-minute ceiling stops mattering.
+date in a single response, about 12,500 rows and 1.3 MB. The whole ingestion
+universe — 25 companies plus 5 benchmark ETFs — therefore costs **one request
+per trading day**, and the five-per-minute ceiling stops mattering.
 
 ### What Basic will not do
 
@@ -160,8 +160,8 @@ Massive changes a field, TypeScript believes the assertion and a wrong number
 reaches `daily_bars` with nothing raising a hand.
 
 The envelope is validated loosely and rows are validated strictly, but **only
-for symbols in the universe**. We keep 25 rows out of ~12,500, so validating
-the rest would be slower and more fragile — a malformed row belonging to some
+for symbols in the universe**. We keep 30 rows (25 companies and 5 benchmark
+ETFs) out of ~12,500, so validating the rest would be slower and more fragile — a malformed row belonging to some
 unrelated penny stock must not fail the batch. A malformed row for a symbol we
 *do* keep throws `MassiveSchemaError`, because skipping it quietly would write
 a gap and report success.

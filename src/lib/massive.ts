@@ -2,9 +2,9 @@
  * Massive (formerly Polygon.io) — the price provider.
  *
  * Only the grouped-daily endpoint is used. It returns every US ticker for one
- * trading date in a single call, so the whole 25-symbol universe costs one
- * request per day rather than 25. On the free Basic tier that turns a
- * 5-requests-per-minute limit into a non-issue.
+ * trading date in a single call, so the whole ingestion universe — companies
+ * and benchmark ETFs alike — costs one request per day. On the free Basic
+ * tier that turns a 5-requests-per-minute limit into a non-issue.
  *
  * Server-side only. The key is paid-tier-adjacent and must never reach the
  * browser, so nothing here may be imported from a client component.
@@ -55,8 +55,8 @@ const groupedRowSchema = z.object({
 /**
  * The envelope is validated loosely on purpose. `results` stays `unknown[]`
  * here so a malformed row belonging to some unrelated penny stock cannot fail
- * a batch — we take 25 rows out of ~12,500 and only those get parsed strictly.
- * Validating all of them would be both slower and more fragile.
+ * a batch — we take ~30 rows out of ~12,500 and only those get parsed
+ * strictly. Validating all of them would be both slower and more fragile.
  */
 const groupedResponseSchema = z.object({
   status: z.string().optional(),

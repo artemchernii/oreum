@@ -12,6 +12,10 @@ import { requireUser } from "@/lib/auth";
  * Add a ticker. The symbol is a foreign key into `companies`, so the database
  * rejects anything outside the universe — "pick from the universe, not free
  * text" is enforced by the schema rather than by the form.
+ *
+ * The FK alone stopped being sufficient when benchmark ETFs joined the table
+ * (0003): SPY exists in `companies` but is calibration data, not a holding.
+ * The kind check keeps a hand-crafted POST from watching a benchmark.
  */
 export async function addTicker(formData: FormData) {
   const user = await requireUser();
@@ -22,6 +26,17 @@ export async function addTicker(formData: FormData) {
   if (!symbol) return;
 
   const supabase = await createClient();
+
+  const { data: company, error: lookupError } = await supabase
+    .from("companies")
+    .select("symbol")
+    .eq("symbol", symbol)
+    .eq("kind", "company")
+    .maybeSingle();
+
+  if (lookupError) throw lookupError;
+  if (!company) return;
+
   const { error } = await supabase
     .from("watchlist")
     .insert({ user_id: user.id, symbol });
