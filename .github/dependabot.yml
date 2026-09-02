@@ -1,0 +1,25 @@
+# Dependency updates. Grouped and monthly on purpose: this is a single-developer
+# repository, and a PR per package per week is noise that gets ignored, which is
+# worse than no automation at all.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+    groups:
+      # Next and React move together; separating them produces PRs that cannot
+      # merge independently.
+      next-react:
+        patterns: ["next", "react", "react-dom", "eslint-config-next", "@types/react*"]
+      supabase:
+        patterns: ["@supabase/*"]
+      dev-tooling:
+        patterns: ["eslint*", "typescript", "vitest", "markdownlint*", "@types/node", "tailwindcss", "@tailwindcss/*"]
+        update-types: [minor, patch]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

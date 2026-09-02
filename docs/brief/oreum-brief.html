@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Oreum — Product &amp; Intelligence Brief</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:        oklch(0.200 0.008 302);
+    --ink-soft:   oklch(0.340 0.010 302);
+    --muted:      oklch(0.525 0.013 302);
+    --faint:      oklch(0.700 0.010 302);
+    --hairline:   oklch(0.880 0.008 302);
+    --wash:       oklch(0.960 0.005 302);
+    --paper:      oklch(0.985 0.004 302);
+    --card:       oklch(1 0 0);
+    --dark:       oklch(0.185 0.006 302);
+    --dark-card:  oklch(0.242 0.006 302);
+    --dark-fg:    oklch(1 0 0);
+    --dark-muted: oklch(0.651 0.009 302);
+    --up:         oklch(0.538 0.150 150);
+    --down:       oklch(0.579 0.180 28);
+    --accent:     oklch(0.430 0.060 302);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: var(--paper); }
+  body {
+    font-family: "Archivo", system-ui, sans-serif;
+    color: var(--ink);
+    font-size: 10.2pt;
+    line-height: 1.55;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .num, .mono { font-family: "Geist Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+
+  @page { size: A4; margin: 0; }
+  .page {
+    width: 210mm; height: 297mm;
+    padding: 17mm 19mm 20mm;
+    page-break-after: always;
+    position: relative;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .page:last-child { page-break-after: auto; }
+
+  /* ---- running footer ---- */
+  .foot {
+    position: absolute; left: 19mm; right: 19mm; bottom: 9mm;
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 7pt; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--faint);
+  }
+  .foot .pg { font-family: "Geist Mono", monospace; }
+  .dark-page .foot { color: oklch(0.45 0.01 302); }
+
+  /* ---- section header pattern ---- */
+  .kicker {
+    font-size: 7.5pt; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600; margin-bottom: 3mm;
+  }
+  .secno {
+    font-family: "Geist Mono", monospace;
+    font-size: 34pt; font-weight: 400; color: var(--hairline);
+    line-height: 1; margin-bottom: 2mm;
+  }
+  h1 {
+    font-size: 23pt; font-weight: 800; letter-spacing: -0.015em;
+    line-height: 1.1; margin-bottom: 6mm; color: var(--ink);
+  }
+  h2 { font-size: 12.5pt; font-weight: 700; margin: 6mm 0 2.5mm; letter-spacing: -0.01em; }
+  h3 { font-size: 10.5pt; font-weight: 700; margin: 4mm 0 1.5mm; }
+  p  { margin-bottom: 3mm; }
+  p.lede { font-size: 12pt; line-height: 1.5; color: var(--ink-soft); margin-bottom: 5mm; }
+  .muted { color: var(--muted); }
+  .small { font-size: 8.5pt; }
+  strong { font-weight: 700; }
+  em { font-style: italic; }
+
+  .rule { border: 0; border-top: 1px solid var(--hairline); margin: 5mm 0; }
+
+  /* ---- quote / principle ---- */
+  .principle {
+    border-left: 2.5px solid var(--ink);
+    padding: 1.5mm 0 1.5mm 5mm; margin: 4mm 0;
+    font-size: 12.5pt; font-weight: 600; letter-spacing: -0.01em; line-height: 1.35;
+  }
+  .principle .why { display: block; font-size: 9pt; font-weight: 400; color: var(--muted); margin-top: 1mm; }
+
+  /* ---- cards / panels ---- */
+  .panel {
+    background: var(--card); border: 1px solid var(--hairline);
+    border-radius: 4.5mm; padding: 5mm 6mm; margin: 3mm 0;
+  }
+  .panel-wash { background: var(--wash); border: none; }
+  .panel h3 { margin-top: 0; }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4mm; }
+
+  /* ---- definition list ---- */
+  .defs { display: grid; grid-template-columns: 34mm 1fr; row-gap: 2.6mm; column-gap: 6mm; margin: 3mm 0; }
+  .defs dt { font-weight: 700; font-size: 9.5pt; letter-spacing: 0.02em; }
+  .defs dd { font-size: 9.5pt; color: var(--ink-soft); }
+  .defs dd .eg { color: var(--muted); }
+
+  /* ---- pipeline diagram ---- */
+  .pipe { display: flex; flex-direction: column; align-items: stretch; margin: 4mm 0; }
+  .pipe-stage {
+    background: var(--card); border: 1px solid var(--hairline); border-radius: 3mm;
+    padding: 2.6mm 5mm; display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .pipe-stage.derived { background: var(--wash); border-style: dashed; }
+  .pipe-stage.human   { background: var(--dark); border-color: var(--dark); color: var(--dark-fg); }
+  .pipe-stage.human .pipe-desc { color: var(--dark-muted); }
+  .pipe-name { font-family: "Geist Mono", monospace; font-size: 9pt; font-weight: 600; letter-spacing: 0.10em; text-transform: uppercase; }
+  .pipe-desc { font-size: 8.5pt; color: var(--muted); text-align: right; max-width: 105mm; }
+  .pipe-arrow { text-align: center; color: var(--faint); font-size: 9pt; line-height: 1.5; }
+
+  /* ---- tables ---- */
+  table { border-collapse: collapse; width: 100%; margin: 3mm 0; font-size: 9pt; }
+  th { text-align: left; font-size: 7.5pt; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); font-weight: 600; padding: 0 3mm 1.6mm 0; border-bottom: 1px solid var(--hairline); }
+  td { padding: 1.8mm 3mm 1.8mm 0; border-bottom: 1px solid var(--wash); vertical-align: top; }
+  td:first-child { font-weight: 600; white-space: nowrap; }
+
+  /* ---- chips / badges ---- */
+  .chip {
+    display: inline-block; font-family: "Geist Mono", monospace; font-size: 7.5pt;
+    letter-spacing: 0.06em; padding: 0.8mm 2.6mm; border-radius: 2mm;
+    border: 1px solid var(--hairline); color: var(--muted); background: var(--card);
+  }
+  .chip-dark { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .chip-open { border-style: dashed; }
+  .dirup   { color: var(--up);   font-weight: 600; }
+  .dirdown { color: var(--down); font-weight: 600; }
+
+  /* attention scale — deliberately neutral, never green/red */
+  .attn { display: inline-flex; gap: 0.9mm; align-items: center; vertical-align: middle; }
+  .attn i { width: 2.1mm; height: 2.1mm; border-radius: 0.6mm; background: var(--hairline); display: inline-block; }
+  .attn i.on { background: var(--ink); }
+  .attn-label { font-family: "Geist Mono", monospace; font-size: 8pt; color: var(--muted); margin-left: 1.6mm; }
+
+  /* ---- email mock ---- */
+  .email {
+    background: var(--card); border: 1px solid var(--hairline); border-radius: 4mm;
+    padding: 5mm 6mm; font-size: 9pt;
+  }
+  .email .hdr { display: flex; justify-content: space-between; border-bottom: 1px solid var(--wash); padding-bottom: 2.5mm; margin-bottom: 3mm; color: var(--muted); font-size: 8pt; }
+  .email .item { display: flex; justify-content: space-between; align-items: baseline; padding: 2mm 0; border-bottom: 1px solid var(--wash); gap: 4mm; }
+  .email .item:last-of-type { border-bottom: none; }
+  .email .sym { font-family: "Geist Mono", monospace; font-weight: 600; }
+  .email .why { color: var(--ink-soft); flex: 1; }
+  .email .counter { margin-top: 3mm; padding-top: 2.5mm; border-top: 1px solid var(--wash); font-size: 8pt; color: var(--muted); }
+
+  /* ---- graph diagram ---- */
+  .ladder { display: flex; align-items: center; justify-content: center; gap: 2.5mm; margin: 4mm 0; }
+  .ladder .lnode { font-family: "Geist Mono", monospace; font-size: 8pt; letter-spacing: 0.1em; text-transform: uppercase; border: 1px solid var(--hairline); background: var(--card); border-radius: 2.5mm; padding: 2mm 4mm; }
+  .ladder .lsep { color: var(--faint); font-size: 9pt; }
+
+  .chain { display: flex; align-items: center; flex-wrap: wrap; gap: 2mm; margin: 2.5mm 0; }
+  .chain .cnode { border: 1px solid var(--hairline); background: var(--card); border-radius: 2.5mm; padding: 1.6mm 3.4mm; font-size: 8.5pt; }
+  .chain .cnode.inferred { border-style: dashed; background: transparent; color: var(--muted); }
+  .chain .csep { color: var(--faint); }
+
+  /* ---- clock table rows ---- */
+  .clock { display: grid; grid-template-columns: 30mm 1fr 34mm; gap: 4mm; padding: 2.6mm 0; border-bottom: 1px solid var(--wash); font-size: 9pt; align-items: baseline; }
+  .clock .cname { font-family: "Geist Mono", monospace; font-size: 8pt; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; }
+  .clock .cstat { text-align: right; }
+
+  /* ---- roadmap ---- */
+  .phase { display: grid; grid-template-columns: 13mm 1fr; gap: 4mm; padding: 2.8mm 0; border-bottom: 1px solid var(--wash); }
+  .phase .pno { font-family: "Geist Mono", monospace; font-size: 13pt; color: var(--faint); font-weight: 500; }
+  .phase h3 { margin: 0 0 0.8mm; font-size: 10pt; }
+  .phase p { margin: 0; font-size: 8.8pt; color: var(--ink-soft); }
+  .phase .gate { font-size: 8.2pt; color: var(--muted); margin-top: 1mm; }
+  .phase .gate b { color: var(--ink); font-weight: 700; }
+
+  /* ---- dark pages ---- */
+  .dark-page { background: var(--dark); color: var(--dark-fg); }
+  .dark-page .kicker { color: var(--dark-muted); }
+  .dark-page h1 { color: var(--dark-fg); }
+  .dark-page p.lede { color: var(--dark-muted); }
+
+  /* ---- cover ---- */
+  .cover { justify-content: space-between; padding: 22mm 20mm; }
+  .cover .mark { color: var(--dark-fg); }
+  .cover .title { font-size: 34pt; font-weight: 800; letter-spacing: -0.02em; line-height: 1.05; }
+  .cover .subtitle { font-size: 13pt; color: var(--dark-muted); margin-top: 4mm; max-width: 130mm; line-height: 1.45; }
+  .cover .meta { display: flex; gap: 10mm; font-family: "Geist Mono", monospace; font-size: 8pt; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dark-muted); }
+  .cover .brand { display:flex; align-items:center; gap: 3mm; font-weight: 500; font-size: 15pt; letter-spacing: 0.02em; }
+
+  ul.tight { margin: 2mm 0 3mm 4.5mm; }
+  ul.tight li { margin-bottom: 1.4mm; padding-left: 1mm; }
+  ul.cols { columns: 2; column-gap: 8mm; }
+
+  .notbox { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm 6mm; margin: 4mm 0; }
+  .notbox .not { border: 1px solid var(--hairline); border-radius: 3mm; padding: 3mm 4.5mm; font-size: 9.5pt; }
+  .notbox .not b { display: block; font-size: 10pt; }
+  .notbox .not span { color: var(--muted); font-size: 8.6pt; }
+
+  .openq { border: 1px dashed var(--hairline); border-radius: 3.5mm; padding: 4mm 5mm; margin-bottom: 3mm; }
+  .openq h3 { margin: 0 0 1mm; font-size: 9.8pt; }
+  .openq p { margin: 0; font-size: 8.8pt; color: var(--ink-soft); }
+</style>
+</head>
+<body>
+
+<!-- ============================ COVER ============================ -->
+<div class="page dark-page cover">
+  <div class="brand mark">
+    <svg viewBox="0 0 48 48" width="34" height="34" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 34 Q9 25 14 30 Q20 18 26 26 Q34 7 45 32"/></svg>
+    oreum
+  </div>
+  <div>
+    <div class="kicker" style="margin-bottom:5mm;">Product &amp; Intelligence Brief</div>
+    <div class="title">Know what changed.<br>Know why it matters.<br><span style="color:var(--dark-muted)">Ignore the rest.</span></div>
+    <div class="subtitle">A data-driven market-intelligence tool that optimizes for attention efficiency, not engagement — where a quiet day is a successful result.</div>
+  </div>
+  <div class="meta">
+    <span>September 2026</span>
+    <span>Reference edition</span>
+    <span>Internal · Collaborators</span>
+  </div>
+</div>
+
+<!-- ============================ 01 PROBLEM ============================ -->
+<div class="page">
+  <div class="secno num">01</div>
+  <div class="kicker">The Investor Problem</div>
+  <h1>Markets produce information faster than anyone can read it</h1>
+  <p class="lede">Price movements, company announcements, earnings, macro data, analyst revisions, news, sector rotations, market-wide shocks, and the web of relationships between companies — all of it arrives continuously, and almost none of it matters to any particular investor on any particular day.</p>
+
+  <p>The failure mode is concrete. A single holding can generate ten or fifteen alert emails a day from brokers and news services — and none of them get read, because reading them all is a job. The information exists; the <em>evaluation</em> doesn't. News never answers the questions that actually decide whether to look up from your day:</p>
+
+  <div class="grid2" style="margin: 4mm 0;">
+    <div class="panel panel-wash">
+      <h3>What the noise asks of you</h3>
+      <ul class="tight small">
+        <li>Is this important, or routine?</li>
+        <li>Is the price move meaningful, or normal volatility?</li>
+        <li>Does it affect anything I hold?</li>
+        <li>What else could it affect?</li>
+        <li>Do I need to investigate — right now?</li>
+      </ul>
+    </div>
+    <div class="panel panel-wash">
+      <h3>What most investors do instead</h3>
+      <ul class="tight small">
+        <li>Delete the alerts unread</li>
+        <li>Skim headlines and hope tone equals importance</li>
+        <li>Check prices, which show direction but not meaning</li>
+        <li>Find out about the thing that mattered a week late</li>
+      </ul>
+    </div>
+  </div>
+
+  <p>Oreum exists to answer six questions, continuously and with evidence:</p>
+  <div class="panel">
+    <div class="grid3">
+      <div><span class="num muted">1&nbsp;</span><strong>What changed?</strong></div>
+      <div><span class="num muted">2&nbsp;</span><strong>How significant is it?</strong></div>
+      <div><span class="num muted">3&nbsp;</span><strong>What does it affect?</strong></div>
+      <div><span class="num muted">4&nbsp;</span><strong>Does it affect my portfolio?</strong></div>
+      <div><span class="num muted">5&nbsp;</span><strong>How much attention does it deserve?</strong></div>
+      <div><span class="num muted">6&nbsp;</span><strong>Why?</strong></div>
+    </div>
+  </div>
+
+  <p class="small muted">The investor may hold stocks, ETFs, or both, potentially across multiple brokers. Oreum's job is not to bring them more information — it is to absorb the flood and return one or two moments of genuine signal a day.</p>
+
+  <div class="foot"><span>Oreum — Product &amp; Intelligence Brief</span><span class="pg">02</span></div>
+</div>
+
+<!-- ============================ 02 WHAT OREUM IS ============================ -->
+<div class="page">
+  <div class="secno num">02</div>
+  <div class="kicker">What Oreum Is</div>
+  <h1>A suppression engine with an investigation surface behind it</h1>
+  <p class="lede">Oreum is a data-driven market-intelligence tool for investors who want to understand what is happening without constantly researching it themselves. Its primary output is restraint: one or two emails a day, sent only when something crosses an attention threshold — and silence when nothing does.</p>
+
+  <p>The product inverts the alert-email ratio. Instead of fifteen unread notifications per holding, the investor receives a single daily filter that takes one or two minutes to read, and may correctly say:</p>
+
+  <div class="principle">“Nothing significant requires your attention today.”
+    <span class="why">A quiet day is a successful result — and it is only credible because the email shows what was checked and suppressed.</span>
+  </div>
+
+  <p>When something does matter, the email names it, gives its direction and why, and links into the platform — the Feed for what happened across the market, the Ticker for investigating a single company in depth. The email drives every platform visit; the platform earns the trust the email spends.</p>
+
+  <h2>The differentiator: second-order intelligence</h2>
+  <p>Oreum operates over a small, densely connected, hand-curated universe of companies in which one company's capital expenditure is another company's revenue. Direct news about a holding, the investor will see anywhere. The connection they would have missed — a customer raising capex, a foundry constraint, a competitor's guidance — is the product.</p>
+
+  <div class="panel panel-wash">
+    <p style="margin:0;" class="small"><strong>The most important information may not mention your ticker.</strong> News about Microsoft's data-center spending is news about Broadcom's order book — whether or not any headline says so. Oreum's context graph exists to surface exactly this class of information, clearly labelled as inference, never disguised as fact.</p>
+  </div>
+
+  <div class="foot"><span>Oreum — Product &amp; Intelligence Brief</span><span class="pg">03</span></div>
+</div>
+
+<!-- ============================ 03 PRINCIPLES ============================ -->
+<div class="page">
+  <div class="secno num">03</div>
+  <div class="kicker">Product Principles</div>
+  <h1>Five commitments the system is built around</h1>
+
+  <div class="principle">Know what changed. Know why it matters. Ignore the rest.
+    <span class="why">The product's value is measured by what it leaves out. Every suppressed non-event is the work.</span></div>
+
+  <div class="principle">Optimize for attention efficiency, not engagement.
+    <span class="why">Oreum has no incentive to be opened often. It has every incentive to be trusted when it speaks.</span></div>
+
+  <div class="principle">A quiet day is a successful result.
+    <span class="why">This is enforced structurally: attention thresholds are absolute, never rank-normalized — so a day where nothing crosses them produces nothing. A system that always has a “top story” cannot be quiet.</span></div>
+
+  <div class="principle">Math decides. The LLM explains.
+    <span class="why">Every decision that ranks, scores, or fires is deterministic, reproducible, and backtestable. Language models read messy text and write clear prose; they hold no authority over attention.</span></div>
+
+  <div class="principle">The most important information may not mention your ticker.
+    <span class="why">Second-order propagation through observed relationships is the differentiator — and it is always presented as inference, with its path visible.</span></div>
+
+  <hr class="rule">
+  <p class="small muted">Two supporting invariants run through everything: <strong>facts are preserved before intelligence is derived</strong> — actual, expected, previous, and reference values are stored before any meaning is computed from them — and <strong>observed facts, known events, and inferred relationships remain visually and structurally distinct</strong> at every layer, from database to email.</p>
+
+  <div class="foot"><span>Oreum — Product &amp; Intelligence Brief</span><span class="pg">04</span></div>
+</div>
+
+<!-- ============================ 04 INTELLIGENCE MODEL ============================ -->
+<div class="page">
+  <div class="secno num">04</div>
+  <div class="kicker">The Oreum Intelligence Model</div>
+  <h1>Ten concepts that refuse to collapse into each other</h1>
+  <p class="lede">Most market products fail by conflation: the news story becomes the signal becomes the alert. Oreum's vocabulary keeps each question separate, because each needs different evidence and different validation.</p>
+
+  <dl class="defs">
+    <dt>Fact</dt><dd>A normalized representation of source information, preserved before any meaning is derived. <span class="eg">For measurable events: actual, expected, previous, reference.</span></dd>
+    <dt>Observation</dt><dd>A measured or calculated property of market data. <span class="eg">Daily return, volume ratio, sector-relative return, volatility-adjusted return.</span></dd>
+    <dt>Event</dt><dd>A structured representation of something that happened. <span class="eg">Earnings release, guidance change, Fed decision, analyst revision, CPI surprise.</span></dd>
+    <dt>Signal</dt><dd>An analytical conclusion derived from events and observations. <span class="eg">Unusual price move, unusual volume, earnings surprise, unusual relative performance.</span></dd>
+    <dt>Context</dt><dd>The surrounding market, sector, macro, and relationship information needed to interpret a signal. Cross-cutting input, not a computation stage.</dd>
+    <dt>Impact</dt><dd>What another entity could be affected by, and through which relationship. Impact is possibility, not importance.</dd>
+    <dt>Relevance</dt><dd>How much a signal or impact touches a particular investor's watchlist or portfolio. The only per-user layer in the pipeline.</dd>
+    <dt>Attention</dt><dd>How much this investor should care about the situation right now. Deterministic, experimental until validated, displayed 0–10.</dd>
+    <dt>Intelligence Item</dt><dd>The user-facing aggregation of related signals, events, impacts, context, evidence, and attention — one situation, not five alerts.</dd>
+    <dt>Explanation</dt><dd>A concise human-readable account of why the item matters, backed by source evidence, with inference clearly marked.</dd>
+  </dl>
+
+  <div class="panel panel-wash">
+    <p style="margin:0" class="small"><strong>Event ≠ Signal ≠ Impact ≠ Relevance ≠ Attention.</strong> And direction ≠ attention: a −2% day can deserve a 3, a −0.8% day can deserve an 8. Collapsing any of these boundaries reproduces a product that already exists — a news feed, a movers list, or a black-box score.</p>
+  </div>
+
+  <div class="foot"><span>Oreum — Product &amp; Intelligence Brief</span><span class="pg">05</span></div>
+</div>
+
+<!-- ============================ 05 PIPELINE ============================ -->
+<div class="page">
+  <div class="secno num">05</div>
+  <div class="kicker">The Canonical Pipeline</div>
+  <h1>From source data to a sentence worth reading</h1>
+  <p class="lede">Every layer is deterministic except where text must be read or written. The database is not required to mirror this diagram one table at a time — the separation is conceptual, and it guides boundaries as the system grows.</p>
+
+  <div class="pipe">
+    <div class="pipe-stage"><span class="pipe-name">Source data</span><span class="pipe-desc">provider prices &amp; volume · news · filings · macro releases — external, untrusted</span></div>
+    <div class="pipe-arrow">↓ &nbsp;<span class="small">validate shape, preserve values</span></div>
+    <div class="pipe-stage"><span class="pipe-name">Normalized facts</span><span class="pipe-desc">actual / expected / previous / reference preserved before meaning</span></div>
+    <div class="pipe-arrow">↓ &nbsp;<span class="small">measure &amp; structure</span></div>
+    <div class="pipe-stage"><span class="pipe-name">Observations + Events</span><span class="pipe-desc">computed market properties · structured happenings</span></div>
+    <div class="pipe-arrow">↓ &nbsp;<span class="small">detect what is unusual</span></div>
+    <div class="pipe-stage derived"><span class="pipe-name">Signals</span><span class="pipe-desc">price anomaly · volume anomaly · relative-performance anomaly · surprises</span></div>
+    <div class="pipe-arrow">↓ &nbsp;<span class="small">interpret through context &amp; graph</span></div>
+    <div class="pipe-stage derived"><span class="pipe-name">Impact / Relevance</span><span class="pipe-desc">who else is touched, through which relationship · does it reach this investor</span></div>
+    <div class="pipe-arrow">↓ &nbsp;<span class="small">absolute thresholds — fire or stay silent</span></div>
+    <div class="pipe-stage derived"><span class="pipe-name">Attention</span><span class="pipe-desc">deterministic, backtestable, never rank-normalized</span></div>
+    <div class="pipe-arrow">↓ &nbsp;<span class="small">aggregate one situation</span></div>
+    <div class="pipe-stage derived"><span class="pipe-name">Intelligence Item</span><span class="pipe-desc">signals + events + impacts + context + evidence + attention</span></div>
+    <div class="pipe-arrow">↓ &nbsp;<span class="small">the LLM's only final word</span></div>
+    <div class="pipe-stage"><span class="pipe-name">Explanation</span><span class="pipe-desc">concise prose, evidence-linked, inference marked</span></div>
+    <div class="pipe-arrow">↓</div>
+    <div class="pipe-stage human"><span class="pipe-name">Email · Feed · Ticker</span><span class="pipe-desc">do I need to care? · what happened? · why is it happening?</span></div>
+  </div>
+
+  <p class="small muted">Solid boxes hold facts and structure; dashed boxes hold derived intelligence. Global layers are computed once and shared across all users; watchlists and positions enter only at relevance — a separate personalization layer protected by row-level security.</p>
+
+  <div class="foot"><span>Oreum — Product &amp; Intelligence Brief</span><span class="pg">06</span></div>
+</div>
+
+<!-- ============================ 06 CONTEXT & GRAPH ============================ -->
+<div class="page">
+  <div class="secno num">06</div>
+  <div class="kicker">Context &amp; Second-Order Effects</div>
+  <h1>The graph discovers impact. It never decides attention.</h1>
+  <p class="lede">Context is interconnected rather than strictly hierarchical — macro conditions shape markets, sectors, companies, and portfolios, and effects run in both directions.</p>
+
+  <div class="ladder">
+    <span class="lnode">Macro</span><span class="lsep">↔</span>
+    <span class="lnode">Market</span><span class="lsep">↔</span>
+    <span class="lnode">Sector</span><span class="lsep">↔</span>
+    <span class="lnode">Company</span><span class="lsep">↔</span>
+    <span class="lnode">Portfolio</span>
+  </div>
+
+  <p>Companies are connected by typed, hand-curated relationships — <span class="mono small">supplier · customer · competitor · sector · technology · geography · macro · market</span>. The graph answers one question: <strong>who could this affect, and through what relationship?</strong> It proposes propagation paths; it holds no vote on how much anything matters.</p>
+
+  <h2>A second-order example</h2>
+  <div class="panel">
+    <p class="small" style="margin-bottom:2mm;"><strong>Observed:</strong> Microsoft raises capital-expenditure guidance, citing AI infrastructure demand.</p>
+    <div class="chain">
+      <span class="cnode"><b>MSFT</b> capex guidance ↑</span><span class="csep">→</span>
+      <span class="cnode">customer relationship</span><span class="csep">→</span>
+      <span class="cnode inferred">possible order-book tailwind: <b>AVGO</b>, <b>NVDA</b>, <b>ANET</b></span>
+    </div>
+    <p class="small muted" style="margin:2mm 0 0;">One observed event, one observed edge, one clearly-labelled inference. The investor holding Broadcom sees why this reached them — the path is part of the item.</p>
+  </div>
+
+  <div class="panel">
+    <p class="small" style="margin-bottom:2mm;"><strong>A macro chain — and why Oreum is careful with it:</strong></p>
+    <div class="chain">
+      <span class="cnode">Oil <span class="num">+8%</span></span><span class="csep">→</span>
+      <span class="cnode inferred">inflation pressure</span><span class="csep">→</span>
+      <span class="cnode inferred">rates expectations</span><span class="csep">→</span>
+      <span class="cnode inferred">technology pressure</span><span class="csep">→</span>
+      <span class="cnode inferred">possible impact: NVDA / AVGO</span>
+    </div>
+    <p class="small muted" style="margin:2mm 0 0;">A user does not need to own oil for this to matter — but every hop here is an inference, and chained inferences degrade fast. Propagation is therefore constrained: one hop in the initial system, a second hop only across two <em>observed</em> relationships, and macro chains presented as context rather than computed impact until they can carry confidence honestly.</p>
+  </div>
+
+  <p class="small">The system distinguishes, at every surface: <strong>observed facts</strong>, <strong>known events</strong>, and <strong>inferred relationships</strong>. Inference is rendered with lighter visual weight and named as inference. Nothing inferred is ever presented as certain.</p>
+
+  <div class="foot"><span>Oreum — Product &amp; Intelligence Brief</span><span class="pg">07</span></div>
+</div>
+
+<!-- ============================ 07 ATTENTION ENGINE ============================ -->
+<div class="page">
+  <div class="secno num">07</div>
+  <div class="kicker">The Attention Engine</div>
+  <h1>How much should this investor care, right now?</h1>
+  <p class="lede">Attention is the product's central number — and its most disciplined one. It is deterministic, absolute, historically validated, and separate from direction.</p>
+
+  <div class="grid2">
+    <div class="panel">
+      <div style="display:flex; justify-content:space-between; align-items:baseline;">
+        <span class="mono" style="font-weight:600;">NVDA <span class="dirdown">−2.0%</span></span>
+        <span class="attn"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><span class="attn-label">3/10</span></span>
+      </div>
+      <p class="small muted" style="margin:2mm 0 0;">Ordinary volatility for this name. No event, volume unremarkable, in line with the sector. Suppressed.</p>
+    </div>
+    <div class="panel">
+      <div style="display:flex; justify-content:space-between; align-items:baseline;">
+        <span class="mono" style="font-weight:600;">NVDA <span class="dirdown">−0.8%</span></span>
+        <span class="attn"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><span class="attn-label">8/10</span></span>
+      </div>
+      <p class="small muted" style="margin:2mm 0 0;">Small move, material unexpected event, unusual volume. Fires — the move is not the story.</p>
+    </div>
+  </div>
+  <p class="small muted" style="margin-top:1mm;">Attention renders on a neutral scale — never green or red. Color belongs to direction alone.</p>
+
+  <h2>Version 1 — decided structure, undecided weights</h2>
+  <div class="grid2">
+    <div>
+      <h3>Observations</h3>
+      <ul class="tight small">
+        <li>1-day return · rolling volatility · volatility-adjusted return</li>
+        <li>market &amp; sector return · market- &amp; sector-relative return</li>
+        <li>volume, and volume vs. rolling baseline</li>
+        <li class="muted">later: volatility expansion, multi-day movement</li>
+      </ul>
+      <h3>Signal families</h3>
+      <ul class="tight small">
+        <li>price anomaly</li>
+        <li>relative-performance anomaly</li>
+        <li>volume anomaly</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Conceptual composition</h3>
+      <p class="small mono" style="line-height:1.9;">signal strength<br>+ context<br>+ impact<br>+ personal relevance<br>+ evidence / confidence<br><span class="muted">────────────────</span><br>→ attention</p>
+      <p class="small muted">Exact weights are <strong>deliberately not fixed</strong> — v1 is an experiment, and no weighting is presented as final truth before historical validation.</p>
+    </div>
+  </div>
+
+  <h2>Two structural decisions that are fixed</h2>
+  <ul class="tight small">
+    <li><strong>Thresholds are absolute, never rank-normalized.</strong> Scoring against the day's cross-section always crowns a “top mover,” making quiet days impossible. Attention compares a situation to its own history.</li>
+    <li><strong>Fire-or-silent precedes 0–10.</strong> The first engine is a threshold deciding whether the email says anything at all; the graded score grows out of it when the Feed needs ranking.</li>
+  </ul>
+  <p class="small muted">RSI and moving averages are ticker context, not attention inputs. RSI 72 does not mean sell.</p>
+
+  <div class="foot"><span>Oreum — Product &amp; Intelligence Brief</span><span class="pg">08</span></div>
+</div>
+
+<!-- ============================ 08 VALIDATION ============================ -->
+<div class="page">
+  <div class="secno num">08</div>
+  <div class="kicker">Validation &amp; Backtesting</div>
+  <h1>“Better than the biggest movers” — proven, not asserted</h1>
+  <p class="lede">The goal is not price prediction. The goal is: can Oreum identify meaningful situations while suppressing normal market noise? That claim is testable, and the system is built to be tested.</p>
+
+  <h2>Baselines it must beat</h2>
+  <table>
+    <tr><th class="num" style="width:8mm;">B1</th><th>Baseline</th><th>What it represents</th></tr>
+    <tr><td class="num">B1</td><td>Biggest percentage movers</td><td>What every finance app already shows</td></tr>
+    <tr><td class="num">B2</td><td>Volatility-adjusted movers</td><td>Movers, corrected for each name's normal behavior</td></tr>
+    <tr><td class="num">B3</td><td>Move + volume</td><td>Movement with participation behind it</td></tr>
+    <tr><td class="num">B4</td><td>Move + relative performance + volume</td><td>The strongest simple deterministic screen</td></tr>
+  </table>
+
+  <h2>Ground truth is constructed, not assumed</h2>
+  <p class="small">Attention has no natural label, so the target is built from two sources: <strong>weak labels</strong> — known event dates (earnings, guidance changes, major announcements), checkable in retrospect, giving recall targets for free — and <strong>human labels</strong> — retrospective judgment of “would I have wanted to be told about this that day?”, recorded with timestamp and basis so they stay point-in-time honest.</p>
+
+  <h2>What success measures</h2>
+  <div class="grid2">
+    <ul class="tight small">
+      <li><strong>Recall of major events</strong> at high attention — a missed earnings blowup is the catastrophic failure</li>
+      <li><strong>Precision at the top band</strong> — items that fire should be endorsed in hindsight</li>
+    </ul>
+    <ul class="tight small">
+      <li><strong>Quiet-day rate</strong> vs. baselines — a system that is never quiet has failed its own definition of success</li>
+      <li><strong>Stability</strong> — small input perturbations must not flip scores across bands, across market regimes</li>
+    </ul>
+  </div>
+
+  <h2>What backtesting must avoid</h2>
+  <ul class="tight small">
+    <li>Look-ahead bias and future-information leakage — replay uses only what was knowable that day</li>
+    <li>Treating revised or restated information as if it was historically known — adjusted price series restate on splits and dividends, and derived data carries a recompute-on-restatement policy</li>
+    <li>Survivorship bias, acknowledged where the curated universe implies it</li>
+    <li><strong>Optimizing prediction by accident:</strong> future returns may serve as supporting evidence — high-attention items being followed by elevated realized volatility is a sanity check — but never as the objective. A system optimized on future returns is a price predictor with a different name.</li>
+  </ul>
+
+  <div class="foot"><span>Oreum — Product &amp; Intelligence Brief</span><span class="pg">09</span></div>
+</div>
+
+<!-- ============================ 09 MATH / LLM ============================ -->
+<div class="page">
+  <div class="secno num">09</div>
+  <div class="kicker">Math Decides. LLM Explains.</div>
+  <h1>An authority boundary, not a pipeline position</h1>
+  <p class="lede">Language models participate early — turning messy text into structure — but their output there is untrusted input, schema-validated like any external payload. Only prose is ever the LLM's final word. Nothing a model says can move an attention score.</p>
+
+  <div class="grid2">
+    <div class="panel">
+      <h3>Deterministic systems own</h3>
+      <ul class="tight small">
+        <li>calculations and normalization</li>
+        <li>anomaly detection and comparisons</li>
+        <li>signal strength</li>
+        <li>relevance</li>
+        <li>deterministic impact computation</li>
+        <li>attention and ranking</li>
+        <li>objectively measurable direction</li>
+        <li>historical replay and backtesting</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>The LLM owns</h3>
+      <ul class="tight small">
+        <li>reading messy, unstructured information</li>
+        <li>extraction and classification</li>
+        <li>entity identification</li>
+        <li>evidence extraction</li>
+        <li>summarization</li>
+        <li>explanation</li>
+      </ul>
+      <p class="small muted" style="margin:2mm 0 0;">…and is never the authority for the attention score.</p>
+    </div>
+  </div>
+
+  <h2>Why the boundary holds</h2>
+  <p class="small">Trust in a filtering product dies from confident wrongness. Two rules keep the model honest by construction:</p>
+  <ul class="tight small">
+    <li><strong>Impact direction derives from the relationship and event type, never from headline sentiment.</strong> A customer's capex increase is mechanically a supplier tailwind; how the headline sounds is noise. A wrong direction costs trust that does not come back.</li>
+    <li><strong>Every explanation retains evidence and source attribution.</strong> Claims sit next to their sources; inference is marked as inference. Source facts and links are stored — never full article text.</li>
+  </ul>
+
+  <p class="small muted">At the current universe size, entity identification is an alias table and string matching, not a model capability — the LLM is reserved for problems that actually need one.</p>
+
+  <div class="foot"><span>Oreum — Product &amp; Intelligence Brief</span><span class="pg">10</span></div>
+</div>
+
+<!-- ============================ 10 SURFACES ============================ -->
+<div class="page">
+  <div class="secno num">10</div>
+  <div class="kicker">Product Surfaces</div>
+  <h1>Email leads. Feed and Ticker investigate.</h1>
+
+  <h2>Email — “Do I need to care?”</h2>
+  <p class="small">The primary surface. One to two minutes, once or twice a day. It fires on threshold-crossing situations, stays silent otherwise, and always shows its work:</p>
+
+  <div class="email">
+    <div class="hdr"><span><b>Oreum</b> — Daily intelligence</span><span class="mono">Tue 1 Sep · 1 min read</span></div>
+    <div class="item">
+      <span class="sym">NVDA <span class="dirup">+10.2%</span></span>
+      <span class="why">New China supply agreement announced; volume 4.1× baseline.</span>
+      <span class="attn"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><span class="attn-label">9</span></span>
+    </div>
+    <div class="item">
+      <span class="sym">INTC <span class="dirdown">−11.4%</span></span>
+      <span class="why">CEO steps down; largest single-day move in 14 months.</span>
+      <span class="attn"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><span class="attn-label">8</span></span>
+    </div>
+    <div class="counter"><span class="num">25</span> companies checked · <span class="num">47</span> stories evaluated · <span class="num">45</span> suppressed — <em>everything else was noise.</em></div>
+  </div>
+  <p class="small muted" style="margin-top:2mm;">The filtered-out counter is permanent — a quiet email is only credible when the product shows what it suppressed.</p>
+
+  <div class="grid2" style="margin-top:4mm;">
+    <div class="panel panel-wash">
+      <h3>Feed — “What happened?”</h3>
+      <p class="small" style="margin:0;">Attention-ranked Intelligence Items in two views — <strong>My Stocks</strong> and <strong>Broader Market</strong>. Each card carries what happened, direction, attention, concise explanation, context, and evidence. Direction and attention never share a visual channel.</p>
+    </div>
+    <div class="panel panel-wash">
+      <h3>Ticker — “Why is it happening?”</h3>
+      <p class="small" style="margin:0;">The investigation surface: current price, chart and historical trajectory, volume, relative performance, events and news, market/sector context, exposures, connections and indirect effects — with explanation and evidence. RSI and moving averages appear as context, never as advice.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>Oreum — Product &amp; Intelligence Brief</span><span class="pg">11</span></div>
+</div>
+
+<!-- ============================ 11 LIVE DATA ============================ -->
+<div class="page">
+  <div class="secno num">11</div>
+  <div class="kicker">Live Market Intelligence</div>
+  <h1>Four clocks, honestly labelled</h1>
+  <p class="lede">Oreum is not a once-per-day price application. When the investigation surface is open during market hours, the price must move — a platform showing $190 at 2pm because the daily bar was fetched at 9:30 is lying by omission. Different systems run on different clocks, and each shows its timestamp.</p>
+
+  <div style="margin: 4mm 0;">
+    <div class="clock"><span class="cname">Live / Near-live</span><span>Current price, near-live volume, market status, provider timestamp</span><span class="cstat"><span class="chip chip-open">provider decision open</span></span></div>
+    <div class="clock"><span class="cname">Intraday</span><span>Observations, anomalies, signals — attention updates deliberately deferred</span><span class="cstat"><span class="chip">planned</span></span></div>
+    <div class="clock"><span class="cname">Event-driven</span><span>Earnings, news, macro events, material company announcements</span><span class="cstat"><span class="chip">planned</span></span></div>
+    <div class="clock"><span class="cname">Daily</span><span>Finalized bars, daily intelligence, the email</span><span class="cstat"><span class="chip chip-dark">operational</span></span></div>
+  </div>
+
+  <p class="small">Live market state and finalized historical bars are intentionally separate concepts, and they never impersonate each other: historical closes are labelled with their trade date, live prices with their provider timestamp and freshness state.</p>
+
+  <div class="panel panel-wash">
+    <p class="small" style="margin:0;"><strong>Sequencing decision:</strong> the v1 daily email needs no live provider at all — it works entirely from finalized bars the pipeline already holds. The live layer is its own roadmap phase, gated on an explicit provider decision: acceptable delay (true real-time vs. 15-minute delayed), cost, and rate limits, recorded before integration rather than discovered after. This ordering keeps the primary surface unblocked while the platform earns its live upgrade.</p>
+  </div>
+
+  <p class="small muted">The current provider integration supplies historical daily data only — a provider limitation, not the product architecture. The historical layer's freshness is already monitored end-to-end (cache age reported by the health endpoint, staleness thresholds tuned so weekends don't cry wolf).</p>
+
+  <div class="foot"><span>Oreum — Product &amp; Intelligence Brief</span><span class="pg">12</span></div>
+</div>
+
+<!-- ============================ 12 EXAMPLES ============================ -->
+<div class="page">
+  <div class="secno num">12</div>
+  <div class="kicker">Example Situations</div>
+  <h1>The model, walked through four mornings</h1>
+
+  <div class="panel">
+    <h3>The move that isn't a story</h3>
+    <p class="small" style="margin:0;"><span class="mono">AMD <span class="dirdown">−2.3%</span></span> on an ordinary session — volatility in line with its history, volume at baseline, the sector down similarly, no event. Every observation is computed; no signal crosses its threshold. <strong>Nothing fires. This non-email is the product working.</strong></p>
+  </div>
+
+  <div class="panel">
+    <h3>The story that isn't a move</h3>
+    <p class="small" style="margin:0;"><span class="mono">NVDA <span class="dirdown">−0.8%</span></span>, but an unexpected material event landed and volume is far above baseline. Price anomaly: none. Event signal plus volume anomaly: strong. Attention <span class="attn"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><span class="attn-label">8</span></span> — the email explains the event, not the price.</p>
+  </div>
+
+  <div class="panel">
+    <h3>The second-order morning</h3>
+    <p class="small" style="margin:0;">Microsoft raises capex guidance. The investor holds Broadcom, not Microsoft. The event maps through an observed customer relationship to a possible order-book tailwind, direction derived from the edge type — mechanically, not from headline tone. The item reaches the email <em>labelled as inference, path visible</em>: “Why am I seeing this? MSFT is a major AVGO customer.”</p>
+  </div>
+
+  <div class="panel">
+    <h3>One situation, not five alerts</h3>
+    <p class="small" style="margin:0;">An earnings release produces an EPS surprise, a revenue surprise, new guidance, a price reaction, and unusual volume. Legacy alerting sends five notifications. Oreum aggregates them into <strong>one Intelligence Item</strong> — one situation, one explanation, one attention score, evidence attached.</p>
+  </div>
+
+  <div class="foot"><span>Oreum — Product &amp; Intelligence Brief</span><span class="pg">13</span></div>
+</div>
+
+<!-- ============================ 13 SYSTEM ARCHITECTURE ============================ -->
+<div class="page">
+  <div class="secno num">13</div>
+  <div class="kicker">System Architecture</div>
+  <h1>A shared intelligence layer, a private personal layer</h1>
+  <p class="lede">Global facts, observations, signals, context, and intelligence are processed once and shared by everyone. Watchlists and positions live in a separate personalization layer, protected by row-level security, and enter the pipeline only at relevance.</p>
+
+  <h2>Boundaries the system enforces</h2>
+  <table>
+    <tr><th style="width:34mm;">Boundary</th><th>Rule</th></tr>
+    <tr><td>Trust</td><td>Source data is external and untrusted; normalization validates its shape. LLM extraction output crosses the same boundary and is validated the same way.</td></tr>
+    <tr><td>Clock</td><td>Live state and finalized history are different data layers with different freshness semantics; neither impersonates the other.</td></tr>
+    <tr><td>User</td><td>Per-user data is scoped by database-enforced ownership; global reference data is readable by all, writable by none of the client-facing keys.</td></tr>
+    <tr><td>Inference</td><td>Observed facts, known events, and inferred propagation remain distinguishable in storage, in scoring, and on screen.</td></tr>
+    <tr><td>Cache</td><td>Every external data call lands behind a cache or persistence boundary; nothing paid is fetched during rendering.</td></tr>
+  </table>
+
+  <h2>Foundation in place today</h2>
+  <div class="grid2">
+    <ul class="tight small">
+      <li>Curated company universe and per-user watchlists, RLS-protected</li>
+      <li>Finalized daily OHLCV with gap-filling ingestion and market-calendar tracking</li>
+      <li>Provider payloads schema-validated — a drifted field fails loudly, never silently</li>
+    </ul>
+    <ul class="tight small">
+      <li>Cache freshness monitored end-to-end via the health endpoint</li>
+      <li>Authentication (magic link, GitHub, Google) with defense in depth down to the database</li>
+      <li>Feed and Ticker interface shells; intelligence currently exercised by clearly-quarantined fixtures</li>
+    </ul>
+  </div>
+
+  <p class="small muted">The conceptual data layers — facts → observations → events → signals → impacts → intelligence items — guide schema boundaries as they materialize; the schema is deliberately not forced to mirror the model prematurely. Because the universe is small and the granularity daily, every derived layer can be recomputed from scratch in one pass — no streaming infrastructure, no incremental-update machinery, full reproducibility by construction.</p>
+
+  <div class="foot"><span>Oreum — Product &amp; Intelligence Brief</span><span class="pg">14</span></div>
+</div>
+
+<!-- ============================ 14 ROADMAP ============================ -->
+<div class="page">
+  <div class="secno num">14</div>
+  <div class="kicker">Roadmap</div>
+  <h1>Sequenced by value, gated by proof</h1>
+  <p class="lede">Every phase ends at a falsifiable gate. The email ships early because it is the product's core claim — and the fastest thing to test against reality.</p>
+
+  <div class="phase"><span class="pno">P0</span><div>
+    <h3>Foundation</h3>
+    <p>Benchmark and sector reference data · real price chart from cached bars · data-quality checks on the historical pipeline.</p>
+    <p class="gate"><b>Gate:</b> the Ticker investigates with real data; benchmarks exist for relative-performance work.</p>
+  </div></div>
+
+  <div class="phase"><span class="pno">P1</span><div>
+    <h3>The Email — Attention v1</h3>
+    <p>Observations from finalized bars · absolute volatility-adjusted thresholds · historical replay and labeled evaluation set · news ingestion with per-story classification · direction from event/relationship type · the daily email with the filtered-out counter.</p>
+    <p class="gate"><b>Gate:</b> the email is read daily and replaces raw alerts. If it isn't opened after two weeks, stop and rethink before building further.</p>
+  </div></div>
+
+  <div class="phase"><span class="pno">P2</span><div>
+    <h3>Live market layer</h3>
+    <p>Provider decision first (delay tolerance, cost) · current price and near-live volume · live market status · intraday-updating chart · freshness semantics extended.</p>
+    <p class="gate"><b>Gate:</b> the platform shows the current session, clearly separated from finalized history.</p>
+  </div></div>
+
+  <div class="phase"><span class="pno">P3</span><div>
+    <h3>Event intelligence</h3>
+    <p>Earnings calendar and structured events · guidance and revisions · macro events · event-to-signal conversion · aggregation into situations. Consensus-expectation facts only when an estimates source is justified.</p>
+    <p class="gate"><b>Gate:</b> Oreum explains why something important happened without conflating story, signal, and attention.</p>
+  </div></div>
+
+  <div class="phase"><span class="pno">P4</span><div>
+    <h3>Context &amp; impact</h3>
+    <p>Hand-curated typed relationships · one-hop propagation · direction from edge type · second-order items in Feed and email · impact confidence.</p>
+    <p class="gate"><b>Gate:</b> Oreum explains why something matters when the user's ticker isn't mentioned.</p>
+  </div></div>
+
+  <div class="phase"><span class="pno">P5</span><div>
+    <h3>Intelligence &amp; explanation</h3>
+    <p>Evidence-backed LLM explanations · attention 0–10 ranking grown from the threshold · chart event and attention markers · contextual indicators · pre/post-market intelligence.</p>
+  </div></div>
+
+  <div class="phase" style="border-bottom:none;"><span class="pno">P6</span><div>
+    <h3>Personalization &amp; expansion</h3>
+    <p>Broker imports · positions and sizing · portfolio allocation · custom watchlists · advanced relevance · expanded coverage · feedback loops · additional asset classes.</p>
+  </div></div>
+
+  <div class="foot"><span>Oreum — Product &amp; Intelligence Brief</span><span class="pg">15</span></div>
+</div>
+
+<!-- ============================ 15 NOT / PHILOSOPHY ============================ -->
+<div class="page">
+  <div class="secno num">15</div>
+  <div class="kicker">What Oreum Is Not</div>
+  <h1>Boundaries that will not move</h1>
+
+  <div class="notbox">
+    <div class="not"><b>Not a trading platform</b><span>No execution, no order flow, no broker features.</span></div>
+    <div class="not"><b>Not a stock picker</b><span>No buy/sell calls, no targets, no “top picks.”</span></div>
+    <div class="not"><b>Not an investment advisor</b><span>Context and evidence, never recommendations.</span></div>
+    <div class="not"><b>Not a news aggregator</b><span>Stories are inputs to evaluation, not the product.</span></div>
+    <div class="not"><b>Not an AI summarizer</b><span>The LLM explains what math decided; it decides nothing.</span></div>
+    <div class="not"><b>Not an engagement machine</b><span>Success is measured in attention saved, not sessions.</span></div>
+  </div>
+
+  <p><strong>Oreum never forecasts prices.</strong> No targets, no scenarios about where a stock goes, no probability of a move. Technical indicators appear only as context. The universe stays fixed and hand-curated — widening it is a deliberate roadmap decision, never a side effect of a filter.</p>
+
+  <hr class="rule">
+
+  <div style="margin-top:8mm;">
+    <div class="principle" style="font-size:15pt;">The product is the restraint.
+      <span class="why" style="font-size:9.5pt;">Every system in this brief — the vocabulary that refuses to conflate, the thresholds that permit silence, the graph that proposes but never decides, the model that explains but never scores — exists so that when Oreum speaks, it has earned it. Know what changed. Know why it matters. Ignore the rest.</span>
+    </div>
+  </div>
+
+  <div class="foot"><span>Oreum — Product &amp; Intelligence Brief</span><span class="pg">16</span></div>
+</div>
+
+<!-- ============================ 16 OPEN QUESTIONS ============================ -->
+<div class="page">
+  <div class="secno num">16</div>
+  <div class="kicker">Current Open Questions</div>
+  <h1>Genuinely unresolved — and labelled that way</h1>
+  <p class="lede">Everything else in this brief is decided direction. These items are not, and pretending otherwise would break the product's own rule about presenting inference as certainty.</p>
+
+  <div class="openq">
+    <h3>Attention weighting and calibration</h3>
+    <p>The composition of signal strength, context, impact, relevance, and confidence into a score is structurally decided; the weights, threshold levels, and band anchors (“what does an 8 mean?”) are not. They will be set by historical replay against the labeled evaluation set — not declared in advance.</p>
+  </div>
+
+  <div class="openq">
+    <h3>Live-data provider strategy</h3>
+    <p>True real-time vs. 15-minute delayed, which provider, at what cost and rate limits. The decision gates the live phase and will be recorded before integration. The current provider also publishes finalized daily data at an undocumented hour, which determines whether the daily email is a pre-open or a mid-morning product.</p>
+  </div>
+
+  <div class="openq">
+    <h3>Email cadence and timing</h3>
+    <p>Morning (“yesterday's session plus today's calendar”) vs. evening (“today's session”), and whether high-attention situations ever justify a second, event-driven send.</p>
+  </div>
+
+  <div class="openq">
+    <h3>Consensus-estimates source</h3>
+    <p>“Expected vs. actual” facts require licensed estimates data — among the most expensive market-data categories. Until a source is justified, the price reaction plus the classified event carries the story.</p>
+  </div>
+
+  <div class="openq">
+    <h3>News deduplication method</h3>
+    <p>One story from five outlets must become one event with five source links. The starting method is deliberately simple (ticker, title similarity, time window); whether it needs embeddings will be decided against real data, not in the abstract.</p>
+  </div>
+
+  <div style="margin-top:auto; padding-top:8mm; display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--hairline);">
+    <span style="display:inline-flex; align-items:center; gap:2.5mm; font-weight:500; font-size:11pt;">
+      <svg viewBox="0 0 48 48" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 34 Q9 25 14 30 Q20 18 26 26 Q34 7 45 32"/></svg>
+      oreum
+    </span>
+    <span class="small muted mono">Product &amp; Intelligence Brief · September 2026</span>
+  </div>
+
+  <div class="foot"><span>Oreum — Product &amp; Intelligence Brief</span><span class="pg">17</span></div>
+</div>
+
+</body>
+</html>

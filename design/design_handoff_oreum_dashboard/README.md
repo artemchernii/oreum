@@ -1,3 +1,14 @@
+> **Status: historical base, not current spec.** This bundle was handed over
+> during the milestone-numbered plan and still uses that vocabulary — it
+> describes Oreum as a "news-filtering tool" and refers to milestones (M2, M5)
+> that the phase roadmap in `PLAN.md` replaced. The *visuals* remain the base
+> the token layer was derived from, and the palette, spacing and type are still
+> the reference. The product framing is superseded.
+>
+> It does not cover two surfaces the product now needs: **the daily email**
+> (the primary surface) and **the attention visual**. Both are open design
+> problems, tracked in `docs/design-system.md`. Later design iterations arrive
+> as their own handoff rather than being edited into this one.
 
 # Handoff: Oreum Dashboard (M2 — Auth + Persistent Watchlist UI shell)
 
