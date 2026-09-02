@@ -190,6 +190,29 @@ the authority for attention scoring.
 - No mock intelligence treated as production truth.
 - No feature outside the active phase without an explicit roadmap decision.
 
+## Later (don't touch)
+
+Carried over from the original plan and still binding: price forecasting
+(never), scenario simulators, chat, public SEO pages, billing and paid tiers,
+mobile apps, screeners, multi-timeframe analysis, a separate Python engine,
+and widening the universe beyond the curated list.
+
+## Open questions
+
+- Email timing: morning (“yesterday's session plus today's calendar”) versus
+  evening (“today's session”) — partly determined by when the provider
+  actually publishes finalized bars, which is undocumented and should be
+  measured.
+- Live-data provider: true real-time versus 15-minute delayed, which
+  provider, at what cost and rate limits. Gates Phase 2.
+- News licence: Massive Basic includes the news endpoint at no cost, but what
+  the licence permits regarding storing headlines and links is unconfirmed.
+- Deduplication method: start with ticker, title similarity, and a time
+  window; decide whether embeddings are needed against real data, not in the
+  abstract.
+- Consensus-estimates source, if actual/expected facts are ever justified.
+- Domain: `oreum.markets` is the likely candidate and is not bought yet.
+
 ## Decision log
 
 The redesign decisions are recorded in [`docs/decisions.md`](docs/decisions.md).
