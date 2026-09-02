@@ -1,5 +1,5 @@
 import { Price, PriceChange } from "@/components/price-change";
-import { formatTradeDate } from "@/lib/quotes";
+import { formatTradeDate } from "@/lib/format";
 
 export function TickerHeader({
   symbol,

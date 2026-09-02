@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildQuote, formatTradeDate } from "@/lib/quotes";
+import { buildQuote } from "@/lib/quotes";
 
 describe("buildQuote", () => {
   it("reads the price from the newest bar, not the oldest", () => {
@@ -81,24 +81,5 @@ describe("buildQuote", () => {
     // Newest value survives; oldest is the 30th back, not the 45th.
     expect(quote?.series.at(-1)).toBe(45);
     expect(quote?.series[0]).toBe(16);
-  });
-});
-
-describe("formatTradeDate", () => {
-  it("formats as weekday, day, month", () => {
-    expect(formatTradeDate("2026-08-28")).toBe("Fri 28 Aug");
-  });
-
-  it("does not shift the date for viewers west of UTC", () => {
-    // The bug this guards: `new Date("2026-08-28")` is UTC midnight, so
-    // formatting in a negative-offset zone renders the 27th. A trade date is
-    // a calendar date, not an instant.
-    const original = process.env.TZ;
-    process.env.TZ = "America/Los_Angeles";
-    try {
-      expect(formatTradeDate("2026-08-28")).toBe("Fri 28 Aug");
-    } finally {
-      process.env.TZ = original;
-    }
   });
 });

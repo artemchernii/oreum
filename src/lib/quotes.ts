@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { RANGES, type HistoryBar } from "@/lib/price-history";
 
 /**
  * Reading the price cache.
@@ -113,17 +114,34 @@ export function buildQuote(
 }
 
 /**
- * "Fri 28 Aug" — the label that stops a stale close reading as a live price.
+ * Every close held for `symbol` within the longest offered window.
  *
- * Formatted in UTC deliberately. A trade date is a calendar date, not an
- * instant; rendering it in the viewer's zone moves it a day for anyone west of
- * Greenwich.
+ * Fetches the full 2Y once and lets the client slice it. Around 500 numbers is
+ * a few kilobytes on the wire, and it makes the timeframe control instant with
+ * no loading state and no round trip — the alternative is five server
+ * fetches to draw subsets of data we already sent.
  */
-export function formatTradeDate(isoDate: string): string {
-  return new Date(`${isoDate}T00:00:00Z`).toLocaleDateString("en-GB", {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-    timeZone: "UTC",
-  });
+export async function getPriceHistory(symbol: string): Promise<HistoryBar[]> {
+  const supabase = await createClient();
+
+  const since = new Date();
+  since.setUTCDate(since.getUTCDate() - RANGES["2Y"]);
+
+  const { data, error } = await supabase
+    .from("daily_bars")
+    .select("trade_date, close")
+    .eq("symbol", symbol)
+    .gte("trade_date", since.toISOString().slice(0, 10))
+    // Ascending is safe here, unlike in `getQuotes`: the chart wants the whole
+    // window rather than the newest N, and the limit below is above two years
+    // of sessions, so truncation cannot reach the recent end.
+    .order("trade_date", { ascending: true })
+    .limit(800);
+
+  if (error) throw error;
+
+  return (data ?? []).map((row) => ({
+    date: row.trade_date,
+    close: row.close,
+  }));
 }
