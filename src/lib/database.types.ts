@@ -32,20 +32,37 @@ export type Database = {
           name: string;
           sector_line: string;
           created_at: string;
+          kind: string;
+          sector: string | null;
+          benchmark_symbol: string | null;
         };
         Insert: {
           symbol: string;
           name: string;
           sector_line: string;
           created_at?: string;
+          kind?: string;
+          sector?: string | null;
+          benchmark_symbol?: string | null;
         };
         Update: {
           symbol?: string;
           name?: string;
           sector_line?: string;
           created_at?: string;
+          kind?: string;
+          sector?: string | null;
+          benchmark_symbol?: string | null;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "companies_benchmark_symbol_fkey";
+            columns: ["benchmark_symbol"];
+            isOneToOne: false;
+            referencedRelation: "companies";
+            referencedColumns: ["symbol"];
+          },
+        ];
       };
       watchlist: {
         Row: {

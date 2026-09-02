@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/auth";
+import { isCompany } from "@/lib/universe";
 
 export type UniverseCompany = {
   symbol: string;
@@ -20,7 +21,7 @@ export async function getWatchlist(): Promise<UniverseCompany[]> {
 
   const { data, error } = await supabase
     .from("watchlist")
-    .select("symbol, companies (symbol, name, sector_line)")
+    .select("symbol, companies (symbol, name, sector_line, kind)")
     .order("added_at", { ascending: true });
 
   if (error) throw error;
@@ -28,7 +29,10 @@ export async function getWatchlist(): Promise<UniverseCompany[]> {
   return (data ?? [])
     .map((row) => {
       const company = row.companies;
-      return company
+      // The `kind` check is defence in depth: `addTicker` refuses benchmark
+      // symbols, but the FK alone would accept them, and a benchmark row that
+      // slipped in must still never render as a holding.
+      return company && isCompany(company)
         ? {
             symbol: company.symbol,
             name: company.name,
@@ -39,13 +43,19 @@ export async function getWatchlist(): Promise<UniverseCompany[]> {
     .filter((c): c is UniverseCompany => c !== null);
 }
 
-/** The full universe. Reference data, readable signed out. */
+/**
+ * The full universe. Reference data, readable signed out.
+ *
+ * Companies only: benchmark rows share the table so `daily_bars` can hold
+ * their bars, but they are calibration data, not universe entries.
+ */
 export async function getUniverse(): Promise<UniverseCompany[]> {
   const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("companies")
     .select("symbol, name, sector_line")
+    .eq("kind", "company")
     .order("symbol", { ascending: true });
 
   if (error) throw error;
@@ -62,10 +72,13 @@ export async function getCompany(
 ): Promise<UniverseCompany | null> {
   const supabase = await createClient();
 
+  // Benchmarks resolve to null so /ticker/SPY is a 404, same as any symbol
+  // outside the universe.
   const { data, error } = await supabase
     .from("companies")
     .select("symbol, name, sector_line")
     .eq("symbol", symbol.toUpperCase())
+    .eq("kind", "company")
     .maybeSingle();
 
   if (error) throw error;
