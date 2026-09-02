@@ -110,6 +110,13 @@ Everything in this repo is English: code, comments, commits, docs, UI copy.
 - The rule below still decides *whether* a test is warranted. Integration and
   configuration are verified against the real thing instead, because that is
   where nearly every real bug here has come from.
+- **End every reply with what to do next.** The last thing in every response is
+  a `Next` section: one to three numbered steps, one plain line each, the step
+  to do first at the top. Give the exact command or the exact thing to type
+  where there is one. Plain words, no jargon. When the work is finished and
+  nothing is waiting, say so in one line instead of inventing a step. A reply
+  that explains what happened without saying what to do about it is not
+  finished.
 
 ## Workflow
 
