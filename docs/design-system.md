@@ -138,6 +138,18 @@ light surfaces only", which is backwards.
 
 ## Open
 
+The bundle is the historical base: correct as a visual reference, superseded
+as product framing, and silent on two surfaces the product now leads with.
+
+- **The daily email has no design.** It is the primary surface — one or two
+  items, a filtered-out counter, and a legible quiet state — and nothing in
+  the bundle covers it. Email also cannot use the token layer: no CSS
+  variables, no `oklch()`, so the palette needs a resolved hex fallback and a
+  layout that survives a mail client.
+- **The attention visual is unresolved.** It must read independently of
+  direction — a negative move can be low attention, a small move high — so it
+  cannot borrow green/red. A neutral emphasis scale is the current intent, not
+  a decision.
 - Light mode is derived, not designed. Worth a pass once the dark build lands.
 - The bundle's search field reads "Search ticker or command", implying a
   command palette. Nothing in `PLAN.md` covers one.
