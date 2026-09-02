@@ -26,4 +26,8 @@ documentation.
 | Attention is validated against labeled situations, not future returns | Known event dates give weak labels; retrospective human judgment gives the rest. Metrics are event recall at high attention, precision at the top, quiet-day rate versus baselines, and stability. Future returns are supporting evidence, never the objective. |
 | Consensus estimates are deferred | "Expected" values require licensed estimates data, one of the most expensive data categories. Until justified, the price reaction plus the classified headline carries the story. |
 | Benchmark ETFs ride the existing ingestion | The grouped-daily response already contains every US ticker; keeping the benchmark rows unblocks relative performance at near-zero cost. |
+| Provider entitlements are probed, not assumed | Live prices and the earnings calendar are 403 on the current plan; news, market status, reference data and financials are not. Recorded in `docs/prices.md` with the date they were tested. |
+| Finnhub free is the live-price candidate | Verified real-time, 24-second lag. It has no candles or intraday volume, which no shipped feature needs — daily bars already carry volume. |
+| Live volume is deferred, not sourced | Adding a second market-data provider for a feature nothing requires would buy two sources of price truth and a reconciliation problem. |
+| Provider ticker tags are not relevance | An article about one company arrives tagged with several. News needs a deterministic relevance filter before an LLM ever sees it — that filter is both the quality control and the cost control. |
 | The dogfood kill-gate is restored | If the developer is not reading the daily email after two weeks, the hypothesis has failed and building continues only after a rethink. |

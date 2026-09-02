@@ -187,3 +187,70 @@ forever.
 Both are readable by everyone and writable by no one — no insert policy exists,
 so ingestion must use the secret key, which bypasses RLS. Verified: an
 anonymous insert is rejected `42501` on both.
+
+## Provider entitlements
+
+Probed against the live keys on 2026-09-02 rather than read from marketing
+pages. Anything not listed here was not tested.
+
+### Massive — Basic tier
+
+| Endpoint | Result | Use |
+| --- | --- | --- |
+| `/v2/aggs/grouped/…` | 200 | every US ticker for one date, one request |
+| `/v1/marketstatus/now` | 200 | live market open/closed |
+| `/v2/reference/news` | 200 | headline, publisher, url, `tickers[]`, description |
+| `/v3/reference/tickers/{t}` | 200 | market cap, CIK, SIC, company description |
+| `/vX/reference/financials` | 200 | reported statements, quarterly and TTM |
+| `/v2/snapshot/…` | **403** | live prices — not entitled |
+| `/benzinga/v1/earnings` | **403** | earnings calendar and estimates — not entitled |
+
+Two consequences. Live prices are not available here at any hour, which is why
+the live layer is its own phase rather than part of the foundation. And the
+grouped endpoint already returns benchmark ETFs — they arrive in the same
+response the universe is filtered out of, so relative-performance data costs no
+additional requests.
+
+The news `tickers[]` array is **not** a statement of relevance. A verified
+example: an article about Serve Robotics returned `["SERV","NVDA","SYM"]`.
+Ingesting news by ticker without a relevance filter reproduces exactly the
+noise the product exists to remove.
+
+The response also carries a provider-written `description`. Treat it as input
+to classification, never as stored content: the rule is headline, link, and our
+own summary.
+
+### Finnhub — free tier
+
+`/api/v1/quote` returns **real-time** US equity quotes. Verified: NVDA quoted
+at `18:49:58Z` against a wall clock of `18:50:22Z`, a 24-second lag — not the
+15-minute delay a free tier usually implies.
+
+`/api/v1/stock/candle` answers *"You don't have access to this resource"*, so
+there is **no intraday volume and no candles** on this tier. That is survivable
+because finalized daily bars already carry volume, and the daily email is built
+from those. Live volume would need a different provider, and no feature
+currently requires it.
+
+Documented limit is 60 requests a minute, which is not something a single probe
+can confirm; treat it as unverified.
+
+### FRED
+
+`/fred/series/observations` works with the free key. Verified against
+`CPIAUCSL`.
+
+### Anthropic
+
+Keys created as **identity-linked** require an `anthropic-workspace-id` header
+on every request, and `/v1/organizations/workspaces` returns an empty list when
+the organisation only has the implicit default workspace — so the id cannot be
+discovered through the API. A workspace-scoped key avoids the header entirely.
+
+### Resend
+
+A send-only key returns 401 on `/domains`, which is the key restriction working
+rather than a fault. Without a verified domain the free tier sends from
+`onboarding@resend.dev` **to the account owner's own address**, which covers a
+personal daily email. Sending anywhere else needs a domain, and that is blocked
+on owning one.
