@@ -97,6 +97,20 @@ Everything in this repo is English: code, comments, commits, docs, UI copy.
 - Real financial headlines run fifteen words and up. Test layouts with
   realistic headlines, not short mock ones.
 
+## Working agreement
+
+- **Show the work as a checklist.** Before multi-step work, list the steps;
+  update the list as they land — done, in progress, blocked, skipped. It
+  replaces a narrated log, not the reasoning behind a decision. One line per
+  step, no ceremony for a single-step change.
+- **Test-first where a test is warranted at all.** When logic could be quietly
+  wrong — date arithmetic, percentage math, threshold comparisons, message
+  parsing — write the failing test, watch it fail, then implement. A test that
+  has never failed has not been shown to test anything.
+- The rule below still decides *whether* a test is warranted. Integration and
+  configuration are verified against the real thing instead, because that is
+  where nearly every real bug here has come from.
+
 ## Workflow
 
 - Plan non-trivial work before coding. Explain non-obvious decisions briefly;
