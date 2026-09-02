@@ -1,6 +1,13 @@
-# Dependency updates. Grouped and monthly on purpose: this is a single-developer
-# repository, and a PR per package per week is noise that gets ignored, which is
-# worse than no automation at all.
+# Dependency updates.
+#
+# The first configuration grouped too little and opened eight PRs at once —
+# ungrouped minor bumps alongside majors. Everything routine now lands in a
+# single PR per ecosystem per month.
+#
+# Majors are deliberately left ungrouped. CI runs `pnpm check` but not
+# `pnpm build`, so a major compiler or framework bump can break the production
+# build without CI noticing; each one needs its own build check before it
+# merges. TypeScript 6 was verified exactly that way.
 version: 2
 updates:
   - package-ecosystem: npm
@@ -9,17 +16,22 @@ updates:
       interval: monthly
     open-pull-requests-limit: 5
     groups:
-      # Next and React move together; separating them produces PRs that cannot
-      # merge independently.
-      next-react:
-        patterns: ["next", "react", "react-dom", "eslint-config-next", "@types/react*"]
-      supabase:
-        patterns: ["@supabase/*"]
-      dev-tooling:
-        patterns: ["eslint*", "typescript", "vitest", "markdownlint*", "@types/node", "tailwindcss", "@tailwindcss/*"]
+      # One PR for everything routine.
+      all-minor-patch:
+        patterns: ["*"]
         update-types: [minor, patch]
+    ignore:
+      # @types/node tracks the Node runtime, not the newest published types.
+      # CI and Vercel both run Node 24, so a major bump here reintroduces the
+      # runtime/types mismatch rather than fixing anything. Raise this when the
+      # runtime moves.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]
