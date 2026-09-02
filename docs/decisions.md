@@ -18,7 +18,7 @@ documentation.
 | The redesign is merged with the original thesis, not substituted for it | The attention pipeline and vocabulary stay; the original noise-reduction goal and second-order differentiator remain the product rather than being replaced by a generic intelligence platform. |
 | The email is the primary surface | The product's job is suppression: one or two emails a day, silent when nothing matters. Feed and Ticker are the investigation surfaces the email points into. |
 | The v1 email is end-of-day and needs no live provider | The daily cadence works from finalized bars the pipeline already holds; live data is its own phase gated on an explicit provider and cost decision. |
-| The chart is built from cached bars before any live layer | Two years of real OHLCV already exist. A mocked chart on the investigation surface costs trust at exactly the moment an email drives a visit. |
+| The chart is built from cached bars before any live layer | Real OHLCV is already ingested and the pipeline backfills, so the chart needs no new provider. A mocked chart on the investigation surface costs trust at exactly the moment an email drives a visit. |
 | Impact direction derives from the relationship type, never sentiment | A customer's capex increase is mechanically a supplier tailwind. Headline tone is noise, and a wrong direction costs trust that does not come back. |
 | The universe stays fixed and hand-curated | The dense connections are the asset; one company's capex is another's revenue. Expansion is a Phase 6 roadmap decision, not a filter change. |
 | The filtered-out counter is permanent UI | A quiet email is only credible when the product shows what it suppressed. |
