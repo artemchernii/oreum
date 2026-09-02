@@ -46,6 +46,8 @@ These items exist in the repository today:
 - Massive grouped-daily price ingestion with payload validation
 - Supabase-backed historical price cache and gap-filling cron
 - price-cache freshness health reporting
+- benchmark ETF rows, machine-readable sectors, and per-company cohort proxies
+- a real Ticker price chart built from cached daily bars
 - feed and ticker UI shells
 - loading, error, empty, and not-found states
 - unit tests for provider parsing, price calculations, freshness, and

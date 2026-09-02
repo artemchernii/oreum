@@ -1,5 +1,6 @@
 import { getWatchlist, getUniverse } from "@/lib/watchlist";
-import { getQuotes, formatTradeDate } from "@/lib/quotes";
+import { getQuotes } from "@/lib/quotes";
+import { formatTradeDate } from "@/lib/format";
 import { WatchlistRow } from "@/components/watchlist-row";
 import { AddTicker } from "@/components/add-ticker";
 
