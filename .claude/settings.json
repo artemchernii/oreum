@@ -11,5 +11,28 @@
         ]
       }
     ]
+  },
+  "enabledPlugins": {
+    "superpowers@claude-plugins-official": false
+  },
+  "disableClaudeAiConnectors": true,
+  "skillOverrides": {
+    "vercel:access-protected-vercel-deployment": "off",
+    "vercel:auth": "off",
+    "vercel:bootstrap": "off",
+    "vercel:build-agents": "off",
+    "vercel:chat-sdk": "off",
+    "vercel:eve": "off",
+    "vercel:microfrontends": "off",
+    "vercel:next-forge": "off",
+    "vercel:routing-middleware": "off",
+    "vercel:runtime-cache": "off",
+    "vercel:vercel-agent": "off",
+    "vercel:vercel-connect": "off",
+    "vercel:vercel-firewall": "off",
+    "vercel:vercel-sandbox": "off",
+    "vercel:vercel-services": "off",
+    "vercel:vercel-storage": "off",
+    "vercel:workflow": "off"
   }
 }
