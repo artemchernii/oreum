@@ -41,7 +41,7 @@ intentional where a pure neutral reads as unstyled.
 Elevation runs the same way in both modes: a card is *lighter* than the ground
 it sits on.
 
-### Price movement — the entire colour budget
+### Price movement — the current direction channel
 
 | Token | Light | Dark |
 | --- | --- | --- |
@@ -61,13 +61,33 @@ Contrast, measured against both the page ground and a card:
 below AA — and cards are exactly where change values live. Lightness is
 raised, hue and chroma unchanged, so the identity survives.
 
-Green and red appear in one component. Nothing else in the UI uses them.
+In the current implementation, green and red appear only in the price-change
+component. Future direction treatments may reuse those semantics, but attention
+must remain visually independent.
+
+## Intelligence semantics
+
+Direction and attention are different signals and must not share visual weight.
+
+| Semantic | Meaning | Visual rule |
+| --- | --- | --- |
+| Positive direction | Observed or evidence-backed upward direction | Green/up may communicate direction, never attention |
+| Negative direction | Observed or evidence-backed downward direction | Red/down may communicate direction, never attention |
+| Neutral or ambiguous | No clear direction or conflicting evidence | Monochrome, orange, or muted treatment; never imply certainty |
+| Attention | How much this investor should care now | A separate neutral emphasis/scale; never encode it as green/red |
+| Observed fact | Measured or source-reported information | Highest factual clarity; show value, timestamp, and source where relevant |
+| Inferred relationship | Possible propagation through context or graph | Label as inferred and use lighter/secondary visual weight |
+| Confidence/evidence | Reliability of the explanation or inference | Show separately from direction and attention |
+
+The exact attention visual is not final. It must remain legible independently of
+direction: a negative move can have low attention, and a small move can have
+high attention.
 
 ### Deviations from the bundle
 
 | Bundle | Implemented | Why |
 | --- | --- | --- |
-| Coloured impact arrows | monochrome | direction is inferred from edge type, not observed. Colouring a derived signal gives it the weight of a measured one |
+| Coloured impact arrows | monochrome | inferred impact should not receive the same visual weight as observed price movement |
 | Dark only | light and dark | `CLAUDE.md`: both modes work, always |
 | `#f04438` | lightness raised | failed AA on cards |
 | Archivo for numerics | Geist Mono | numbers need tabular alignment; Archivo has no monospaced cut |

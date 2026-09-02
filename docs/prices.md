@@ -1,13 +1,31 @@
 # Prices
 
-How the daily price cache is filled and kept full.
+How Oreum stores finalized historical prices today, and how that layer relates
+to the future live and intraday market-data layers.
+
+## Data clocks
+
+The final architecture separates market data by update clock:
+
+| Layer | Purpose | Current status |
+| --- | --- | --- |
+| Live/near-live | Current price, near-live volume, market status, provider timestamp | Not implemented |
+| Intraday | Observations, anomalies, signals, possible attention updates | Not implemented |
+| Event-driven | Earnings, news, macro events, material announcements | Not implemented |
+| Daily | Finalized OHLCV, daily intelligence, email | Historical OHLCV/cache implemented; intelligence and email planned |
+
+`daily_bars` must remain historical and finalized. It must not be used as a
+pretence for a live quote during market hours. The current UI reads the newest
+available daily close because the current provider integration is daily-only;
+that is a provider limitation, not the target product architecture.
 
 ## The provider
 
 Massive, formerly Polygon.io. The API host is `api.massive.com`; `polygon.io`
 301-redirects and existing keys are unchanged.
 
-Free **Stocks Basic** tier, which is a fit rather than a compromise:
+Free **Stocks Basic** tier, which is sufficient for the current historical
+cache:
 
 | | Basic |
 | --- | --- |
@@ -31,9 +49,11 @@ Ask for the current day and it answers 403:
 Attempted to request today's data before end of day.
 ```
 
-That was still true at 19:00 ET, three hours after the close. So the freshest
-the app can ever be is the **previous trading day**, and prices must be
-labelled with their date rather than presented as live.
+That was still true at 19:00 ET, three hours after the close. So the current
+historical integration can only provide the **previous trading day**, and prices
+must be labelled with their date rather than presented as live. Phase 0 will add
+a separate live/near-live capability instead of weakening this historical
+contract.
 
 403 is also the answer at the far end of the two-year window, so the message —
 not the status — is what distinguishes "not published yet" from "too old".

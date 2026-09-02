@@ -17,10 +17,10 @@ the verifier is not in the store the callback reads, the exchange fails with:
 
 `verifyOtp({ type, token_hash })` needs no verifier — the token in the URL is
 the entire credential. This is the flow Supabase documents for server-side
-rendering, and it is what `src/app/auth/confirm/route.ts` implements.
+rendering, and it is handled by `src/app/auth/callback/route.ts`.
 
-`/auth/callback` is kept for the `?code=` flow, which OAuth would use if a
-social provider is ever added. It is not on the magic-link path.
+`/auth/callback` handles both the token-hash magic-link flow and the `?code=`
+flow used by OAuth.
 
 ## Which link shape arrives
 
@@ -35,17 +35,18 @@ social provider is ever added. It is not on the magic-link path.
 behind it — the dashboard shows "Set up custom SMTP to edit templates". So the
 default `?code=` shape is what arrives until SMTP is configured.
 
-That is workable for one developer testing in a single browser. It is not
-workable once the app is shared: a mail client picks which browser opens a
-link, and PKCE fails whenever that is not the browser that requested it.
+OAuth works in the same browser by design. The default email `?code=` flow is
+still sensitive to which browser opens the link; a custom template using
+`token_hash` removes that dependency when custom SMTP is available.
 
-### Custom SMTP — required before sharing
+### Custom SMTP — deferred
 
-Two reasons, not one:
+Custom SMTP remains useful for broad sharing, but it is not required for the
+current OAuth-supported sign-in path. The built-in sender has two limitations:
 
 1. The built-in sender allows roughly **two emails an hour across the whole
    project**. Three friends signing in would exhaust that immediately.
-2. It unlocks template editing, which lets us move to `token_hash` and stop
+2. It unlocks template editing, which lets the project move to `token_hash` and stop
    depending on which browser opens the link.
 
 **Project Settings → Authentication → SMTP Settings.** Resend's free tier is
@@ -127,5 +128,6 @@ While the app is unverified, Google shows an "unverified app" interstitial and
 caps you at 100 test users. Fine for a handful of people; publishing requires
 Google's review.
 
-**Do GitHub first.** It is genuinely quick, and it removes the email
-round-trip immediately.
+**Use OAuth for shared testing when available.** It removes the email
+round-trip immediately; configure custom SMTP later if email sign-in becomes a
+distribution requirement.

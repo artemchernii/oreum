@@ -1,142 +1,121 @@
 @AGENTS.md
 
-# Oreum
+# Oreum developer guidance
 
-A tool that shows what happened to my big tech positions while I wasn't
-looking, and why it matters. Personal project, single developer.
-Roadmap and scope live in `PLAN.md`. Read it before proposing a feature.
+Oreum is a data-driven market-intelligence product. Read [`PLAN.md`](PLAN.md)
+before proposing work and the relevant document in `docs/` before changing a
+domain area.
 
-## Project goal
+## Stack and commands
 
-Practise AI-assisted development end to end. So:
-explain non-obvious decisions briefly instead of just emitting code.
-If there are two reasonable approaches, name both in one sentence each
-and recommend one.
+Next.js 16 App Router, React 19, TypeScript, pnpm, Supabase, Vercel, and
+Tailwind/shadcn.
 
-## Stack
-
-Next.js 16 (App Router) + React 19, TypeScript, pnpm.
-Supabase (Postgres, auth), Vercel, Lightweight Charts.
-
-## Commands
-
-- `pnpm dev` — dev server
+- `pnpm dev` — development server
 - `pnpm build` — production build
-- `pnpm check` — typecheck + eslint + markdownlint + tests, what CI runs
-- `pnpm typecheck` / `pnpm lint` / `pnpm lint:md` / `pnpm test` — the pieces
-- `pnpm db:types` — regenerate `src/lib/database.types.ts` from the schema
+- `pnpm check` — typecheck, lint, Markdown lint, and tests
+- `pnpm typecheck` / `pnpm lint` / `pnpm lint:md` / `pnpm test` — individual checks
+- `pnpm db:types` — regenerate `src/lib/database.types.ts`
 
-Always `pnpm`, never `npm` or `yarn`.
+Always use pnpm. CI runs `pnpm check` on every PR; it does not run
+`pnpm build` — Vercel builds every PR, and `next build` runs TypeScript but
+not eslint.
 
-CI runs `pnpm check` on every PR. It does not run `pnpm build` — Vercel already
-builds every PR, and `next build` runs TypeScript. What Vercel does not run is
-eslint, removed from `next build` in Next 16.
+Everything in this repo is English: code, comments, commits, docs, UI copy.
 
-Tests are deliberately few and cover pure logic only — date arithmetic, the
-change-percent math, the message parsing that ends a backfill. Nearly every bug
-this project has actually hit was integration or config, and no unit test would
-have caught one. Write a test when the logic could be *quietly* wrong; verify
-against the real thing otherwise.
+## Product and intelligence invariants
 
-## Rules
+- Math decides. LLM explains.
+- Event ≠ Signal ≠ Impact ≠ Relevance ≠ Attention.
+- Direction ≠ Attention.
+- Preserve facts before deriving intelligence.
+- Observed facts, known events, and inferred relationships must remain distinct.
+- The graph discovers possible impact; it does not decide attention.
+- Attention is deterministic, experimental, and must be backtestable.
+- Attention thresholds are absolute, never rank-normalized: a day with zero
+  items must be possible, or a quiet day cannot exist.
+- Impact direction derives from the relationship and event type, never from
+  headline sentiment.
+- The universe is a fixed, hand-curated list. Widening it is a roadmap
+  decision, not a filter change.
+- The filtered-out counter is permanent UI — the one place the product shows
+  its work.
+- Do not present arbitrary weights as final truth.
+- Do not use mock intelligence as production truth.
+- Technical indicators are context, not trading recommendations.
+- Oreum never forecasts prices or tells users what to buy or sell.
+- Every explanation must retain evidence and source attribution.
 
-- Scope is sacred. Do not add features outside the current milestone in
-  `PLAN.md`. An idea beyond the milestone goes to "Later", not into code.
-- Everything in this repo is English: code, comments, commits, docs, UI copy.
-  No exceptions.
-- API keys server-side only: route handlers or server actions.
-  Never `NEXT_PUBLIC_` for anything that costs money.
-- Every external data API call goes through a Supabase cache.
-  Provider free tiers are tight — a direct call per render kills the quota.
-- RLS is enabled when the table is created, not "later".
-- The universe is a fixed, hand-curated list of tickers. Never widen it to
-  a sector filter or to "all of NASDAQ". The list is the asset.
+## Data and security rules
 
-## Product invariants
-
-These are not style preferences. Breaking one breaks the product.
-
-- **Never predict price.** No forecasts, no targets, no scenarios about where
-  a stock goes. Bull/bear is allowed only as an aggregation of existing
-  arguments, one source link per claim.
-- **Every AI-generated statement carries a source link.** No link, no line.
-- **Impact direction comes from the edge type, not from headline sentiment.**
-  A capex increase at a customer is mechanically a tailwind for a supplier.
-  A headline "sounding positive" means nothing — the market trades
-  expectations, and a wrong signal costs trust that doesn't come back.
-- **Store headline, link, and our own summary. Never the full article text.**
-  That is a licensing boundary, not a technical one.
-- **The filtered-out counter is permanent UI.** It is the only place the
-  product shows its work.
-
-## Design
-
-`design/` is the visual north star. `docs/design-system.md` is the reconciled
-token layer that code implements. Read the second one before styling anything.
-
-- **The design decides how it looks, the plan decides what it says and when it
-  exists.** Where the bundle breaks an invariant below, the invariant wins and
-  the deviation gets a row in `docs/design-system.md`. Do not silently follow
-  the mock past a product rule.
-- Dark is the designed baseline; light is derived and provisional. Both work,
-  always. No hardcoded hex outside the token layer.
-- Neutrals sit at hue 302° with chroma 0.004–0.013. Faintly violet, never pure
-  grey — but never enough to read as a colour.
-- The colour budget belongs to one thing: price movement, green up and red
-  down. Nothing else in the UI uses green or red, and they live in exactly one
-  component.
-- Impact direction renders as a monochrome arrow, never a coloured badge. The
-  mock colours these; it is wrong for the reason under Product invariants.
-- Numbers use Geist Mono with tabular alignment: prices, percentages, ratios,
-  timestamps, tickers. Body and headings use Archivo.
-- shadcn is the design system. Compose with it; do not reinvent its
-  primitives.
-
-## Pitfalls
-
-- Server Components by default. `"use client"` only where there is state or a
-  browser API. Lightweight Charts is client-side.
-- Stock prices are money: `numeric`, never `float`.
+- Live market state and historical daily bars are different data layers.
+- Historical price data is finalized; live data carries provider timestamps and
+  freshness state.
+- Every external data call goes through an appropriate cache or persistence
+  boundary; never fetch paid data directly during rendering.
+- API keys stay server-side. Never expose paid keys through `NEXT_PUBLIC_`.
+- Enable RLS in the same migration that creates a Supabase table.
+- Scope user data with `auth.uid()`; `TO authenticated` alone is not ownership.
+- Never use editable user metadata for authorization.
+- Money and provider quantities use types that preserve their actual precision.
+- Store source facts and links, not full article text.
+- Never assume a market series is contiguous.
+- Machine endpoints must be excluded from the proxy matcher.
+- Regenerate `database.types.ts` after every schema change. A stale one is
+  worse than none: it type-checks against a schema that no longer exists.
 - Market data goes into the database in UTC; convert to a timezone only for
   display.
-- Provider data arrives dirty: missing days, splits, after-hours prints.
-  Never assume a series is contiguous.
-- Real financial headlines run long — fifteen words and up. Test layouts with
-  realistic headlines, not short mock ones.
 - An event has an array of sources, not one. Deduplication merges the same
-  story across outlets, so "TechCrunch +1 source" is the normal case.
+  story across outlets, so "Reuters +2 sources" is the normal case.
 - Exposure data goes stale. A stale exposure makes the impact engine
-  confidently wrong, which is worse than having no exposures at all. Always
-  store the review date alongside the value.
-- Machine endpoints must be excluded from the proxy matcher in `src/proxy.ts`.
-  `updateSession` redirects anything without a session to `/login`, and a cron
-  or webhook request carries no cookies — left in the matcher, the job looks
-  correctly configured and silently never runs.
-- Provider numbers are not integers just because they count things. Massive
-  returns fractional volume on most rows, so `bigint` truncates silently. Check
-  a real payload before choosing a column type.
+  confidently wrong, which is worse than no exposure at all; the review date
+  ships with the value.
 - `.env.local` does not end in a newline. A naive `>>` append glues the new
-  variable onto the last one and corrupts it — this destroyed an API key once.
-  Append with a leading `\n`, then verify each variable is on its own line.
-- Regenerate `database.types.ts` after every migration. A stale one is worse
-  than none: it type-checks against a schema that no longer exists.
+  variable onto the last one and corrupts it — this destroyed an API key
+  once. Append with a leading `\n`, then verify each variable is on its own
+  line.
+
+## UI rules
+
+- The Feed answers “What happened?”
+- The Ticker answers “Why is it happening?”
+- Email answers “Do I need to care?”
+- Visual weight must distinguish observed data, inference, confidence, and
+  attention.
+- Positive/negative direction must not be visually conflated with attention.
+- Green and red may communicate positive/negative direction, but never
+  attention; neutral, inferred, and attention states use separate semantics
+  documented in `docs/design-system.md`. The current implementation reserves
+  those colors to price movement.
+- Dark is the designed baseline; light remains supported.
+- No hardcoded hex outside the token layer; `docs/design-system.md` is the
+  reconciled authority the code implements.
+- Use Geist Mono for prices, percentages, ratios, timestamps, and tickers.
+- Use shadcn primitives rather than new one-off primitives.
+- Server Components by default; `"use client"` only where there is state or
+  a browser API. Charting libraries are client-side.
+- Real financial headlines run fifteen words and up. Test layouts with
+  realistic headlines, not short mock ones.
 
 ## Workflow
 
-- Plan first, then code. Use plan mode for non-trivial tasks.
-- **Verify, don't assert.** A green build proves the code compiled, not that it
-  does what you claim. Check the built output, curl the endpoint, compute the
-  number — then say what you checked and what came back. Say plainly what you
-  could not verify. This repo has caught a 401 from a wrong health probe, a
-  `.gitignore` silently swallowing `.env.example`, a favicon conflict, a
-  contrast failure at 4.36:1, and a green build serving 404s. All by checking.
-- `/ship` has the branch-to-merge loop. Follow it rather than improvising.
-- `/migrate` has the SQL-editor loop for a new migration.
+- Plan non-trivial work before coding. Explain non-obvious decisions briefly;
+  when two reasonable approaches exist, name both in a sentence each and
+  recommend one.
+- Keep scope within the active phase in `PLAN.md`. An idea beyond it goes to
+  the plan's later sections, not into code.
+- **Verify, don't assert.** A green build proves the code compiled, not that
+  it does what you claim. Check the built output, curl the endpoint, compute
+  the number — then say what you checked and what came back, and say plainly
+  what you could not verify.
+- Write a unit test where logic could be quietly wrong (date arithmetic,
+  percentage math, message parsing). Most real bugs here were integration or
+  configuration; verify those against the real thing instead.
+- Use a branch per change and keep commits small and imperative. Never commit
+  directly to `master`.
 - Do not stack a PR on another PR's branch. When the base merges and is
   deleted, GitHub does not always retarget in time, and the stacked PR merges
-  into a dead branch — reported as "merged" while the change reaches nothing.
-  This has happened once. Branch from `master` and wait.
-- Small commits, imperative mood.
-- A branch per change, PR into `master`. Never commit directly to `master`.
-- An architectural decision becomes a row in the decision log in `PLAN.md`.
-  Decisions do not live in chat.
+  into a dead branch — this has happened once. Branch from `master` and wait.
+- `/ship` has the branch-to-merge loop; `/migrate` has the migration loop.
+  Follow them rather than improvising.
+- Record material architectural decisions in `docs/decisions.md`.
