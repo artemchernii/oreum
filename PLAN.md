@@ -55,6 +55,9 @@ These items exist in the repository today:
   baseline — computed on demand rather than stored
 - a threshold replay (`scripts/replay.ts`) that reports the quiet-day rate and
   emails per week over the held history; results in `docs/intelligence.md`
+- a labeled evaluation harness — `scripts/pool.ts` writes the candidate pool
+  with a control sample of quiet sessions, `scripts/score.ts` scores candidate
+  rules against the labels for recall, precision, and major-event recall
 - unit tests for provider parsing, price calculations, freshness, observation
   maths, and ingestion date logic
 

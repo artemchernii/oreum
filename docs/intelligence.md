@@ -204,11 +204,98 @@ down hard on both, while AAPL, CRM, META and QCOM show strong positive relative
 on flat price moves — the rotation, which is exactly the second-order read the
 product exists to surface.
 
-The open question is whether an item should qualify on the price family alone
-when the relative family says the move was the market's. A market-wide crash
-does deserve an email, so the goal is not silence but one item that says the
-market moved, rather than 24 that each imply company news. This changes what
-the email is, so it is a scope decision rather than a tuning one.
+This is now settled. An item does **not** qualify on the price family alone.
+A benchmark is an observable entity in its own right — it already has a
+`companies` row and daily bars — so a market-wide day produces one item about
+SPY, and a sector-wide day one about the cohort proxy. A company qualifies only
+on the relative or volume family: it has to beat its own cohort to speak.
+
+Measured over the held history at 3.5 sigma with a 4x volume gate:
+
+| Day | Flat OR | Benchmark rule |
+| --- | --- | --- |
+| 2025-04-09, tariff-pause rally | 29 items | 5 items, all benchmarks (SPY 7.5 sigma) |
+| 2025-01-27, DeepSeek | 14 items | 12 items — the rotation survives |
+
+On 2025-04-09 no company qualifies, which is the intended result: none of them
+beat its cohort, and the honest email is that the market moved. On 2025-01-27
+the rotation is untouched — ANET -10.0, ORCL -7.6 and NVDA -4.4 relative
+against AAPL +6.4, QCOM +5.7 and META +4.7 — which is exactly the second-order
+read the product exists to surface.
+
+One consequence is not yet handled: five benchmarks fired on 2025-04-09 (SPY,
+QQQ, XLK, SOXX, IGV), all saying the same thing. The email needs a rule for
+which benchmark speaks for a market-wide day, or it trades a wall of 24 for a
+huddle of five.
+
+## The labeled evaluation set
+
+The replay measures how often the email fires. It cannot measure whether it
+fires on the right days, and no amount of sweeping will tell it — attention has
+no natural target, so the target is built by hand.
+
+`scripts/pool.ts` writes `eval/labels.tsv`; `scripts/score.ts` reads it back
+and scores candidate rules against it. Both are read-only against the database
+and need no secret key:
+
+```sh
+node --env-file=.env.local scripts/pool.ts
+node --env-file=.env.local scripts/score.ts
+```
+
+The first pool holds 1,406 rows over 359 sessions: 1,256 that fired at the
+loosest thresholds any candidate rule may use (2 sigma on price or relative,
+3x on volume) and a 150-row control sample of sessions nothing fired on. 215
+of the rows are benchmarks, which the chosen rule needs in order to be scored
+at all.
+
+The pool is drawn loose on purpose. Every stricter rule's output is a subset of
+it, so one labeling pass scores every rule and the labels do not have to be
+redone when a threshold moves.
+
+### How to label
+
+Fill two columns in `eval/labels.tsv`: `verdict` and `basis`. Set `labeled_at`
+to the date you judged it.
+
+| Verdict | Means |
+| --- | --- |
+| *(empty)* | Not judged yet. Never counted as anything. |
+| `no` | I would not have wanted to be told. |
+| `yes` | I would have wanted to be told. |
+| `major` | A miss here is a failure, not a near-miss. |
+
+Work in date order — the file is sorted that way. Judging a whole session at
+once is much faster than judging isolated rows, because the day's context is
+established once and then every item on it is cheap.
+
+The question is always *"would I have wanted to be told about this that day?"*,
+answered from what was knowable then. `major` exists so that a missed earnings
+blowup cannot average away against forty small moves the rule got right.
+
+Re-running `scripts/pool.ts` preserves every label. A labeled row that a
+recomputation pushes out of the candidate set is marked `retired` rather than
+deleted — bars are adjusted, so a split moves every measurement while the
+judgment stays valid.
+
+### Reading the score
+
+`recall` is the share of wanted days the rule caught. `precision` is the share
+of what it sent that was wanted. `major` is recall restricted to `major`, and
+it is the number a release should be read on.
+
+Unlabeled rows are excluded from all three. An unlabeled row is not a negative;
+counting it as one would make precision fall every time the pool grows.
+
+None of these numbers mean anything until enough rows are judged to argue with,
+and `scripts/score.ts` prints the count next to them so that stays visible.
+
+### The honesty constraint
+
+Labels are point-in-time. The failure mode is re-labeling a day after seeing
+how a threshold scored on it, which turns the evaluation set into a mirror.
+The file is git-tracked and every label carries a date precisely so that a
+changed judgment shows up in review instead of disappearing into a metric.
 
 ## Deterministic and LLM responsibilities
 
