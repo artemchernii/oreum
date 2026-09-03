@@ -138,6 +138,49 @@ Adjusted bars restate history when splits and dividends land, so derived
 observations and signals must have a recompute-on-restatement policy decided
 when they are designed, not discovered afterward.
 
+## Replay results — price-only, 2026-09-03
+
+`scripts/replay.ts` sweeps thresholds over the bars already held and reports
+what the email would have done. Run it with:
+
+```sh
+node --env-file=.env.local scripts/replay.ts
+```
+
+It is read-only and needs no secret key: `daily_bars` is anon-readable.
+
+The first run covered 11,025 observations across 25 companies over 441
+sessions (2024-11-27 to 2026-09-02), with a 60-session volatility window and
+warmup excluded. Benchmark coverage was 100%.
+
+The headline finding is that **an absolute threshold does produce quiet days**,
+which is the invariant the whole product rests on and had not previously been
+measured. Combining price, relative-performance, and volume anomalies:
+
+| Threshold (sigma, or 4x volume) | Email days | Quiet | Emails/wk | Items/email |
+| --- | --- | --- | --- | --- |
+| 2.0 | 311/441 | 29.5% | 3.5 | 3.2 |
+| 2.5 | 218/441 | 50.6% | 2.5 | 2.5 |
+| 3.0 | 165/441 | 62.6% | 1.9 | 2.0 |
+| 3.5 | 132/441 | 70.1% | 1.5 | 1.8 |
+| 4.0 | 101/441 | 77.1% | 1.1 | 1.8 |
+| 5.0 | 86/441 | 80.5% | 1.0 | 1.5 |
+
+Two caveats bound what this shows.
+
+It measures **volume, not correctness**. The other half of the replay — would
+the known important situations have made the cut — needs the labeled event set,
+which does not exist yet. Nothing here demonstrates recall.
+
+It is **price-only**. News is additive, so whatever threshold ships must leave
+room for it; a value already sending 3.5 emails a week has none.
+
+As an artefact check rather than a metric, the largest anomalies land on real
+events: ORCL +35.9% (2025-09-10), AMD +23.7% (2025-10-06), AVGO +24.4%
+(2024-12-13), and ANET -22.4% on 2025-01-27, the DeepSeek selloff — where ANET
+also shows -10.0 sigma against its own cohort, which is the sector-relative
+signal separating a company move from a market one.
+
 ## Deterministic and LLM responsibilities
 
 Deterministic systems own normalization, calculations, anomaly detection,

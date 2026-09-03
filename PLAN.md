@@ -50,8 +50,13 @@ These items exist in the repository today:
 - a real Ticker price chart built from cached daily bars
 - feed and ticker UI shells
 - loading, error, empty, and not-found states
-- unit tests for provider parsing, price calculations, freshness, and
-  ingestion date logic
+- observation maths over finalized bars — returns, rolling volatility,
+  volatility-adjusted and benchmark-relative returns, volume against its own
+  baseline — computed on demand rather than stored
+- a threshold replay (`scripts/replay.ts`) that reports the quiet-day rate and
+  emails per week over the held history; results in `docs/intelligence.md`
+- unit tests for provider parsing, price calculations, freshness, observation
+  maths, and ingestion date logic
 
 Some intelligence functionality is mock/static only. Mock events, impacts,
 edges, metrics, and exposures are UI fixtures, not production intelligence.
