@@ -117,6 +117,14 @@ Everything in this repo is English: code, comments, commits, docs, UI copy.
   guesses were usually integration or configuration problems wearing a
   code-shaped disguise. Change one thing at a time, or you will not know which
   one worked.
+- **Never invoke a skill in the same reply as something to read.** A skill
+  renders fresh output, and the terminal collapses the message it lands on —
+  a handoff appended to a review destroys the review mid-sentence. When one
+  request asks for both, deliver the reading part, offer the skill in one
+  line, and wait to be asked. `/handoff`, `/ship` and `/migrate` each go in
+  their own turn. The same holds for any bulk output that follows an
+  explanation: order a multi-part request so the tool-heavy step comes last,
+  alone.
 - **End every reply with what to do next.** The last thing in every response is
   a `Next` section: one to three numbered steps, one plain line each, the step
   to do first at the top. Give the exact command or the exact thing to type
