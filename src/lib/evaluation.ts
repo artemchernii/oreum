@@ -358,3 +358,32 @@ export function parseEntry(input: string): Entry | "skip" | "quit" | null {
 
   return { verdict, basis: rest.join(" ") };
 }
+
+/**
+ * Does this row match any of the filters given on the command line?
+ *
+ * Three forms, because re-judging is a real workflow rather than an edge case.
+ * A definition can change — `major` did — and every row labeled under the old
+ * one has to be found again:
+ *
+ *   MRVL                     one symbol
+ *   2024-12       2024-12-04 a date, whole or partial
+ *   2024-11-27..2024-12-12   an inclusive range of sessions
+ *
+ * Dates are ISO, so a prefix compares as a string and a range compares with
+ * `<=`. No date arithmetic, and therefore no timezone to get wrong.
+ */
+export function matchesFilter(
+  row: { symbol: string; date: string },
+  filters: readonly string[],
+): boolean {
+  return filters.some((filter) => {
+    const [from, to] = filter.split("..");
+    if (to !== undefined) return row.date >= from && row.date <= to;
+
+    // A leading digit means a date; no ticker starts with one.
+    if (/^\d/.test(filter)) return row.date.startsWith(filter);
+
+    return row.symbol.toUpperCase() === filter.toUpperCase();
+  });
+}

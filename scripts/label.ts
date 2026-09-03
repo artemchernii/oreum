@@ -9,9 +9,11 @@
  * Judge everything still unjudged:
  *   node scripts/label.ts
  *
- * Revisit rows already judged, by symbol or by date:
+ * Revisit rows already judged — by symbol, date, partial date, or a range:
  *   node scripts/label.ts MRVL
  *   node scripts/label.ts 2024-12-04
+ *   node scripts/label.ts 2024-12
+ *   node scripts/label.ts 2024-11-27..2024-12-12
  *
  * Needs no database and no keys — it reads and writes one file.
  */
@@ -19,6 +21,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { createInterface } from "node:readline/promises";
 import {
   formatPool,
+  matchesFilter,
   parseEntry,
   parsePool,
   type PoolRow,
@@ -63,19 +66,20 @@ function signed(value: number | null): string {
 }
 
 const rows = parsePool(readFileSync(PATH, "utf8"));
-const argument = process.argv[2];
+const filters = process.argv.slice(2);
 
 // Without an argument, judge what is unjudged. With one, show everything that
 // matches so a verdict can be revised — the only way to change one's mind
 // without opening the file by hand, which is the thing this exists to avoid.
-const queue = argument
-  ? rows.filter(
-      (row) => row.symbol === argument.toUpperCase() || row.date === argument,
-    )
-  : rows.filter((row) => row.verdict === "");
+const queue =
+  filters.length > 0
+    ? rows.filter((row) => matchesFilter(row, filters))
+    : rows.filter((row) => row.verdict === "");
 
 if (queue.length === 0) {
-  console.log(argument ? `nothing matches ${argument}` : "everything is labeled.");
+  console.log(
+    filters.length > 0 ? `nothing matches ${filters.join(" ")}` : "everything is labeled.",
+  );
   process.exit(0);
 }
 

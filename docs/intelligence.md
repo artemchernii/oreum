@@ -394,6 +394,86 @@ how a threshold scored on it, which turns the evaluation set into a mirror.
 The file is git-tracked and every label carries a date precisely so that a
 changed judgment shows up in review instead of disappearing into a metric.
 
+## First scored labels — 133 rows, 2026-09-04
+
+The first block of labels covers 2024-11-27 to 2025-01-28: 71 `yes`, 45 `no`,
+17 `major`. `scripts/score.ts` against them:
+
+| Rule | Quiet | Items/email | Recall | Precision | Major recall |
+| --- | --- | --- | --- | --- | --- |
+| flat OR >= 2.0 | 28.8% | 3.7 | 93.2% | 73.2% | 100.0% |
+| benchmark >= 2.0 | 32.7% | 2.8 | 68.2% | 70.6% | 88.2% |
+| flat OR >= 2.5 | 49.2% | 2.8 | 69.3% | 84.7% | 94.1% |
+| benchmark >= 2.5 | 54.6% | 2.1 | 51.1% | 83.3% | 76.5% |
+| flat OR >= 3.0 | 60.3% | 2.2 | 51.1% | 91.8% | 76.5% |
+| benchmark >= 3.0 | 66.2% | 1.8 | 42.0% | 90.2% | 64.7% |
+
+Nothing here is decided. 133 rows and 17 majors is enough to raise questions
+and not enough to settle them.
+
+### The benchmark rule costs major recall
+
+This is the first evidence against the decision recorded above. Requiring a
+company to clear the relative family drops major events that were large in
+price but partly sector-wide — and it buys almost no precision doing it
+(83.3% against 84.7% at 2.5 sigma). What it does buy is quiet: 54.6% against
+49.2%, and 2.1 items an email against 2.8.
+
+So the trade is quiet against recall, not quiet against noise. That is a
+different and worse bargain than the 2025-04-09 wall suggested, and it needs
+more labels before it either overturns the decision or turns out to be an
+artefact of seventeen majors.
+
+### Raw percentage separates the labels; sigma does not
+
+Over these 133 rows:
+
+| Verdict | Mean move | Mean price sigma |
+| --- | --- | --- |
+| `no` | 1.82% | 1.08 |
+| `yes` | 5.35% | 2.63 |
+| `major` | 14.22% | 4.71 |
+
+Both rise with the verdict, but only one separates cleanly. The largest `no`
+was a 4.03% move and the smallest `major` was 7.84% — no overlap at all. By
+sigma they cross: the largest `no` is 2.96 and the smallest `major` is 2.48.
+
+This runs against the premise the engine is built on, which is that a
+percentage cannot be compared across symbols and its volatility-adjusted form
+can. Three reasons to hold it loosely before acting:
+
+- The universe is 25 tech companies with broadly similar volatility, so raw
+  percentage and sigma are heavily correlated here in a way they would not be
+  across a diverse universe.
+- The labeled range is dominated by semiconductor names in a volatile stretch,
+  where a 10% move is only about 3 sigma.
+- `scripts/label.ts` prints the raw move on the first line, above both sigmas.
+  A presentation effect is a live explanation, not a ruled-out one.
+
+The next step is to score a raw-percentage rule alongside the sigma rules
+rather than argue about it. If a flat "move exceeds N%" scores comparably at
+equal quiet, the volatility adjustment is buying less than assumed.
+
+### Reported recall is an upper bound
+
+Recall is measured over labeled rows, and 88% of labeled rows came from the
+fired set. The control sample is the only out-of-pool evidence: 14 judged, and
+one of them — SOXX on 2024-12-11, an ETF up 2.5% that nothing flagged — came
+back `yes`.
+
+One in fourteen is not a rate worth quoting, but it is not zero, and it points
+at something specific: benchmarks are far less volatile than the companies, so
+a 2 sigma pool threshold shared between them may be too high for an index. A
+market day that matters can look small in sigma terms.
+
+### One known inconsistency in the labels
+
+The first 18 rows were judged before `major` was properly defined, and they use
+`yes` where later rows use `major`. MRVL on 2024-12-04 — +23.19%, 9.81 sigma,
+6.58x volume — is labeled `yes`, while MRVL on 2024-12-13 at +10.79% and 2.79
+sigma is labeled `major`. Those two rows are measuring different definitions
+and the first block needs re-judging before the major numbers can be trusted.
+
 ## Deterministic and LLM responsibilities
 
 Deterministic systems own normalization, calculations, anomaly detection,
