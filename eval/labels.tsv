@@ -5,133 +5,133 @@ AMD	2024-11-29	company	control	0.0069	0.25	-0.4	0.52	no	all movements are not me
 GOOGL	2024-12-02	company	control	0.015	0.97	0.35	1.06	no	all movements are not meaningful not worth to look into	2026-09-03
 LRCX	2024-12-02	company	price+relative	0.0627	2.26	2.32	1.74	yes	big change in price 6%, it moves with the market and volume is not that high but still 6% is worth to notice	2026-09-03
 META	2024-12-02	company	price	0.0322	2.1	1.89	1.13	yes	META in my portfolio and 3% move is worth to notice but not dig	2026-09-03
-TSM	2024-12-02	company	price	0.0527	2.08	1.34	1.37			
+TSM	2024-12-02	company	price	0.0527	2.08	1.34	1.37	yes	its up more than 5% and its very important stock TSM	2026-09-03
 INTC	2024-12-03	company	price+relative	-0.061	-2.25	-2.4	2.29	yes	-6% is worth noticing and -2.4 coh means something with company, volume is not mega high but still worth	2026-09-03
 META	2024-12-03	company	price+relative	0.0351	2.31	2.55	1.35	no	3% up which is good but valume is quite, coh seems not that high	2026-09-03
 CRM	2024-12-04	company	price+relative+volume	0.1099	6.24	5.92	4.92	yes	10% is a lot and coh, vol all high so means something company related	2026-09-03
 IGV	2024-12-04	benchmark	price	0.0389	3.2		2.65	yes	when ETF moves 3% almost 4% means something is going on worth looking	2026-09-03
 MRVL	2024-12-04	company	price+relative+volume	0.2319	9.81	12.08	6.58	yes	mega jump huge coh_sigma, huge volume ITS 100% FIRE	2026-09-03
 MSFT	2024-12-04	company	relative	0.0144	1.09	-2.17	1.38	no	all movements are not meaningful not worth to look into	2026-09-03
-NOW	2024-12-04	company	price+relative	0.0622	3.79	2.2	1.8			
+NOW	2024-12-04	company	price+relative	0.0622	3.79	2.2	1.8	yes	up more than 6% and inusual move and volume is up	2026-09-03
 AMAT	2024-12-05	company	relative	-0.0504	-1.79	-2.01	1.48	yes	-5% if in my portfolio mean need to notice it	2026-09-03
 MSFT	2024-12-05	company	relative	0.0119	0.91	2.08	1.15	no	all movements are not meaningful not worth to look into	2026-09-03
 AVGO	2024-12-06	company	price+relative	0.0531	2.61	3.39	1.45	yes	5% up and cohort_sigma is 3+% mean notice it	2026-09-03
 QCOM	2024-12-06	company	control	-0.0055	-0.26	-0.83	1.34	no	all movements are not meaningful not worth to look into	2026-09-03
 TSM	2024-12-06	company	control	-0.0063	-0.25	-0.6	0.79	no	all movements are not meaningful not worth to look into	2026-09-03
 AMD	2024-12-09	company	price+relative	-0.0557	-2.16	-3.14	1.87	yes	Semi stock in my portfolio -3% coh_sigma is worth to notice	2026-09-03
-KLAC	2024-12-09	company	control	0.0062	0.22	0.67	1.13			
-MSFT	2024-12-09	company	relative	0.0055	0.43	2.19	1.01			
-PANW	2024-12-09	company	price	-0.0418	-2.31	-1.58	1.14			
-GOOGL	2024-12-10	company	price+relative	0.0559	3.92	4.67	2.52			
-ORCL	2024-12-10	company	price+relative+volume	-0.0667	-3.8	-4.65	3.8			
-AVGO	2024-12-11	company	price+relative	0.0663	3.12	2.9	2.14			
-GOOGL	2024-12-11	company	price+relative+volume	0.0552	3.48	2.34	3.07			
-INTC	2024-12-11	company	control	-0.002	-0.07	-1.18	1.17			
-SOXX	2024-12-11	benchmark	control	0.0251	1.4		1.29			
-ARM	2024-12-12	company	relative	0.0338	1.13	2.19	1.56			
-AMD	2024-12-13	company	relative	-0.0283	-1.05	-3.23	2.12			
-ANET	2024-12-13	company	price+relative	0.0514	2.37	2.88	1.48			
-AVGO	2024-12-13	company	price+relative+volume	0.2443	10.68	14.42	6.31			
-IGV	2024-12-13	benchmark	control	-0.0101	-0.74		1.31			
-INTC	2024-12-13	company	relative	-0.0212	-0.76	-2.1	0.85			
-MRVL	2024-12-13	company	price+relative+volume	0.1079	2.79	2.36	3.74			
-NVDA	2024-12-13	company	relative	-0.0225	-0.94	-2.68	1.02			
-ARM	2024-12-16	company	relative	-0.0455	-1.5	-3.35	1.39			
-AVGO	2024-12-16	company	price+relative+volume	0.1121	2.91	2.97	5.8			
-GOOGL	2024-12-16	company	price	0.036	2.06	1.44	2.01			
-ORCL	2024-12-16	company	relative	-0.0125	-0.68	-2.02	1.37			
-AMZN	2024-12-17	company	control	-0.0076	-0.43	-0.11	1			
-AVGO	2024-12-17	company	volume	-0.0391	-0.96	-0.7	3.65			
-MRVL	2024-12-17	company	price+relative+volume	-0.1004	-2.48	-2.41	3.28			
-AMZN	2024-12-18	company	price	-0.046	-2.57	-0.94	1.21			
-GOOGL	2024-12-18	company	price	-0.0359	-2	-0.2	1.53			
-IGV	2024-12-18	benchmark	price	-0.0449	-3.32		2.27			
-INTC	2024-12-18	company	price	-0.0558	-2.02	-0.82	1.4			
-META	2024-12-18	company	price	-0.0359	-2.32	-0.28	1.55			
-MSFT	2024-12-18	company	price	-0.0376	-2.96	0.58	1.28			
-MU	2024-12-18	company	volume	-0.0433	-1.32	-0.27	3.42			
-NOW	2024-12-18	company	price	-0.0482	-2.71	-0.29	1.34			
-PANW	2024-12-18	company	price	-0.062	-3.28	-1.29	1.45			
-QQQ	2024-12-18	benchmark	price	-0.0361	-3.81		2.1			
-SOXX	2024-12-18	benchmark	price	-0.037	-2.07		1.74			
-SPY	2024-12-18	benchmark	price	-0.0298	-4.57		2.62			
-XLK	2024-12-18	benchmark	price	-0.0323	-2.85		2.35			
-LRCX	2024-12-19	company	relative	-0.0531	-1.84	-2.14	1.58			
-MU	2024-12-19	company	price+relative+volume	-0.1618	-4.84	-6.29	4.95			
-PANW	2024-12-19	company	control	0.0032	0.15	-0.05	1.24			
-AAPL	2024-12-20	company	volume	0.0188	1.68	0.34	3.72			
-AVGO	2024-12-20	company	volume	0.0113	0.27	-0.06	6.72			
-META	2024-12-20	company	relative+volume	-0.0173	-1.07	-2.49	4.46			
-MSFT	2024-12-20	company	volume	-0.001	-0.07	-1.69	3.34			
-PANW	2024-12-20	company	relative+volume	-0.0136	-0.66	-2.51	3.01			
-SPY	2024-12-20	benchmark	volume	0.0086	1.13		3			
-ARM	2024-12-23	company	relative	-0.04	-1.28	-3.38	1.85			
-TSM	2024-12-23	company	price	0.0515	2.08	1.02	1.47			
-SPY	2024-12-24	benchmark	control	0.0111	1.44		0.8			
-AAPL	2025-01-02	company	price+relative	-0.0262	-2.43	-2.18	1.38			
-META	2025-01-02	company	relative	0.0234	1.42	2.03	1.18			
-AMD	2025-01-03	company	control	0.0393	1.56	0.75	1.12			
-ARM	2025-01-03	company	price+relative	0.1005	3.15	3.19	1.6			
-ASML	2025-01-06	company	price+relative	0.0758	2.65	2.1	1.69			
-INTC	2025-01-06	company	relative	-0.0336	-1.2	-2.84	1.4			
-META	2025-01-06	company	price+relative	0.0423	2.56	2.26	1.35			
-MU	2025-01-06	company	price+relative	0.1045	2.98	2.84	2.48			
-TSM	2025-01-06	company	price	0.0546	2.2	1.27	2.07			
-MU	2025-01-07	company	volume	0.0267	0.71	1.43	3.1			
-NVDA	2025-01-07	company	price+relative	-0.0622	-2.62	-2.41	1.72			
-AAPL	2025-01-10	company	price	-0.0241	-2.27	-0.2	1.51			
-META	2025-01-10	company	relative	0.0084	0.48	2.25	1.76			
-ORCL	2025-01-10	company	price+relative	-0.053	-2.9	-2.76	2.09			
-ASML	2025-01-15	company	relative	-0.0136	-0.7	-2.07	1.21			
-META	2025-01-15	company	price	0.0385	2.17	1.33	1.41			
-QQQ	2025-01-15	benchmark	price	0.023	2.05		1.24			
-SPY	2025-01-15	benchmark	price	0.0182	2.24		1.32			
-AAPL	2025-01-16	company	price+relative	-0.0404	-3.62	-3.08	1.73			
-AMAT	2025-01-16	company	price+relative	0.0454	2.01	3.16	1.79			
-KLAC	2025-01-16	company	price+relative	0.0433	2.35	4.08	1.82			
-LRCX	2025-01-16	company	relative	0.0403	1.6	2.63	1.78			
-TSM	2025-01-16	company	relative+volume	0.0386	1.65	2.08	3.08			
-INTC	2025-01-17	company	price+relative	0.0925	3.27	2.79	2.79			
-PANW	2025-01-17	company	control	-0.0003	-0.02	-0.71	1.24			
-TSM	2025-01-17	company	relative	-0.0153	-0.65	-2.37	1.64			
-AAPL	2025-01-21	company	price+relative	-0.0319	-2.6	-3.52	2.33			
-ORCL	2025-01-21	company	price+relative+volume	0.0717	3.65	4.42	3.95			
-ANET	2025-01-22	company	price+relative	0.0685	2.97	2.76	1.53			
-ARM	2025-01-22	company	price+relative+volume	0.1593	4.7	5.78	6.13			
-MSFT	2025-01-22	company	price	0.0413	2.99	1.61	1.42			
-NOW	2025-01-22	company	control	0.0258	1.4	0.47	1.33			
-ORCL	2025-01-22	company	price+relative+volume	0.0675	3.1	3.19	6.21			
-ARM	2025-01-23	company	relative+volume	-0.0743	-1.93	-2.4	3.71			
-QCOM	2025-01-23	company	relative	0.0242	1.22	2.1	0.98			
-AAPL	2025-01-27	company	price+relative	0.0318	2.51	6.36	2.19			
-AMAT	2025-01-27	company	price	-0.0652	-2.73	0.88	1.94			
-AMD	2025-01-27	company	price	-0.0637	-2.41	0.83	1.8			
-AMZN	2025-01-27	company	relative	0.0024	0.13	4.02	1.39			
-ANET	2025-01-27	company	price+relative+volume	-0.2235	-9.12	-9.97	5.04			
-ARM	2025-01-27	company	price	-0.1019	-2.55	-0.74	2.6			
-ASML	2025-01-27	company	price+volume	-0.0575	-2.95	1.25	3.24			
-AVGO	2025-01-27	company	price+relative+volume	-0.174	-4.1	-2.84	3.84			
-CRM	2025-01-27	company	relative	0.0396	1.76	3.95	2.75			
-DELL	2025-01-27	company	price	-0.087	-2.94	-1.52	2.68			
-GOOGL	2025-01-27	company	price	-0.042	-2.18	0.41	1.65			
-INTC	2025-01-27	company	relative	-0.0259	-0.84	2.13	1.36			
-KLAC	2025-01-27	company	price	-0.0628	-3.24	1.32	2.06			
-LRCX	2025-01-27	company	price	-0.0508	-2.01	1.86	1.89			
-META	2025-01-27	company	relative	0.0191	1.05	4.66	2.48			
-MRVL	2025-01-27	company	price+relative+volume	-0.191	-4.35	-3.12	3.82			
-MU	2025-01-27	company	price	-0.1171	-3.05	-1.33	2.7			
-NOW	2025-01-27	company	relative	0.0139	0.8	3.68	1.86			
-NVDA	2025-01-27	company	price+relative+volume	-0.1697	-6.68	-4.42	4.09			
-ORCL	2025-01-27	company	price+relative+volume	-0.1379	-5.87	-7.64	5.19			
-QCOM	2025-01-27	company	relative	-0.0054	-0.27	5.66	2.13			
-QQQ	2025-01-27	benchmark	price	-0.0291	-2.49		2.13			
-SOXX	2025-01-27	benchmark	price+volume	-0.0784	-4.26		6.08			
-TSM	2025-01-27	company	price+relative+volume	-0.1333	-5.58	-2.94	5.4			
-XLK	2025-01-27	benchmark	price	-0.049	-3.83		2.56			
-AAPL	2025-01-28	company	price	0.0365	2.75	0.6	1.71			
-ANET	2025-01-28	company	volume	0.0622	1.62	1.23	3.05			
-DELL	2025-01-28	company	relative	-0.0246	-0.78	-2.02	2.19			
-NVDA	2025-01-28	company	price+relative	0.0893	2.66	3.57	2.86			
+KLAC	2024-12-09	company	control	0.0062	0.22	0.67	1.13	no	nothing interesting here, everything is ordinary	2026-09-03
+MSFT	2024-12-09	company	relative	0.0055	0.43	2.19	1.01	no	nothing interesting here, ordinary	2026-09-03
+PANW	2024-12-09	company	price	-0.0418	-2.31	-1.58	1.14	yes	4% drop is notable but other stats are normal	2026-09-03
+GOOGL	2024-12-10	company	price+relative	0.0559	3.92	4.67	2.52	yes	GOOGLE is important company and it moves up more than 5% with unusual volume, it moves not with sector and it means something important happened with the company	2026-09-03
+ORCL	2024-12-10	company	price+relative+volume	-0.0667	-3.8	-4.65	3.8	yes	big drop more that 6% unusual move and big volume	2026-09-03
+AVGO	2024-12-11	company	price+relative	0.0663	3.12	2.9	2.14	yes	big move up unusual move and busy volume	2026-09-03
+GOOGL	2024-12-11	company	price+relative+volume	0.0552	3.48	2.34	3.07	yes	big move up unusual and big volume 100% woth to see	2026-09-03
+INTC	2024-12-11	company	control	-0.002	-0.07	-1.18	1.17	no	nothing interesting here, ordinary	2026-09-03
+SOXX	2024-12-11	benchmark	control	0.0251	1.4		1.29	yes	for ETS index 2.5% up is important to notice, this is related to broader market	2026-09-03
+ARM	2024-12-12	company	relative	0.0338	1.13	2.19	1.56	no	nothing interesting here, it moves but not that significant	2026-09-03
+AMD	2024-12-13	company	relative	-0.0283	-1.05	-3.23	2.12	yes	because volume is more than 2, other stats are mid. AVGO on the same day is up 10% which means their success is bad for AMD	2026-09-03
+ANET	2024-12-13	company	price+relative	0.0514	2.37	2.88	1.48	yes	because 5% up and notable move	2026-09-03
+AVGO	2024-12-13	company	price+relative+volume	0.2443	10.68	14.42	6.31	major	huge move up, all stats are insanely extreme move up	2026-09-03
+IGV	2024-12-13	benchmark	control	-0.0101	-0.74		1.31	no	nothing interesting here, ordinary	2026-09-03
+INTC	2024-12-13	company	relative	-0.0212	-0.76	-2.1	0.85	no	nothing interesting here, ordinary	2026-09-03
+MRVL	2024-12-13	company	price+relative+volume	0.1079	2.79	2.36	3.74	major	huge move up more than 10% and stats are all unusual	2026-09-03
+NVDA	2024-12-13	company	relative	-0.0225	-0.94	-2.68	1.02	no	nothing interesting here, ordinary	2026-09-03
+ARM	2024-12-16	company	relative	-0.0455	-1.5	-3.35	1.39	yes	becuase 4% drop and unusual vs sector	2026-09-03
+AVGO	2024-12-16	company	price+relative+volume	0.1121	2.91	2.97	5.8	major	huge move up 11% and huge volume	2026-09-03
+GOOGL	2024-12-16	company	price	0.036	2.06	1.44	2.01	yes	because its google and volume is above 2, but overall its mild	2026-09-03
+ORCL	2024-12-16	company	relative	-0.0125	-0.68	-2.02	1.37	no	nothing interesting here, ordinary	2026-09-03
+AMZN	2024-12-17	company	control	-0.0076	-0.43	-0.11	1	no	nothing interesting here, ordinary	2026-09-03
+AVGO	2024-12-17	company	volume	-0.0391	-0.96	-0.7	3.65	yes	because its AVGO and really busy volume means it was a selloff	2026-09-03
+MRVL	2024-12-17	company	price+relative+volume	-0.1004	-2.48	-2.41	3.28	major	-10% drop and big volume is important	2026-09-03
+AMZN	2024-12-18	company	price	-0.046	-2.57	-0.94	1.21	yes	AMZN drop more than 4% means important and SPY -4% is BIG, QQQ -3.8	2026-09-03
+GOOGL	2024-12-18	company	price	-0.0359	-2	-0.2	1.53	yes	just because its GOOGLE -3%, but overall n for small company	2026-09-03
+IGV	2024-12-18	benchmark	price	-0.0449	-3.32		2.27	yes	because -4% unusual move and volume 2+	2026-09-03
+INTC	2024-12-18	company	price	-0.0558	-2.02	-0.82	1.4	yes	5% down is important	2026-09-03
+META	2024-12-18	company	price	-0.0359	-2.32	-0.28	1.55	no	nothing interesting here, ordinary	2026-09-03
+MSFT	2024-12-18	company	price	-0.0376	-2.96	0.58	1.28	no	nothing interesting here, ordinary	2026-09-03
+MU	2024-12-18	company	volume	-0.0433	-1.32	-0.27	3.42	yes	because 4% down and crowded volume, but overall market was down that day	2026-09-03
+NOW	2024-12-18	company	price	-0.0482	-2.71	-0.29	1.34	yes	I'm not sure because its down because entire market is down as we can see, its kinda important but news about broader market are important at that point	2026-09-03
+PANW	2024-12-18	company	price	-0.062	-3.28	-1.29	1.45	yes	-6% is big	2026-09-03
+QQQ	2024-12-18	benchmark	price	-0.0361	-3.81		2.1	yes	for big ETF like QQQ -3.5% and volume 2+ means something is going on = watch	2026-09-03
+SOXX	2024-12-18	benchmark	price	-0.037	-2.07		1.74	yes	ETS -3.7% is important, move is notable and busy volume	2026-09-03
+SPY	2024-12-18	benchmark	price	-0.0298	-4.57		2.62	yes	-3% for SPY is always IMPORTANT	2026-09-03
+XLK	2024-12-18	benchmark	price	-0.0323	-2.85		2.35	yes	another index ETF down 3% - important	2026-09-03
+LRCX	2024-12-19	company	relative	-0.0531	-1.84	-2.14	1.58	yes	-5% busy volume	2026-09-03
+MU	2024-12-19	company	price+relative+volume	-0.1618	-4.84	-6.29	4.95	major	more that 15% drop and crowded volume, on top of that this is AI related stock	2026-09-03
+PANW	2024-12-19	company	control	0.0032	0.15	-0.05	1.24	no	nothing interesting here, ordinary	2026-09-03
+AAPL	2024-12-20	company	volume	0.0188	1.68	0.34	3.72	no	nothing interesting here, ordinary	2026-09-03
+AVGO	2024-12-20	company	volume	0.0113	0.27	-0.06	6.72	yes	simply because volume is 6.72 which is suspicious	2026-09-03
+META	2024-12-20	company	relative+volume	-0.0173	-1.07	-2.49	4.46	yes	volume is interesting here for big name	2026-09-03
+MSFT	2024-12-20	company	volume	-0.001	-0.07	-1.69	3.34	no	nothing interesting here, ordinary	2026-09-03
+PANW	2024-12-20	company	relative+volume	-0.0136	-0.66	-2.51	3.01	no	nothing interesting here, ordinary	2026-09-03
+SPY	2024-12-20	benchmark	volume	0.0086	1.13		3	yes	this is complicated because SPY with volume 3 is interesting, not alarming but interesting	2026-09-03
+ARM	2024-12-23	company	relative	-0.04	-1.28	-3.38	1.85	yes	-4% and busy volume, unusual move	2026-09-03
+TSM	2024-12-23	company	price	0.0515	2.08	1.02	1.47	yes	+5% for TSM is interesting	2026-09-03
+SPY	2024-12-24	benchmark	control	0.0111	1.44		0.8	no	nothing interesting here, ordinary	2026-09-03
+AAPL	2025-01-02	company	price+relative	-0.0262	-2.43	-2.18	1.38	no	nothing interesting here, ordinary	2026-09-03
+META	2025-01-02	company	relative	0.0234	1.42	2.03	1.18	no	nothing interesting here, ordinary	2026-09-03
+AMD	2025-01-03	company	control	0.0393	1.56	0.75	1.12	no	nothing interesting here, ordinary	2026-09-03
+ARM	2025-01-03	company	price+relative	0.1005	3.15	3.19	1.6	major	10% up unusual move always interesting	2026-09-03
+ASML	2025-01-06	company	price+relative	0.0758	2.65	2.1	1.69	yes	for ASML 7% up and notable move + volume is busy means something is going on with AI stocks	2026-09-03
+INTC	2025-01-06	company	relative	-0.0336	-1.2	-2.84	1.4	no	nothing interesting here, ordinary	2026-09-03
+META	2025-01-06	company	price+relative	0.0423	2.56	2.26	1.35	yes	4% for big name META and notable move is interesting	2026-09-03
+MU	2025-01-06	company	price+relative	0.1045	2.98	2.84	2.48	major	10% and busy volume always interesting	2026-09-03
+TSM	2025-01-06	company	price	0.0546	2.2	1.27	2.07	yes	TSM 5% up and busy volume	2026-09-03
+MU	2025-01-07	company	volume	0.0267	0.71	1.43	3.1	yes	because its MU and volume is crowded	2026-09-03
+NVDA	2025-01-07	company	price+relative	-0.0622	-2.62	-2.41	1.72	yes	NVDA is huge company down 6% and busy volume, on top of that notable move agains sector	2026-09-03
+AAPL	2025-01-10	company	price	-0.0241	-2.27	-0.2	1.51	no	nothing interesting here, ordinary	2026-09-03
+META	2025-01-10	company	relative	0.0084	0.48	2.25	1.76	no	nothing interesting here, ordinary	2026-09-03
+ORCL	2025-01-10	company	price+relative	-0.053	-2.9	-2.76	2.09	yes	busy volume, notable move and -5%	2026-09-03
+ASML	2025-01-15	company	relative	-0.0136	-0.7	-2.07	1.21	no	nothing interesting here, ordinary	2026-09-03
+META	2025-01-15	company	price	0.0385	2.17	1.33	1.41	no	nothing interesting here, ordinary	2026-09-03
+QQQ	2025-01-15	benchmark	price	0.023	2.05		1.24	no	nothing interesting here, ordinary	2026-09-03
+SPY	2025-01-15	benchmark	price	0.0182	2.24		1.32	no	nothing interesting here, ordinary	2026-09-03
+AAPL	2025-01-16	company	price+relative	-0.0404	-3.62	-3.08	1.73	yes	AAPL down 4% and volume is busy	2026-09-03
+AMAT	2025-01-16	company	price+relative	0.0454	2.01	3.16	1.79	yes	i mean overall this is not urgent but on quite day 4.5% up and busy volume unusual agains sector seems good	2026-09-03
+KLAC	2025-01-16	company	price+relative	0.0433	2.35	4.08	1.82	yes	4% up and rare agains sector + busy volume interesting	2026-09-03
+LRCX	2025-01-16	company	relative	0.0403	1.6	2.63	1.78	no	nothing interesting here, seems like this combo is not enough	2026-09-03
+TSM	2025-01-16	company	relative+volume	0.0386	1.65	2.08	3.08	yes	because big name volume is crowded and almost 4% up	2026-09-03
+INTC	2025-01-17	company	price+relative	0.0925	3.27	2.79	2.79	yes	almost 10% up and good move stats	2026-09-03
+PANW	2025-01-17	company	control	-0.0003	-0.02	-0.71	1.24	no	nothing interesting here, ordinary	2026-09-03
+TSM	2025-01-17	company	relative	-0.0153	-0.65	-2.37	1.64	no	nothing interesting here, ordinary	2026-09-03
+AAPL	2025-01-21	company	price+relative	-0.0319	-2.6	-3.52	2.33	yes	big name AAPL -3% and busy volume,unusual move	2026-09-03
+ORCL	2025-01-21	company	price+relative+volume	0.0717	3.65	4.42	3.95	yes	7% up price and volume is almost 4 is always YES	2026-09-03
+ANET	2025-01-22	company	price+relative	0.0685	2.97	2.76	1.53	yes	almost 7% up price	2026-09-03
+ARM	2025-01-22	company	price+relative+volume	0.1593	4.7	5.78	6.13	major	15% up and huge volume, rare move, its a major	2026-09-03
+MSFT	2025-01-22	company	price	0.0413	2.99	1.61	1.42	yes	big name MSFT 4% up notable move	2026-09-03
+NOW	2025-01-22	company	control	0.0258	1.4	0.47	1.33	no	nothing interesting here, ordinary	2026-09-03
+ORCL	2025-01-22	company	price+relative+volume	0.0675	3.1	3.19	6.21	yes	7% up unusual move and huge volume, YSE	2026-09-03
+ARM	2025-01-23	company	relative+volume	-0.0743	-1.93	-2.4	3.71	yes	-7% and crowded volume, i want to notice that	2026-09-03
+QCOM	2025-01-23	company	relative	0.0242	1.22	2.1	0.98	no	nothing interesting here, ordinary	2026-09-03
+AAPL	2025-01-27	company	price+relative	0.0318	2.51	6.36	2.19	yes	big name 3% up and volume is busy + extreme against sector	2026-09-03
+AMAT	2025-01-27	company	price	-0.0652	-2.73	0.88	1.94	yes	-6.5% down and volume is busy	2026-09-03
+AMD	2025-01-27	company	price	-0.0637	-2.41	0.83	1.8	yes	-6% and busy volume	2026-09-03
+AMZN	2025-01-27	company	relative	0.0024	0.13	4.02	1.39	no	nothing interesting here, ordinary	2026-09-03
+ANET	2025-01-27	company	price+relative+volume	-0.2235	-9.12	-9.97	5.04	major	huge drop and extreme against sector, this is huge	2026-09-03
+ARM	2025-01-27	company	price	-0.1019	-2.55	-0.74	2.6	major	-10% and busy volume	2026-09-03
+ASML	2025-01-27	company	price+volume	-0.0575	-2.95	1.25	3.24	yes	big name ASML almost 6% down and crowded volume	2026-09-03
+AVGO	2025-01-27	company	price+relative+volume	-0.174	-4.1	-2.84	3.84	major	huge move down 17%, rare move, volume is big, and for this name its important	2026-09-03
+CRM	2025-01-27	company	relative	0.0396	1.76	3.95	2.75	yes	4% up with interesting move stats and volume	2026-09-03
+DELL	2025-01-27	company	price	-0.087	-2.94	-1.52	2.68	yes	big move down with busy volume	2026-09-03
+GOOGL	2025-01-27	company	price	-0.042	-2.18	0.41	1.65	yes	huge name -4% and busy volume, but nothing fancy	2026-09-03
+INTC	2025-01-27	company	relative	-0.0259	-0.84	2.13	1.36	no	nothing interesting here, ordinary	2026-09-03
+KLAC	2025-01-27	company	price	-0.0628	-3.24	1.32	2.06	yes	-6% and busy volume	2026-09-03
+LRCX	2025-01-27	company	price	-0.0508	-2.01	1.86	1.89	yes	-5% and busy volume	2026-09-03
+META	2025-01-27	company	relative	0.0191	1.05	4.66	2.48	no	nothing interesting here, ordinary	2026-09-03
+MRVL	2025-01-27	company	price+relative+volume	-0.191	-4.35	-3.12	3.82	major	huge drop, rare move and crowded volume, this is AI stock, this is huge	2026-09-03
+MU	2025-01-27	company	price	-0.1171	-3.05	-1.33	2.7	major	almost 12% down and busy volume for BIG NAME is huge	2026-09-03
+NOW	2025-01-27	company	relative	0.0139	0.8	3.68	1.86	no	nothing interesting here, ordinary	2026-09-03
+NVDA	2025-01-27	company	price+relative+volume	-0.1697	-6.68	-4.42	4.09	major	wtf happened on that day, -17% down and extreme move with big volume	2026-09-03
+ORCL	2025-01-27	company	price+relative+volume	-0.1379	-5.87	-7.64	5.19	major	-14% and huge volume, big AI name	2026-09-03
+QCOM	2025-01-27	company	relative	-0.0054	-0.27	5.66	2.13	no	nothing interesting here, ordinary	2026-09-03
+QQQ	2025-01-27	benchmark	price	-0.0291	-2.49		2.13	yes	because its ETF QQQ and its down a lot for that ETF and busy volume	2026-09-03
+SOXX	2025-01-27	benchmark	price+volume	-0.0784	-4.26		6.08	major	AI ETF down almost 8% rare move and huge volume	2026-09-03
+TSM	2025-01-27	company	price+relative+volume	-0.1333	-5.58	-2.94	5.4	major	huge name down 13% and rare move with huge volume	2026-09-03
+XLK	2025-01-27	benchmark	price	-0.049	-3.83		2.56	yes	index ETF down 5% with busy volume is IMPORTANT	2026-09-03
+AAPL	2025-01-28	company	price	0.0365	2.75	0.6	1.71	no	nothing interesting here, ordinary	2026-09-03
+ANET	2025-01-28	company	volume	0.0622	1.62	1.23	3.05	yes	6% up with volume crowded	2026-09-03
+DELL	2025-01-28	company	relative	-0.0246	-0.78	-2.02	2.19	no	nothing interesting here, ordinary	2026-09-03
+NVDA	2025-01-28	company	price+relative	0.0893	2.66	3.57	2.86	yes	huge name 9% up with busy volume and unusual move against sector	2026-09-03
 SOXX	2025-01-28	benchmark	volume	0.0045	0.21		3.21			
 TSM	2025-01-28	company	relative	0.0525	1.81	2.5	2.49			
 ASML	2025-01-29	company	price+relative+volume	0.0429	2.05	2.28	3.14			

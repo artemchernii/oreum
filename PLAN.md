@@ -86,8 +86,11 @@ data exists for relative-performance work.
   volatility-adjusted thresholds — fire or stay silent, never a per-day rank
 - historical replay: how many emails would these thresholds have sent, and
   would the known important situations have made the cut
-- a labeled evaluation set: known event dates as weak labels, plus
-  retrospective human judgment, recorded point-in-time
+- a labeled evaluation set: retrospective human judgment recorded
+  point-in-time, via `scripts/label.ts`, scored by `scripts/score.ts`.
+  The weak-label half is deferred, not skipped: `/benzinga/v1/earnings` is 403
+  on the current plan, so known event dates have no source until Phase 3 or a
+  substitute is drawn from `/vX/reference/financials` filing dates
 - news ingestion across the universe, deduplicated, one LLM classification
   call per story
 - direction derived from the event and relationship type, never from
