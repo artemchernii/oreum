@@ -3,6 +3,7 @@ import {
   evaluate,
   formatPool,
   mergePool,
+  parseEntry,
   parsePool,
   stableSample,
   type Candidate,
@@ -239,5 +240,50 @@ describe("stableSample", () => {
 
   it("returns nothing for a size of zero", () => {
     expect(stableSample(universe, 0)).toEqual([]);
+  });
+});
+
+describe("parseEntry", () => {
+  it("reads a verdict letter followed by the reason", () => {
+    expect(parseEntry("y big earnings move")).toEqual({
+      verdict: "yes",
+      basis: "big earnings move",
+    });
+  });
+
+  it("accepts the whole word as well as the letter", () => {
+    expect(parseEntry("major huge")).toEqual({ verdict: "major", basis: "huge" });
+    expect(parseEntry("m huge")).toEqual({ verdict: "major", basis: "huge" });
+  });
+
+  it("allows a verdict with no reason", () => {
+    expect(parseEntry("n")).toEqual({ verdict: "no", basis: "" });
+  });
+
+  it("does not care about case or padding", () => {
+    expect(parseEntry("  Y   Big Move  ")).toEqual({
+      verdict: "yes",
+      basis: "Big Move",
+    });
+  });
+
+  it("recognizes the two control words", () => {
+    expect(parseEntry("s")).toBe("skip");
+    expect(parseEntry("q")).toBe("quit");
+  });
+
+  it("returns null for anything it does not understand", () => {
+    // Null means re-prompt. Guessing a verdict from a typo would write a
+    // judgment the person never made.
+    expect(parseEntry("")).toBeNull();
+    expect(parseEntry("maybe later")).toBeNull();
+    expect(parseEntry("x")).toBeNull();
+  });
+
+  it("does not mistake a reason beginning with a verdict word for a skip", () => {
+    expect(parseEntry("n nothing special")).toEqual({
+      verdict: "no",
+      basis: "nothing special",
+    });
   });
 });
