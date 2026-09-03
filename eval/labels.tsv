@@ -1,24 +1,24 @@
 symbol	date	kind	reason	change	price_sigma	cohort_sigma	volume	verdict	basis	labeled_at
-CRM	2024-11-27	company	price	-0.0384	-2.28	-1.77	1.55			
-DELL	2024-11-27	company	price+relative+volume	-0.1225	-4.72	-4.96	5.33			
-AMD	2024-11-29	company	control	0.0069	0.25	-0.4	0.52			
-GOOGL	2024-12-02	company	control	0.015	0.97	0.35	1.06			
-LRCX	2024-12-02	company	price+relative	0.0627	2.26	2.32	1.74			
-META	2024-12-02	company	price	0.0322	2.1	1.89	1.13			
+CRM	2024-11-27	company	price	-0.0384	-2.28	-1.77	1.55	yes	well, -3.8% is quite big but -1.77 cohort_sigma is not that big	2026-09-03
+DELL	2024-11-27	company	price+relative+volume	-0.1225	-4.72	-4.96	5.33	yes	-12% is huge for stable company like DELL and it was clearly stock related news coh_sigma is almost 5 and volume is above 5 is 100% unusual and important	2026-09-03
+AMD	2024-11-29	company	control	0.0069	0.25	-0.4	0.52	no	all movements are not meaningful not worth to look into	2026-09-03
+GOOGL	2024-12-02	company	control	0.015	0.97	0.35	1.06	no	all movements are not meaningful not worth to look into	2026-09-03
+LRCX	2024-12-02	company	price+relative	0.0627	2.26	2.32	1.74	yes	big change in price 6%, it moves with the market and volume is not that high but still 6% is worth to notice	2026-09-03
+META	2024-12-02	company	price	0.0322	2.1	1.89	1.13	yes	META in my portfolio and 3% move is worth to notice but not dig	2026-09-03
 TSM	2024-12-02	company	price	0.0527	2.08	1.34	1.37			
-INTC	2024-12-03	company	price+relative	-0.061	-2.25	-2.4	2.29			
-META	2024-12-03	company	price+relative	0.0351	2.31	2.55	1.35			
-CRM	2024-12-04	company	price+relative+volume	0.1099	6.24	5.92	4.92			
-IGV	2024-12-04	benchmark	price	0.0389	3.2		2.65			
-MRVL	2024-12-04	company	price+relative+volume	0.2319	9.81	12.08	6.58			
-MSFT	2024-12-04	company	relative	0.0144	1.09	-2.17	1.38			
+INTC	2024-12-03	company	price+relative	-0.061	-2.25	-2.4	2.29	yes	-6% is worth noticing and -2.4 coh means something with company, volume is not mega high but still worth	2026-09-03
+META	2024-12-03	company	price+relative	0.0351	2.31	2.55	1.35	no	3% up which is good but valume is quite, coh seems not that high	2026-09-03
+CRM	2024-12-04	company	price+relative+volume	0.1099	6.24	5.92	4.92	yes	10% is a lot and coh, vol all high so means something company related	2026-09-03
+IGV	2024-12-04	benchmark	price	0.0389	3.2		2.65	yes	when ETF moves 3% almost 4% means something is going on worth looking	2026-09-03
+MRVL	2024-12-04	company	price+relative+volume	0.2319	9.81	12.08	6.58	yes	mega jump huge coh_sigma, huge volume ITS 100% FIRE	2026-09-03
+MSFT	2024-12-04	company	relative	0.0144	1.09	-2.17	1.38	no	all movements are not meaningful not worth to look into	2026-09-03
 NOW	2024-12-04	company	price+relative	0.0622	3.79	2.2	1.8			
-AMAT	2024-12-05	company	relative	-0.0504	-1.79	-2.01	1.48			
-MSFT	2024-12-05	company	relative	0.0119	0.91	2.08	1.15			
-AVGO	2024-12-06	company	price+relative	0.0531	2.61	3.39	1.45			
-QCOM	2024-12-06	company	control	-0.0055	-0.26	-0.83	1.34			
-TSM	2024-12-06	company	control	-0.0063	-0.25	-0.6	0.79			
-AMD	2024-12-09	company	price+relative	-0.0557	-2.16	-3.14	1.87			
+AMAT	2024-12-05	company	relative	-0.0504	-1.79	-2.01	1.48	yes	-5% if in my portfolio mean need to notice it	2026-09-03
+MSFT	2024-12-05	company	relative	0.0119	0.91	2.08	1.15	no	all movements are not meaningful not worth to look into	2026-09-03
+AVGO	2024-12-06	company	price+relative	0.0531	2.61	3.39	1.45	yes	5% up and cohort_sigma is 3+% mean notice it	2026-09-03
+QCOM	2024-12-06	company	control	-0.0055	-0.26	-0.83	1.34	no	all movements are not meaningful not worth to look into	2026-09-03
+TSM	2024-12-06	company	control	-0.0063	-0.25	-0.6	0.79	no	all movements are not meaningful not worth to look into	2026-09-03
+AMD	2024-12-09	company	price+relative	-0.0557	-2.16	-3.14	1.87	yes	Semi stock in my portfolio -3% coh_sigma is worth to notice	2026-09-03
 KLAC	2024-12-09	company	control	0.0062	0.22	0.67	1.13			
 MSFT	2024-12-09	company	relative	0.0055	0.43	2.19	1.01			
 PANW	2024-12-09	company	price	-0.0418	-2.31	-1.58	1.14			

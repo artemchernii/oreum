@@ -317,3 +317,44 @@ export function stableSample<T extends { symbol: string; date: string }>(
     .slice(0, Math.max(0, size))
     .map((entry) => entry.row);
 }
+
+/** What one line of input at the labeling prompt asked for. */
+export type Entry = { verdict: Exclude<Verdict, "">; basis: string };
+
+const WORDS: Record<string, Exclude<Verdict, "">> = {
+  y: "yes",
+  yes: "yes",
+  n: "no",
+  no: "no",
+  m: "major",
+  major: "major",
+};
+
+/**
+ * One typed line: a verdict, then the reason in plain words.
+ *
+ * `y big earnings move` rather than eleven tab-separated columns. Hand-editing
+ * the file put spaces where tabs belonged in fourteen of the first twenty
+ * rows, and nothing on screen showed the difference.
+ *
+ * Null means the input was not understood and the prompt should ask again.
+ * Guessing a verdict from a typo would record a judgment nobody made.
+ */
+export function parseEntry(input: string): Entry | "skip" | "quit" | null {
+  const trimmed = input.trim();
+  if (trimmed === "") return null;
+
+  const [head, ...rest] = trimmed.split(/\s+/);
+  const word = head.toLowerCase();
+
+  // Only when they stand alone, so a reason starting with "some" is not a skip.
+  if (rest.length === 0) {
+    if (word === "s" || word === "skip") return "skip";
+    if (word === "q" || word === "quit") return "quit";
+  }
+
+  const verdict = WORDS[word];
+  if (verdict === undefined) return null;
+
+  return { verdict, basis: rest.join(" ") };
+}

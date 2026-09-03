@@ -316,35 +316,64 @@ the magnitude and let the sign describe it.
 
 ### How to label
 
-Fill two columns in `eval/labels.tsv`: `verdict` and `basis`. Set `labeled_at`
-to the date you judged it. Everything left of them is the evidence.
+Run the prompt. It asks one row at a time and writes the file itself:
 
-You do not have to know what happened. "Big move on heavy volume, mostly
-company-specific" is a good `basis`. The question is whether you would have
-wanted the email, not whether you can explain the cause.
+```sh
+node scripts/label.ts
+```
 
-Most rows are `no`, and long runs of them are the expected result rather than
-a sign of doing it wrong. `major` should be rare.
+Type the verdict then the reason in plain words — `y big earnings move`. `s`
+skips a row, `q` saves and quits. Every judgment is written immediately, so a
+closed terminal costs at most the row being typed.
+
+To change your mind about rows already judged, pass a symbol or a date:
+
+```sh
+node scripts/label.ts MRVL
+node scripts/label.ts 2024-12-04
+```
+
+Do not edit `eval/labels.tsv` by hand. It is tab-separated, editors write
+spaces that look identical, and the first attempt broke fourteen of twenty
+rows that way.
 
 | Verdict | Means |
 | --- | --- |
-| *(empty)* | Not judged yet. Never counted as anything. |
 | `no` | I would not have wanted to be told. |
-| `yes` | I would have wanted to be told. |
-| `major` | A miss here is a failure, not a near-miss. |
+| `yes` | Worth a line in that day's email. |
+| `major` | If the email had been silent, the product failed. |
 
-Work in date order — the file is sorted that way. Judging a whole session at
-once is much faster than judging isolated rows, because the day's context is
-established once and then every item on it is cheap.
+You do not have to know what happened. "Big move on heavy volume, mostly
+company-specific" is a good reason. The question is whether you would have
+wanted the email, not whether you can explain the cause.
 
-The question is always *"would I have wanted to be told about this that day?"*,
-answered from what was knowable then. `major` exists so that a missed earnings
-blowup cannot average away against forty small moves the rule got right.
+Most rows are `no`, and long runs of them are the expected result rather than
+a sign of doing it wrong.
 
-Re-running `scripts/pool.ts` preserves every label. A labeled row that a
-recomputation pushes out of the candidate set is marked `retired` rather than
-deleted — bars are adjusted, so a split moves every measurement while the
-judgment stays valid.
+### What makes something major
+
+`yes` and `major` are not big and bigger. They answer different questions.
+
+`yes` asks whether the item earned its place in the email. `major` asks
+whether **its absence would have been a failure** — the day someone says "did
+you see what happened to MRVL?" and the honest answer is that the product said
+nothing.
+
+Useful tests, none of them numeric:
+
+- Would I have been annoyed to learn about this a week later?
+- Would it have changed what I looked at that day?
+- Is this the kind of thing a person would mention unprompted?
+
+Expect roughly one in twenty to thirty rows. If nothing is ever `major`, the
+metric that matters most has no denominator; if everything is, it measures
+nothing.
+
+**Do not derive `major` from the sigma columns.** A label that means
+"price_sigma above 5" turns the evaluation into a check that one threshold
+agrees with another. Judge the situation, then let the numbers be scored
+against your judgment — that is the only order in which the result means
+anything.
 
 ### Reading the score
 
