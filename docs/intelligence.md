@@ -181,6 +181,35 @@ events: ORCL +35.9% (2025-09-10), AMD +23.7% (2025-10-06), AVGO +24.4%
 also shows -10.0 sigma against its own cohort, which is the sector-relative
 signal separating a company move from a market one.
 
+### Two findings not yet acted on
+
+Both came from sweeps run on 2026-09-03 against the held history. The code that
+produced them was exploratory and was not kept; the conclusions were.
+
+**The volume gate is cheap when set high and ruinous when set low.** Swept
+against the price threshold rather than independently, a gate at 8x or 10x
+costs under a point of quiet-day rate, 4x costs two to seven points, and 3x
+caps the quiet-day rate near 64% no matter how high the price threshold goes —
+at that point the gate is sending the email and the price threshold is
+decorative. The price threshold remains the main lever: with no volume gate at
+all, moving from 3.5 to 5 sigma takes quiet from 74.8% to 87.3%.
+
+**A flat OR across the three families misreads a market-wide day.** On
+2025-04-09, the tariff-pause rally, the price family fired on 24 of 25 names —
+each one genuinely far outside its own normal — and the email would have been a
+24-item wall whose honest summary was one sentence: the market went up. The
+relative family correctly reported near-zero on almost all of them. The
+contrast case is 2025-01-27, where price and relative *disagree*: AI infrastructure
+down hard on both, while AAPL, CRM, META and QCOM show strong positive relative
+on flat price moves — the rotation, which is exactly the second-order read the
+product exists to surface.
+
+The open question is whether an item should qualify on the price family alone
+when the relative family says the move was the market's. A market-wide crash
+does deserve an email, so the goal is not silence but one item that says the
+market moved, rather than 24 that each imply company news. This changes what
+the email is, so it is a scope decision rather than a tuning one.
+
 ## Deterministic and LLM responsibilities
 
 Deterministic systems own normalization, calculations, anomaly detection,
