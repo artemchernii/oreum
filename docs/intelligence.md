@@ -253,10 +253,78 @@ The pool is drawn loose on purpose. Every stricter rule's output is a subset of
 it, so one labeling pass scores every rule and the labels do not have to be
 redone when a threshold moves.
 
+### Reading the numbers
+
+Every measurement in the pool answers one question: **how usual or unusual is
+this, for this particular stock?** None of them says whether something is good
+or bad.
+
+| Column | What it is |
+| --- | --- |
+| `change` | the day's price move. `0.0552` is +5.52% |
+| `price_sigma` | that move divided by how much this stock normally moves in a day |
+| `cohort_sigma` | the same, after subtracting what its cohort proxy ETF did |
+| `volume` | shares traded divided by its own median. `1.0` is typical |
+
+`price_sigma` exists because raw percentages cannot be compared between
+symbols. A 0.6% day is nothing for TSM, whose normal day is about 2.5%, and
+would be remarkable for something that normally moves 0.2%. Dividing by the
+symbol's own history is what makes one absolute threshold work across the
+whole universe.
+
+`cohort_sigma` separates the company from the market. A stock that fell
+because everything fell is not company news, and the two numbers together say
+which happened.
+
+`volume` is a multiple, not a sigma. It is never negative.
+
+Rough scale for both sigma columns, ignoring sign:
+
+| Magnitude | How often | Read as |
+| --- | --- | --- |
+| under 1 | most days | noise |
+| 1–2 | a few times a month | mild |
+| 2–3 | monthly-ish | notable |
+| 3–4 | a few times a year | unusual, usually a reason behind it |
+| 4–6 | yearly-ish | something happened |
+| 6+ | rare | big |
+
+And for volume: under 1 is quiet, 1.5–2 is busy, 3+ is a crowd, 5+ is
+everyone.
+
+### The two numbers together
+
+Three GOOGL sessions from December 2024 show why both sigmas exist:
+
+| Date | `price_sigma` | `cohort_sigma` | Reading |
+| --- | --- | --- | --- |
+| 2024-12-10 | 3.92 | 4.67 | cohort is larger — the sector did not move and GOOGL did. Company news. |
+| 2024-12-11 | 3.48 | 2.34 | still mostly GOOGL, but tech rose with it. Partly carried. |
+| 2024-12-18 | -2.00 | -0.20 | cohort near zero — GOOGL fell only because everything fell. |
+
+The last row is the case the whole product turns on. A 2-sigma drop looks
+alarming on its own and means nothing once the market is subtracted. Emailing
+about it would be exactly the noise Oreum exists to remove, which is why a
+company must clear the relative family rather than the price family to
+produce an item.
+
+### Direction is not attention
+
+The sign says which way, never how much it matters. A -6 sigma deserves the
+same attention as a +6 sigma: something large happened. When labeling, judge
+the magnitude and let the sign describe it.
+
 ### How to label
 
 Fill two columns in `eval/labels.tsv`: `verdict` and `basis`. Set `labeled_at`
-to the date you judged it.
+to the date you judged it. Everything left of them is the evidence.
+
+You do not have to know what happened. "Big move on heavy volume, mostly
+company-specific" is a good `basis`. The question is whether you would have
+wanted the email, not whether you can explain the cause.
+
+Most rows are `no`, and long runs of them are the expected result rather than
+a sign of doing it wrong. `major` should be rare.
 
 | Verdict | Means |
 | --- | --- |
