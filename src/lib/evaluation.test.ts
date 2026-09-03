@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   evaluate,
   formatPool,
+  matchesFilter,
   mergePool,
   parseEntry,
   parsePool,
@@ -285,5 +286,44 @@ describe("parseEntry", () => {
       verdict: "no",
       basis: "nothing special",
     });
+  });
+});
+
+describe("matchesFilter", () => {
+  const row = { symbol: "MRVL", date: "2024-12-04" };
+
+  it("matches a symbol whatever the case", () => {
+    expect(matchesFilter(row, ["mrvl"])).toBe(true);
+    expect(matchesFilter(row, ["MRVL"])).toBe(true);
+    expect(matchesFilter(row, ["AMD"])).toBe(false);
+  });
+
+  it("matches an exact date", () => {
+    expect(matchesFilter(row, ["2024-12-04"])).toBe(true);
+    expect(matchesFilter(row, ["2024-12-05"])).toBe(false);
+  });
+
+  it("matches a partial date as a prefix", () => {
+    expect(matchesFilter(row, ["2024-12"])).toBe(true);
+    expect(matchesFilter(row, ["2024"])).toBe(true);
+    expect(matchesFilter(row, ["2024-11"])).toBe(false);
+  });
+
+  it("matches an inclusive date range", () => {
+    // The reason this exists: re-judging a block of sessions that were
+    // labeled under an older definition.
+    expect(matchesFilter(row, ["2024-11-27..2024-12-12"])).toBe(true);
+    expect(matchesFilter(row, ["2024-12-04..2024-12-04"])).toBe(true);
+    expect(matchesFilter(row, ["2024-12-05..2024-12-12"])).toBe(false);
+    expect(matchesFilter(row, ["2024-11-01..2024-12-03"])).toBe(false);
+  });
+
+  it("matches when any one filter matches", () => {
+    expect(matchesFilter(row, ["AMD", "2024-12-04"])).toBe(true);
+    expect(matchesFilter(row, ["AMD", "INTC"])).toBe(false);
+  });
+
+  it("matches nothing when given nothing", () => {
+    expect(matchesFilter(row, [])).toBe(false);
   });
 });
