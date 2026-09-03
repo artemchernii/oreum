@@ -131,18 +131,36 @@ minutes, run once.
 ```bash
 set -a; source .env.local; set +a          # or point at the deployed URL
 BASE=http://localhost:3000
+LOG=/tmp/oreum-backfill.log
 
+fails=0
 while :; do
-  out=$(curl -s -H "Authorization: Bearer $CRON_SECRET" \
-        "$BASE/api/cron/prices?days=800&max=5")
+  out=$(curl -s --max-time 120 -H "Authorization: Bearer $CRON_SECRET" \
+        "$BASE/api/cron/prices?days=800&max=5" 2>&1)
+
+  # A blank or non-JSON response must not end a run that takes hours. Three
+  # consecutive ones should.
+  if ! node -e 'JSON.parse(process.argv[1])' "$out" 2>/dev/null; then
+    fails=$((fails + 1))
+    echo "$(date -u +%H:%M:%S) BAD RESPONSE ($fails/3)" | tee -a "$LOG"
+    [ "$fails" -ge 3 ] && break
+    sleep 60; continue
+  fi
+  fails=0
+
   node -e 'const j=JSON.parse(process.argv[1]);
     console.log(new Date().toISOString().slice(11,19),
       "remaining="+j.remaining, "wrote="+Object.keys(j.written).length,
       j.rateLimited?"[rate limited]":"", j.exhausted?"[exhausted]":"");
-    process.exit(j.remaining===0||j.exhausted?1:0);' "$out" || break
+    process.exit(j.remaining===0||j.exhausted?1:0);' "$out" | tee -a "$LOG" || break
   sleep 60
 done
 ```
+
+The failure counter is not defensive padding. A run of 2024-12 to 2026-09 took
+two transient blank responses overnight, both when the machine slept and woke.
+A bare `|| break` treats those as completion: the loop exits, the last log line
+looks ordinary, and the cache is left half-filled with no error anywhere.
 
 The `sleep 60` is what respects the five-per-minute limit at `max=5`. Running
 hotter is safe but pointless: the route stops the run on a 429, reports
@@ -151,6 +169,41 @@ hotter is safe but pointless: the route stops the run on a 429, reports
 Re-running is always harmless — every write is an upsert, so an interrupted
 backfill resumes rather than duplicating, and a split that restates history
 overwrites cleanly.
+
+### Is it finished?
+
+```bash
+tail -3 /tmp/oreum-backfill.log     # DONE, or [exhausted], means finished
+pgrep -f oreum-backfill             # silent means the loop is no longer running
+```
+
+`[exhausted]` is the expected ending, not `remaining=0`: the loop walks back
+into the two-year retention edge and the provider starts refusing dates as too
+old. Every symbol should hold the same number of bars — companies and
+benchmarks are written from one grouped response, so an unequal count means
+something filtered them apart.
+
+```bash
+set -a; source .env.local; set +a
+curl -s -I "$NEXT_PUBLIC_SUPABASE_URL/rest/v1/daily_bars?select=symbol" \
+  -H "apikey: $SUPABASE_SECRET_KEY" \
+  -H "Authorization: Bearer $SUPABASE_SECRET_KEY" \
+  -H "Prefer: count=exact" | grep -i content-range
+# total / 30 should be a whole number
+```
+
+### Wall-clock estimates do not survive a laptop
+
+The 100-minute figure is 100 minutes of *awake* time. One overnight run
+stretched across ten hours because the machine slept between iterations; gaps
+of 15 to 50 minutes in the log are sleep, not failure.
+
+### The daily cron will not finish a backfill
+
+It is the same endpoint, but it takes the defaults — `days=10`. It scans the
+last ten calendar days, so it closes recent gaps and can never reach a
+two-year-old hole. An abandoned backfill stays abandoned until the wide-window
+loop is run again; nothing repairs the deep tail on its own.
 
 ## Payload validation
 
