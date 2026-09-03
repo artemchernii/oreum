@@ -184,8 +184,11 @@ const COLUMNS = [
   "kind",
   "reason",
   "change",
-  "vol_adjusted",
-  "rel_adjusted",
+  // `price_sigma`, not `vol_adjusted`. The old name sat next to a column
+  // called `volume` and read as "volume-adjusted" to everyone who met it —
+  // it means volatility. Two different measurements should not share a prefix.
+  "price_sigma",
+  "cohort_sigma",
   "volume",
   "verdict",
   "basis",
