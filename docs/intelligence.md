@@ -396,83 +396,76 @@ changed judgment shows up in review instead of disappearing into a metric.
 
 ## First scored labels — 133 rows, 2026-09-04
 
-The first block of labels covers 2024-11-27 to 2025-01-28: 71 `yes`, 45 `no`,
-17 `major`. `scripts/score.ts` against them:
+133 rows over 2024-11-27 to 2025-01-28: 66 `yes`, 47 `no`, 20 `major`.
+
+The first 25 rows were judged before `major` was defined and were re-judged
+against the same definition as the rest before any of this was scored. Three
+moved from `yes` to `major` — DELL 2024-11-27 at -12.25%, CRM 2024-12-04 at
++10.99%, MRVL 2024-12-04 at +23.19% — and two moved from `yes` to `no` once
+portfolio membership was removed as a reason.
 
 | Rule | Quiet | Items/email | Recall | Precision | Major recall |
 | --- | --- | --- | --- | --- | --- |
-| flat OR >= 2.0 | 28.8% | 3.7 | 93.2% | 73.2% | 100.0% |
-| benchmark >= 2.0 | 32.7% | 2.8 | 68.2% | 70.6% | 88.2% |
-| flat OR >= 2.5 | 49.2% | 2.8 | 69.3% | 84.7% | 94.1% |
-| benchmark >= 2.5 | 54.6% | 2.1 | 51.1% | 83.3% | 76.5% |
-| flat OR >= 3.0 | 60.3% | 2.2 | 51.1% | 91.8% | 76.5% |
-| benchmark >= 3.0 | 66.2% | 1.8 | 42.0% | 90.2% | 64.7% |
+| flat OR >= 2.0 | 28.8% | 3.7 | 93.0% | 71.4% | 100.0% |
+| benchmark >= 2.0 | 32.7% | 2.8 | 69.8% | 70.6% | 90.0% |
+| flat OR >= 2.5 | 49.2% | 2.8 | 70.9% | 84.7% | 95.0% |
+| benchmark >= 2.5 | 54.6% | 2.1 | 52.3% | 83.3% | 80.0% |
+| flat OR >= 3.0 | 60.3% | 2.2 | 52.3% | 91.8% | 80.0% |
+| benchmark >= 3.0 | 66.2% | 1.8 | 43.0% | 90.2% | 70.0% |
 
-Nothing here is decided. 133 rows and 17 majors is enough to raise questions
-and not enough to settle them.
+Nothing here is decided. Twenty majors is enough to raise a question and not
+enough to settle one.
 
-### The benchmark rule costs major recall
+### Both findings survived the re-judging
 
-This is the first evidence against the decision recorded above. Requiring a
-company to clear the relative family drops major events that were large in
-price but partly sector-wide — and it buys almost no precision doing it
-(83.3% against 84.7% at 2.5 sigma). What it does buy is quiet: 54.6% against
-49.2%, and 2.1 items an email against 2.8.
+This is the point of having redone the block: a consistent `major` could have
+dissolved either finding, and neither moved.
 
-So the trade is quiet against recall, not quiet against noise. That is a
-different and worse bargain than the 2025-04-09 wall suggested, and it needs
-more labels before it either overturns the decision or turns out to be an
-artefact of seventeen majors.
+**The benchmark rule still costs major recall.** 80.0% against 95.0% at 2.5
+sigma, while buying almost no precision (83.3% against 84.7%). What it buys is
+quiet — 54.6% against 49.2%, and 2.1 items an email against 2.8. That is quiet
+paid for with recall rather than with noise, which is a worse bargain than the
+2025-04-09 item count suggested, and it is the first evidence against the
+decision recorded in `docs/decisions.md`.
 
-### Raw percentage separates the labels; sigma does not
-
-Over these 133 rows:
+**Raw percentage still separates the labels where sigma does not.**
 
 | Verdict | Mean move | Mean price sigma |
 | --- | --- | --- |
-| `no` | 1.82% | 1.08 |
-| `yes` | 5.35% | 2.63 |
-| `major` | 14.22% | 4.71 |
+| `no` | 1.90% | 1.13 |
+| `yes` | 4.94% | 2.45 |
+| `major` | 14.41% | 5.04 |
 
-Both rise with the verdict, but only one separates cleanly. The largest `no`
-was a 4.03% move and the smallest `major` was 7.84% — no overlap at all. By
-sigma they cross: the largest `no` is 2.96 and the smallest `major` is 2.48.
+The largest `no` is a 4.18% move and the smallest `major` is 7.84% — no
+overlap. By sigma they still cross: 2.96 against 2.48. The re-judging widened
+the gap in means rather than closing it.
 
-This runs against the premise the engine is built on, which is that a
-percentage cannot be compared across symbols and its volatility-adjusted form
-can. Three reasons to hold it loosely before acting:
+Three explanations remain live and none has been ruled out:
 
-- The universe is 25 tech companies with broadly similar volatility, so raw
-  percentage and sigma are heavily correlated here in a way they would not be
-  across a diverse universe.
-- The labeled range is dominated by semiconductor names in a volatile stretch,
-  where a 10% move is only about 3 sigma.
-- `scripts/label.ts` prints the raw move on the first line, above both sigmas.
-  A presentation effect is a live explanation, not a ruled-out one.
+- The universe is 25 tech companies with correlated volatility, so raw
+  percentage and sigma are far more alike here than they would be across a
+  diverse universe.
+- The labeled range is semiconductor-heavy, and a 10% move in those names is
+  only about 3 sigma.
+- `scripts/label.ts` prints the raw move on the first line, above both sigmas,
+  and the re-judged reasons lean on the tool's own vocabulary ("mild stats",
+  "rare move against sector"). A presentation effect is not ruled out and may
+  have strengthened.
 
-The next step is to score a raw-percentage rule alongside the sigma rules
-rather than argue about it. If a flat "move exceeds N%" scores comparably at
-equal quiet, the volatility adjustment is buying less than assumed.
+The next step is to score a raw-percentage rule beside the sigma rules rather
+than argue about it. If a flat "move exceeds N%" scores comparably at equal
+quiet, the volatility adjustment is buying less than assumed.
 
 ### Reported recall is an upper bound
 
 Recall is measured over labeled rows, and 88% of labeled rows came from the
-fired set. The control sample is the only out-of-pool evidence: 14 judged, and
-one of them — SOXX on 2024-12-11, an ETF up 2.5% that nothing flagged — came
-back `yes`.
+fired set. The control sample is the only out-of-pool evidence: 14 judged, one
+returned `yes` — SOXX on 2024-12-11, an ETF up 2.5% that nothing flagged.
 
 One in fourteen is not a rate worth quoting, but it is not zero, and it points
-at something specific: benchmarks are far less volatile than the companies, so
-a 2 sigma pool threshold shared between them may be too high for an index. A
-market day that matters can look small in sigma terms.
-
-### One known inconsistency in the labels
-
-The first 18 rows were judged before `major` was properly defined, and they use
-`yes` where later rows use `major`. MRVL on 2024-12-04 — +23.19%, 9.81 sigma,
-6.58x volume — is labeled `yes`, while MRVL on 2024-12-13 at +10.79% and 2.79
-sigma is labeled `major`. Those two rows are measuring different definitions
-and the first block needs re-judging before the major numbers can be trusted.
+somewhere specific: benchmarks are far less volatile than the companies, so a 2
+sigma pool threshold shared between them may be too high for an index. A market
+day that matters can look small in sigma terms.
 
 ## Deterministic and LLM responsibilities
 
