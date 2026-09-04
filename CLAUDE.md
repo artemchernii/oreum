@@ -117,6 +117,17 @@ Everything in this repo is English: code, comments, commits, docs, UI copy.
   guesses were usually integration or configuration problems wearing a
   code-shaped disguise. Change one thing at a time, or you will not know which
   one worked.
+- **Never write prose before a tool call.** Any text streamed ahead of a tool
+  call gets collapsed by the terminal when the tool renders, so an
+  explanation, a review, or a set of findings placed before tool work is
+  destroyed while it is being read. Do every tool call first — with no
+  preamble, no "let me check", no acknowledgement — then write once, at the
+  end. This is absolute: a single line of greeting before a `Bash` call is
+  still a line that vanishes. It applies to skills too, and skills are the
+  worst case rather than the rule: `/handoff`, `/ship` and `/migrate` each go
+  in their own turn, after the reading part has been delivered and asked for.
+  When a request has several parts, order them so all tool work precedes all
+  prose.
 - **End every reply with what to do next.** The last thing in every response is
   a `Next` section: one to three numbered steps, one plain line each, the step
   to do first at the top. Give the exact command or the exact thing to type
