@@ -5,6 +5,13 @@
 #
 # Context size is read from the transcript rather than guessed from file size:
 # the last assistant turn reports exactly what was sent to the model.
+#
+# The warning goes out on all three channels UserPromptSubmit supports, because
+# systemMessage alone fired silently for a whole 200k-token session: the hook
+# ran, wrote its state file, printed the JSON, and nothing ever reached the
+# screen. additionalContext puts the same sentence in Claude's context so it can
+# say it out loud, and terminalSequence rings the terminal, which does not depend
+# on the transcript rendering anything at all.
 # Anything unexpected — no transcript, no usage yet, no jq — exits silently.
 # A hook that fails loudly on every prompt is worse than one that misses a warning.
 set -uo pipefail
@@ -57,4 +64,14 @@ else
   message="Context is ~${k}k tokens and every turn re-sends it. If you are switching to a different task, /handoff into a fresh session is cheaper than continuing here."
 fi
 
-jq -nc --arg m "$message" '{systemMessage: $m, suppressOutput: true}'
+# suppressOutput is deliberately absent: Claude Code accepts the field and does
+# nothing with it, so setting it only suggested a control that does not exist.
+notify="$(printf '\033]777;notify;Claude Code;%s\007' "$message")"
+jq -nc --arg m "$message" --arg seq "$notify" '{
+  systemMessage: $m,
+  terminalSequence: $seq,
+  hookSpecificOutput: {
+    hookEventName: "UserPromptSubmit",
+    additionalContext: ("Context-budget hook: " + $m + " Tell the user this, in your own words, before anything else in your reply.")
+  }
+}'

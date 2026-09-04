@@ -51,6 +51,15 @@ check_empty() {
   fi
 }
 
+check_absent() {
+  local name="$1" unexpected="$2" actual="$3"
+  if [[ "$actual" != *"$unexpected"* ]]; then
+    pass=$((pass + 1)); printf 'ok   %s\n' "$name"
+  else
+    fail=$((fail + 1)); printf 'FAIL %s\n     expected NOT to contain: %s\n     got: %s\n' "$name" "$unexpected" "$actual"
+  fi
+}
+
 # --- a small session says nothing ------------------------------------------
 make_transcript "$WORK/small.jsonl" 40000
 check_empty "silent below the warn threshold" "$(run_hook "$WORK/small.jsonl" small)"
@@ -59,11 +68,21 @@ check_empty "silent below the warn threshold" "$(run_hook "$WORK/small.jsonl" sm
 make_transcript "$WORK/exact.jsonl" 100000
 check "warns at exactly the warn threshold" "handoff" "$(run_hook "$WORK/exact.jsonl" exact)"
 
-# --- the warning is a systemMessage the user can see ------------------------
+# --- the warning reaches the user on every channel the event supports -------
+# systemMessage alone was silent in practice, so the hook now also injects the
+# same warning into Claude's context and rings the terminal. One channel being
+# dropped by the client must not make the whole warning disappear again.
 make_transcript "$WORK/warn.jsonl" 120000
 out="$(run_hook "$WORK/warn.jsonl" warn)"
 check "emits systemMessage JSON" '"systemMessage"' "$out"
 check "reports the rounded context size" "120k" "$out"
+check "injects the warning into Claude's context" '"additionalContext"' "$out"
+check "tags additionalContext with its event name" '"hookEventName":"UserPromptSubmit"' "$out"
+check "repeats the context size in additionalContext" "120k" \
+  "$(printf '%s' "$out" | jq -r '.hookSpecificOutput.additionalContext')"
+check "rings the terminal so the warning survives a silent transcript" '"terminalSequence"' "$out"
+check_absent "drops suppressOutput, which the client ignores anyway" '"suppressOutput"' "$out"
+check "stays valid JSON" "ok" "$(printf '%s' "$out" | jq -e . >/dev/null 2>&1 && echo ok)"
 
 # --- it does not nag: same band, second prompt, silence ---------------------
 check_empty "stays quiet on a repeat prompt in the same band" "$(run_hook "$WORK/warn.jsonl" warn)"
