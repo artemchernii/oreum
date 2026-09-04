@@ -456,6 +456,49 @@ The next step is to score a raw-percentage rule beside the sigma rules rather
 than argue about it. If a flat "move exceeds N%" scores comparably at equal
 quiet, the volatility adjustment is buying less than assumed.
 
+### Raw percentage scored against sigma, matched on quiet-day rate
+
+`scripts/score.ts` now sweeps a raw-percentage rule alongside the
+volatility-adjusted one — same two shapes, `flat OR` and `benchmark`, with
+`|change|` and unadjusted `relative` in place of the sigma columns. Run it with
+`node --env-file=.env.local scripts/score.ts`; the two tables print separately
+and are meant to be read at matching quiet rates, not matching thresholds — a
+sigma and a percentage are not the same unit.
+
+At quiet rates that land within a point of each other:
+
+| Shape | Quiet | Recall | Precision | Major recall |
+| --- | --- | --- | --- | --- |
+| flat OR, sigma >= 2.5 | 49.2% | 70.9% | 84.7% | 95.0% |
+| flat OR, pct >= 7% | 49.2% | 36.0% | 96.9% | 100.0% |
+| benchmark, sigma >= 3.0 | 66.2% | 43.0% | 90.2% | 70.0% |
+| benchmark, pct >= 7% | 65.5% | 29.1% | 96.2% | 90.0% |
+| benchmark, sigma >= 2.5 | 54.6% | 52.3% | 83.3% | 80.0% |
+| benchmark, pct >= 6% | 55.6% | 32.6% | 90.3% | 90.0% |
+
+The result is not the clean win either direction expected. At the same
+quiet-day rate, raw percentage beats sigma on precision and on major recall in
+every matched pair, sometimes by a lot — 90% vs 70% majors caught in the
+closest benchmark comparison. It loses badly on plain recall — roughly half.
+
+The reading that fits both halves: a flat percentage is a better filter for
+"this is big enough to matter regardless of the stock", which is what `major`
+actually measures. Sigma is catching a wider set of `yes` rows that a raw
+threshold discards outright — a modest move in a stock that rarely moves,
+which is exactly the case the volatility adjustment exists to represent as
+significant. The 133-row finding that raw percentage separates the verdicts
+better than sigma held for the extremes; it does not mean sigma is measuring
+nothing.
+
+This does not resolve the open question, and should not be read as license to
+drop volatility adjustment. It narrows it: the candidate worth testing next is
+not "percentage instead of sigma" but a rule that requires *both* — a move
+large in absolute terms and unusual for the symbol — since flat OR and
+benchmark are already ceilings and floors on each family alone. The three
+caveats from the single-metric finding still apply here: 25 correlated tech
+names, a semiconductor-heavy labeled stretch, and `scripts/label.ts` printing
+the raw move above both sigmas.
+
 ### Reported recall is an upper bound
 
 Recall is measured over labeled rows, and 88% of labeled rows came from the
