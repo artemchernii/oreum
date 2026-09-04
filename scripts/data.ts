@@ -140,7 +140,7 @@ export async function loadMarket(): Promise<Market> {
   };
 }
 
-/** Magnitude, with a missing measurement reading as "did not fire". */
-export function mag(value: number | null): number {
-  return value === null ? 0 : Math.abs(value);
-}
+// Re-exported so the scripts keep one import for the read side, while the
+// definition lives with the rules that depend on it. Two copies of "null means
+// it did not fire" would be two chances to get it backwards.
+export { mag } from "../src/lib/attention.ts";

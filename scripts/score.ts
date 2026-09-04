@@ -9,16 +9,20 @@
  * good as the labeling behind them. A rule with perfect recall over eleven
  * labeled rows has not been shown to work.
  *
+ * Three sizes are swept against the same two shapes, defined in
+ * `src/lib/attention.ts`: unusual for the symbol, big in absolute terms, and
+ * both at once. The tables are meant to be read at matching quiet-day rates,
+ * never at matching threshold numbers.
+ *
  *   node --env-file=.env.local scripts/score.ts
  */
 import { readFileSync } from "node:fs";
-import { loadMarket, mag, type ObservedRow } from "./data.ts";
+import { loadMarket } from "./data.ts";
+import { both, percent, shapes, sigma, type Rule } from "../src/lib/attention.ts";
 import { evaluate, parsePool, type Judged, type Verdict } from "../src/lib/evaluation.ts";
 
 const PATH = "eval/labels.tsv";
 
-/** The volume gate the replay found cheap at this height and ruinous below it. */
-const VOLUME_GATE = 4;
 const SIGMA_THRESHOLDS = [2, 2.5, 3, 3.5, 4, 5];
 
 /**
@@ -27,67 +31,16 @@ const SIGMA_THRESHOLDS = [2, 2.5, 3, 3.5, 4, 5];
  */
 const PCT_THRESHOLDS = [0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.1];
 
-type Rule = { label: string; fires: (row: ObservedRow) => boolean };
-
-/** Where a rule reads its price and relative magnitude from. */
-type Magnitudes = {
-  price: (row: ObservedRow) => number | null;
-  relative: (row: ObservedRow) => number | null;
-};
-
-/** The premise the engine rests on: raw percentage cannot be compared across
- * symbols, so every threshold is expressed in units of the symbol's own
- * volatility instead. */
-const SIGMA: Magnitudes = {
-  price: (row) => row.volatilityAdjusted,
-  relative: (row) => row.relativeAdjusted,
-};
-
 /**
- * The premise under test. 133 labeled rows showed no overlap between the
- * largest `no` (4.18%) and the smallest `major` (7.84%) by raw move, while the
- * same two rows cross by sigma (2.96 vs 2.48). If a plain percentage rule
- * scores comparably to the sigma rule at matched quiet, the volatility
- * adjustment is buying less than the design assumes.
- */
-const RAW_PERCENT: Magnitudes = {
-  price: (row) => row.change,
-  relative: (row) => row.relative,
-};
-
-/**
- * The two rules the market-wide-day decision is between, parameterised over
- * what "big" means so the sigma and raw-percentage sweeps share one
- * implementation rather than risk silently diverging.
+ * The conjunction sweep: a percentage floor crossed with a sigma floor.
  *
- * `flat OR` is what the first replay swept: price, relative, or volume, with
- * no regard for what the symbol is. On 2025-04-09 it fired on 24 of 25 names
- * and the email would have been a wall whose honest summary was one sentence.
- *
- * `benchmark` is the shape that was chosen instead: a benchmark speaks for
- * itself on the price family, and a company has to beat its own cohort. A
- * market-wide day becomes one item about SPY; a sector-wide day becomes one
- * about the cohort proxy. This scoring is what turns that from a preference
- * into a measurement.
+ * Lower on both axes than the single-family sweeps, because requiring both can
+ * only fire less than either alone — a pair that reads as strict here lands at
+ * the quiet rate of a much lower single threshold.
  */
-function rules(threshold: number, magnitudes: Magnitudes, label: string): Rule[] {
-  return [
-    {
-      label: `flat OR ${label} >= ${threshold}`,
-      fires: (row) =>
-        mag(magnitudes.price(row)) >= threshold ||
-        mag(magnitudes.relative(row)) >= threshold ||
-        (row.volume ?? 0) >= VOLUME_GATE,
-    },
-    {
-      label: `benchmark ${label} >= ${threshold}`,
-      fires: (row) =>
-        row.kind === "benchmark"
-          ? mag(magnitudes.price(row)) >= threshold
-          : mag(magnitudes.relative(row)) >= threshold || (row.volume ?? 0) >= VOLUME_GATE,
-    },
-  ];
-}
+const BOTH_THRESHOLDS = [0.02, 0.03, 0.04, 0.05].flatMap((percentage) =>
+  [2, 2.5, 3].map((deviations) => [percentage, deviations] as const),
+);
 
 const market = await loadMarket();
 
@@ -126,7 +79,7 @@ function report(rule: Rule) {
   const result = evaluate(scored);
 
   console.log(
-    `${rule.label.padEnd(24)} ` +
+    `${rule.label.padEnd(30)} ` +
       `${String(days.size).padStart(5)}/${market.sessions.length}  ` +
       `${pct(quiet)}  ` +
       `${(days.size === 0 ? 0 : firing.length / days.size).toFixed(1).padStart(11)}  ` +
@@ -135,12 +88,12 @@ function report(rule: Rule) {
 }
 
 const header =
-  "rule                        email days    quiet  items/email     recall  precision  major";
+  "rule                              email days    quiet  items/email     recall  precision  major";
 
 console.log("── volatility-adjusted (the premise the engine rests on) ──");
 console.log(header);
 for (const threshold of SIGMA_THRESHOLDS) {
-  for (const rule of rules(threshold, SIGMA, "σ")) report(rule);
+  for (const rule of shapes(sigma(threshold))) report(rule);
 }
 
 console.log(
@@ -148,12 +101,18 @@ console.log(
 );
 console.log(header);
 for (const threshold of PCT_THRESHOLDS) {
-  for (const rule of rules(threshold, RAW_PERCENT, "%")) report(rule);
+  for (const rule of shapes(percent(threshold))) report(rule);
+}
+
+console.log("\n── both at once: big in absolute terms and unusual for the symbol ──");
+console.log(header);
+for (const [percentage, deviations] of BOTH_THRESHOLDS) {
+  for (const rule of shapes(both(percentage, deviations))) report(rule);
 }
 
 console.log(
   `\nAccuracy columns are over ${judged} labeled rows. They mean nothing until ` +
     `that number is large enough to argue with.\n` +
-    `Read the two tables at matching quiet-day rates, not matching threshold numbers — ` +
+    `Read the tables at matching quiet-day rates, not matching threshold numbers — ` +
     `a sigma and a percentage are not the same unit.`,
 );

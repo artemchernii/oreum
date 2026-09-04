@@ -461,9 +461,10 @@ quiet, the volatility adjustment is buying less than assumed.
 `scripts/score.ts` now sweeps a raw-percentage rule alongside the
 volatility-adjusted one — same two shapes, `flat OR` and `benchmark`, with
 `|change|` and unadjusted `relative` in place of the sigma columns. Run it with
-`node --env-file=.env.local scripts/score.ts`; the two tables print separately
-and are meant to be read at matching quiet rates, not matching thresholds — a
-sigma and a percentage are not the same unit.
+`node --env-file=.env.local scripts/score.ts`; the tables print separately and
+are meant to be read at matching quiet rates, not matching thresholds — a
+sigma and a percentage are not the same unit. A third table, the conjunction
+below, was added afterwards.
 
 At quiet rates that land within a point of each other:
 
@@ -498,6 +499,83 @@ benchmark are already ceilings and floors on each family alone. The three
 caveats from the single-metric finding still apply here: 25 correlated tech
 names, a semiconductor-heavy labeled stretch, and `scripts/label.ts` printing
 the raw move above both sigmas.
+
+### Both at once — the conjunction, scored 2026-09-04
+
+The candidate the previous section named has been swept: a rule that fires
+only when a move is **both** large in absolute terms **and** unusual for the
+symbol. `scripts/score.ts` now prints a third table over a grid of
+percentage/sigma pairs, and the rule shapes moved out of the script into
+`src/lib/attention.ts` with unit tests — the rule that wins the evaluation is
+the rule the email has to apply, and a threshold defined inside a script can
+only be re-typed somewhere else.
+
+The two existing tables print the same numbers as before the extraction; only
+the percentage labels changed, from `% >= 0.05` to `% >= 5`, which is what
+that column always meant.
+
+Matched on quiet-day rate, `flat OR` shape:
+
+| Size | Quiet | Recall | Precision | Major recall |
+| --- | --- | --- | --- | --- |
+| sigma >= 2.5 | 49.1% | 70.9% | 84.7% | 95.0% |
+| pct >= 7% | 49.1% | 36.0% | 96.9% | 100.0% |
+| **4% and 2.5 sigma** | **52.3%** | **66.3%** | **91.9%** | **95.0%** |
+| sigma >= 3 | 60.2% | 52.3% | 91.8% | 80.0% |
+
+Read down that table: the conjunction reaches the precision of the 3 sigma
+rule (91.9% against 91.8%) while keeping the recall of the 2.5 sigma rule
+(66.3% against 70.9%) and its major recall (95%). Sigma alone can buy that
+precision, but only by climbing to 3 sigma, and by then it has given up 14
+points of recall and 15 of major recall. The percentage rule alone buys more
+precision still and pays for it with half the recall.
+
+The same holds a step lower, where the comparison is against the percentage
+rule rather than the sigma one:
+
+| Size | Quiet | Recall | Precision | Major recall |
+| --- | --- | --- | --- | --- |
+| pct >= 4% | 14.5% | 84.9% | 85.9% | 100.0% |
+| **4% and 2 sigma** | **38.0%** | **79.1%** | **86.1%** | **100.0%** |
+| sigma >= 2 | 28.7% | 93.0% | 71.4% | 100.0% |
+
+Adding the sigma floor to a 4% rule more than doubles the quiet-day rate,
+from 14.5% to 38.0%, at a cost of 5.8 points of recall and no cost at all to
+precision or major recall. Adding the percentage floor to a 2 sigma rule buys
+15 points of precision for 14 of recall.
+
+So the reading from the single-metric comparison survives contact with the
+conjunction: the two measures are catching different things, and requiring
+both is not a compromise between them. Nothing in the 50-row sweep beats
+`flat OR`, 4% and 2.5 sigma on all four of quiet, recall, precision and major
+recall at once. That is weaker evidence than it sounds — 32 of the 50 rows are
+un-beaten in four dimensions, because four axes leave almost everything
+un-comparable — which is why the comparison that decides anything is the one
+at matched quiet above, not a frontier count.
+
+Three things qualify it:
+
+- **A 2% floor is inside the noise.** At `% >= 2 & σ >= 2.5` the conjunction
+  is indistinguishable from sigma alone — one email day in 442 separates them.
+  Essentially every 2.5 sigma move in this universe already clears 2%, so the
+  percentage floor does nothing until 3–4%. That is a fact about 25 tech
+  names, not about the method.
+- **The benchmark shape still costs major recall**, at every size. It reads
+  90%, 80%, 70% down the conjunction table exactly as it did down the other
+  two, so the shape question is independent of the size question. The sweep
+  adds one thing to it: every conjunction row that some other rule beats on
+  all four axes is a `benchmark` row, and what beats it is a plain `flat OR`
+  sigma rule. No `flat OR` conjunction row is beaten by anything.
+- **Still 133 labels.** 20 of them are `major`, so a single missed row moves
+  major recall by five points, and the labeled stretch is semiconductor-heavy.
+  Nothing here is a threshold decision; it is the first candidate worth
+  labeling against.
+
+The leading candidate for the email is therefore `flat OR`, 4% and 2.5 sigma:
+52.3% quiet, 2.7 items on a day that fires, 91.9% precision. That is about two
+and a half emails a week with under three items each — inside what Phase 1
+asks for. It should not be written into `docs/decisions.md` until the labels
+reach a point where 20 majors is not the whole denominator.
 
 ### Reported recall is an upper bound
 
