@@ -1,34 +1,34 @@
 symbol	date	kind	reason	change	price_sigma	cohort_sigma	volume	verdict	basis	labeled_at
-CRM	2024-11-27	company	price	-0.0384	-2.28	-1.77	1.55	yes	well, -3.8% is quite big but -1.77 cohort_sigma is not that big	2026-09-03
-DELL	2024-11-27	company	price+relative+volume	-0.1225	-4.72	-4.96	5.33	yes	-12% is huge for stable company like DELL and it was clearly stock related news coh_sigma is almost 5 and volume is above 5 is 100% unusual and important	2026-09-03
-AMD	2024-11-29	company	control	0.0069	0.25	-0.4	0.52	no	all movements are not meaningful not worth to look into	2026-09-03
-GOOGL	2024-12-02	company	control	0.015	0.97	0.35	1.06	no	all movements are not meaningful not worth to look into	2026-09-03
-LRCX	2024-12-02	company	price+relative	0.0627	2.26	2.32	1.74	yes	big change in price 6%, it moves with the market and volume is not that high but still 6% is worth to notice	2026-09-03
-META	2024-12-02	company	price	0.0322	2.1	1.89	1.13	yes	META in my portfolio and 3% move is worth to notice but not dig	2026-09-03
-TSM	2024-12-02	company	price	0.0527	2.08	1.34	1.37	yes	its up more than 5% and its very important stock TSM	2026-09-03
-INTC	2024-12-03	company	price+relative	-0.061	-2.25	-2.4	2.29	yes	-6% is worth noticing and -2.4 coh means something with company, volume is not mega high but still worth	2026-09-03
-META	2024-12-03	company	price+relative	0.0351	2.31	2.55	1.35	no	3% up which is good but valume is quite, coh seems not that high	2026-09-03
-CRM	2024-12-04	company	price+relative+volume	0.1099	6.24	5.92	4.92	yes	10% is a lot and coh, vol all high so means something company related	2026-09-03
-IGV	2024-12-04	benchmark	price	0.0389	3.2		2.65	yes	when ETF moves 3% almost 4% means something is going on worth looking	2026-09-03
-MRVL	2024-12-04	company	price+relative+volume	0.2319	9.81	12.08	6.58	yes	mega jump huge coh_sigma, huge volume ITS 100% FIRE	2026-09-03
-MSFT	2024-12-04	company	relative	0.0144	1.09	-2.17	1.38	no	all movements are not meaningful not worth to look into	2026-09-03
-NOW	2024-12-04	company	price+relative	0.0622	3.79	2.2	1.8	yes	up more than 6% and inusual move and volume is up	2026-09-03
-AMAT	2024-12-05	company	relative	-0.0504	-1.79	-2.01	1.48	yes	-5% if in my portfolio mean need to notice it	2026-09-03
-MSFT	2024-12-05	company	relative	0.0119	0.91	2.08	1.15	no	all movements are not meaningful not worth to look into	2026-09-03
-AVGO	2024-12-06	company	price+relative	0.0531	2.61	3.39	1.45	yes	5% up and cohort_sigma is 3+% mean notice it	2026-09-03
-QCOM	2024-12-06	company	control	-0.0055	-0.26	-0.83	1.34	no	all movements are not meaningful not worth to look into	2026-09-03
-TSM	2024-12-06	company	control	-0.0063	-0.25	-0.6	0.79	no	all movements are not meaningful not worth to look into	2026-09-03
-AMD	2024-12-09	company	price+relative	-0.0557	-2.16	-3.14	1.87	yes	Semi stock in my portfolio -3% coh_sigma is worth to notice	2026-09-03
-KLAC	2024-12-09	company	control	0.0062	0.22	0.67	1.13	no	nothing interesting here, everything is ordinary	2026-09-03
-MSFT	2024-12-09	company	relative	0.0055	0.43	2.19	1.01	no	nothing interesting here, ordinary	2026-09-03
-PANW	2024-12-09	company	price	-0.0418	-2.31	-1.58	1.14	yes	4% drop is notable but other stats are normal	2026-09-03
-GOOGL	2024-12-10	company	price+relative	0.0559	3.92	4.67	2.52	yes	GOOGLE is important company and it moves up more than 5% with unusual volume, it moves not with sector and it means something important happened with the company	2026-09-03
-ORCL	2024-12-10	company	price+relative+volume	-0.0667	-3.8	-4.65	3.8	yes	big drop more that 6% unusual move and big volume	2026-09-03
-AVGO	2024-12-11	company	price+relative	0.0663	3.12	2.9	2.14	yes	big move up unusual move and busy volume	2026-09-03
-GOOGL	2024-12-11	company	price+relative+volume	0.0552	3.48	2.34	3.07	yes	big move up unusual and big volume 100% woth to see	2026-09-03
-INTC	2024-12-11	company	control	-0.002	-0.07	-1.18	1.17	no	nothing interesting here, ordinary	2026-09-03
-SOXX	2024-12-11	benchmark	control	0.0251	1.4		1.29	yes	for ETS index 2.5% up is important to notice, this is related to broader market	2026-09-03
-ARM	2024-12-12	company	relative	0.0338	1.13	2.19	1.56	no	nothing interesting here, it moves but not that significant	2026-09-03
+CRM	2024-11-27	company	price	-0.0384	-2.28	-1.77	1.55	yes	drop almost 4% and volume is busy	2026-09-03
+DELL	2024-11-27	company	price+relative+volume	-0.1225	-4.72	-4.96	5.33	major	drop more than 12% and rare move against sector, volume is huge	2026-09-03
+AMD	2024-11-29	company	control	0.0069	0.25	-0.4	0.52	no	nothing interesting, mild stats	2026-09-03
+GOOGL	2024-12-02	company	control	0.015	0.97	0.35	1.06	no	nothing interesting, mild stats	2026-09-03
+LRCX	2024-12-02	company	price+relative	0.0627	2.26	2.32	1.74	yes	big move up 6% and busy volume	2026-09-03
+META	2024-12-02	company	price	0.0322	2.1	1.89	1.13	no	move is interesting but not that big and all other stats are mild so its no	2026-09-03
+TSM	2024-12-02	company	price	0.0527	2.08	1.34	1.37	yes	move up 5% and notable own move	2026-09-03
+INTC	2024-12-03	company	price+relative	-0.061	-2.25	-2.4	2.29	yes	drop 6% and busy volume	2026-09-03
+META	2024-12-03	company	price+relative	0.0351	2.31	2.55	1.35	no	nothing interesting, mild stats, not enough move up	2026-09-03
+CRM	2024-12-04	company	price+relative+volume	0.1099	6.24	5.92	4.92	major	big jump up 11%m extreme move and rare against sector, crowded volume is MAJOR	2026-09-03
+IGV	2024-12-04	benchmark	price	0.0389	3.2		2.65	yes	almost 4% jump up and busy volume	2026-09-03
+MRVL	2024-12-04	company	price+relative+volume	0.2319	9.81	12.08	6.58	major	HUGE move up 23% extreme move, huge volume this is it MAJOR	2026-09-03
+MSFT	2024-12-04	company	relative	0.0144	1.09	-2.17	1.38	no	nothing interesting, mild stats	2026-09-03
+NOW	2024-12-04	company	price+relative	0.0622	3.79	2.2	1.8	yes	6% up with unusual move and busy volume	2026-09-03
+AMAT	2024-12-05	company	relative	-0.0504	-1.79	-2.01	1.48	yes	drop 5% is interesting notable against sector	2026-09-03
+MSFT	2024-12-05	company	relative	0.0119	0.91	2.08	1.15	no	nothing interesting, mild stats	2026-09-03
+AVGO	2024-12-06	company	price+relative	0.0531	2.61	3.39	1.45	yes	jump up 5% unusual move against sector	2026-09-03
+QCOM	2024-12-06	company	control	-0.0055	-0.26	-0.83	1.34	no	nothing interesting, mild stats	2026-09-03
+TSM	2024-12-06	company	control	-0.0063	-0.25	-0.6	0.79	no	nothing interesting, mild stats	2026-09-03
+AMD	2024-12-09	company	price+relative	-0.0557	-2.16	-3.14	1.87	yes	drop 5% unusual move against sector and volume is busy	2026-09-03
+KLAC	2024-12-09	company	control	0.0062	0.22	0.67	1.13	no	nothing interesting, mild stats	2026-09-03
+MSFT	2024-12-09	company	relative	0.0055	0.43	2.19	1.01	no	nothing interesting, mild stats	2026-09-03
+PANW	2024-12-09	company	price	-0.0418	-2.31	-1.58	1.14	no	drop 4% but everything else is mild and name is not that big	2026-09-03
+GOOGL	2024-12-10	company	price+relative	0.0559	3.92	4.67	2.52	yes	big name 5% up and rare against sector with busy volume	2026-09-03
+ORCL	2024-12-10	company	price+relative+volume	-0.0667	-3.8	-4.65	3.8	yes	drop 6.6% and rare move against sector, with crowded volume, big name and interesting is the fact that GOOGL is up means its a fight for market	2026-09-03
+AVGO	2024-12-11	company	price+relative	0.0663	3.12	2.9	2.14	yes	big name up 6.6% and notable against sector with busy volume	2026-09-03
+GOOGL	2024-12-11	company	price+relative+volume	0.0552	3.48	2.34	3.07	yes	big move up 5.5%, crowded volume and notable move	2026-09-03
+INTC	2024-12-11	company	control	-0.002	-0.07	-1.18	1.17	no	nothing interesting, mild stats	2026-09-03
+SOXX	2024-12-11	benchmark	control	0.0251	1.4		1.29	yes	this is AI etf which is interesting move 2.5% up	2026-09-03
+ARM	2024-12-12	company	relative	0.0338	1.13	2.19	1.56	no	nothing interesting, mild stats	2026-09-03
 AMD	2024-12-13	company	relative	-0.0283	-1.05	-3.23	2.12	yes	because volume is more than 2, other stats are mid. AVGO on the same day is up 10% which means their success is bad for AMD	2026-09-03
 ANET	2024-12-13	company	price+relative	0.0514	2.37	2.88	1.48	yes	because 5% up and notable move	2026-09-03
 AVGO	2024-12-13	company	price+relative+volume	0.2443	10.68	14.42	6.31	major	huge move up, all stats are insanely extreme move up	2026-09-03
